@@ -1,0 +1,10 @@
+# CDK and TypeScript build outputs
+*.js
+!jest.config.js
+*.d.ts
+node_modules
+cdk.out
+.env
+.env.*
+.DS_Store
+Thumbs.db
