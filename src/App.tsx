@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import Aurora from './components/Aurora';
 import HomePage from './components/HomePage';
 import LoginPage from './components/LoginPage';
 import SignupPage from './components/SignupPage';
 import { AuthProvider, useAuth } from './context/AuthContext';
+
+import { Dashboard } from './components/dashboard';
 
 function navigate(path: string) {
   window.history.pushState({}, '', path);
@@ -11,7 +12,7 @@ function navigate(path: string) {
 }
 
 function AppRoutes() {
-  const { isAuthenticated, logout, user } = useAuth();
+  const { isAuthenticated } = useAuth();
   const [path, setPath] = useState(window.location.pathname);
 
   useEffect(() => {
@@ -39,26 +40,8 @@ function AppRoutes() {
 
   if (path === '/signup') return <SignupPage />;
 
-  if (path === '/app' && isAuthenticated) {
-    return (
-      <main className="auth-page auth-page--aurora">
-        <Aurora
-          colorStops={['#1D4ED8', '#38BDF8', '#93C5FD']}
-          amplitude={0.85}
-          blend={0.42}
-          speed={0.55}
-        />
-        <section className="auth-column">
-          <header className="auth-header">
-            <h1 className="auth-wordmark">NeuroBridge</h1>
-            <p className="auth-tagline">Signed in as {user?.email}.</p>
-          </header>
-          <button className="auth-button auth-button--outline" type="button" onClick={logout}>
-            Sign out
-          </button>
-        </section>
-      </main>
-    );
+  if (path === '/app' || isAuthenticated) {
+    return <Dashboard />;
   }
 
   return <LoginPage />;
