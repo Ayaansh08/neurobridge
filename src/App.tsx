@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import Aurora from './components/Aurora';
+import HomePage from './components/HomePage';
 import LoginPage from './components/LoginPage';
 import SignupPage from './components/SignupPage';
 import { AuthProvider, useAuth } from './context/AuthContext';
@@ -33,6 +34,8 @@ function AppRoutes() {
       document.removeEventListener('click', handleLinkClick);
     };
   }, []);
+
+  if (path === '/' && !isAuthenticated) return <HomePage />;
 
   if (path === '/signup') return <SignupPage />;
 
