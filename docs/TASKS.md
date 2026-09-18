@@ -3,8 +3,6 @@
 _Single source of truth for work. Now / Next / Later / Done._
 
 ## 🔴 Now (before Sept 20 deadline)
-- [ ] Deploy stack to AWS (`cdk deploy`)
-- [ ] Seed scenario data (`npm run seed`)
 - [ ] Record 3-minute demo video
 - [ ] Test full flow end-to-end: sign up → pick scenario → practice → complete
 
@@ -13,6 +11,7 @@ _No critical tasks pending._
 
 ## 🔵 Later
 - [ ] Production error handling and loading states
+- [ ] Tune AI Partner prompts based on real test sessions (Phase 4)
 
 ## ✂️ Cut / post-hackathon
 - `group-conversation` scenario: Focus purely on 1-on-1 conversations for the demo.
@@ -24,6 +23,8 @@ _No critical tasks pending._
 - Personalized practice recommendations: Out of scope for a 3-minute demo timeline.
 
 ## ✅ Done
+- [x] Deploy stack to AWS (`cdk deploy`)
+- [x] Seed scenario data (`npm run seed`)
 - [x] Replace fake scoring with real AI-generated feedback
 - [x] Add session expiry / TTL to DynamoDB
 - [x] Set `autoDeleteObjects: true` on S3 bucket
