@@ -9,7 +9,6 @@ _Single source of truth for work. Now / Next / Later / Done._
 - [ ] Test full flow end-to-end: sign up → pick scenario → practice → complete
 
 ## 🟡 Next
-- [ ] Login loading state, plus error/loading polish
 - [ ] Add seed data for `handle-conflict` scenario and frontend card
 - [ ] Replace fake scoring with real AI-generated feedback
 
@@ -28,6 +27,7 @@ _Single source of truth for work. Now / Next / Later / Done._
 - Personalized practice recommendations: Out of scope for a 3-minute demo timeline.
 
 ## ✅ Done
+- [x] Login loading state, plus error/loading polish
 - [x] Remove orphaned `mockData.ts`
 - [x] Cognito auth (sign up, verify, sign in, sign out)
 - [x] Dashboard UI (scenarios, progress, settings)

@@ -17,7 +17,6 @@ _Bugs, shortcuts, and things to fix._
 
 ## Frontend
 - **`VITE_API_GATEWAY_URL` must be set:** Practice view shows an error banner if missing. No graceful offline/demo mode.
-- **No loading state on auth:** Login button doesn't show a spinner during Cognito round-trip.
 
 ## Infrastructure
 - **`autoDeleteObjects: false`** on S3 bucket: `cdk destroy` will fail if objects are ever uploaded. Change to `true` before uploading anything.

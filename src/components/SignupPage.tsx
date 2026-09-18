@@ -116,6 +116,7 @@ export const SignupPage: React.FC = () => {
                 type="email"
                 autoComplete="email"
                 value={email}
+                disabled={isSubmitting}
                 onChange={(event) => setEmail(event.target.value)}
                 aria-invalid={!!errors.email}
               />
@@ -132,6 +133,7 @@ export const SignupPage: React.FC = () => {
                 type="password"
                 autoComplete="new-password"
                 value={password}
+                disabled={isSubmitting}
                 onChange={(event) => setPassword(event.target.value)}
                 aria-invalid={!!errors.password}
               />
@@ -148,6 +150,7 @@ export const SignupPage: React.FC = () => {
                 type="password"
                 autoComplete="new-password"
                 value={confirmPassword}
+                disabled={isSubmitting}
                 onChange={(event) => setConfirmPassword(event.target.value)}
                 aria-invalid={!!errors.confirmPassword}
               />
@@ -174,6 +177,7 @@ export const SignupPage: React.FC = () => {
                 inputMode="numeric"
                 autoComplete="one-time-code"
                 value={confirmationCode}
+                disabled={isSubmitting}
                 onChange={(event) => setConfirmationCode(event.target.value)}
                 aria-invalid={!!errors.confirmationCode}
               />

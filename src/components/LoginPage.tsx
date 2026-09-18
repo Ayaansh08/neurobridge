@@ -83,6 +83,7 @@ export const LoginPage: React.FC = () => {
               type="email"
               autoComplete="email"
               value={email}
+              disabled={isSubmitting}
               onChange={(event) => {
                 setEmail(event.target.value);
                 if (errors.email) setErrors((current) => ({ ...current, email: undefined }));
@@ -112,6 +113,7 @@ export const LoginPage: React.FC = () => {
               type="password"
               autoComplete="current-password"
               value={password}
+              disabled={isSubmitting}
               onChange={(event) => {
                 setPassword(event.target.value);
                 if (errors.password) setErrors((current) => ({ ...current, password: undefined }));
