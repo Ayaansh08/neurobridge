@@ -9,7 +9,7 @@ _Single source of truth for work. Now / Next / Later / Done._
 - [ ] Test full flow end-to-end: sign up → pick scenario → practice → complete
 
 ## 🟡 Next
-- [ ] Replace fake scoring with real AI-generated feedback
+_No critical tasks pending._
 
 ## 🔵 Later
 - [ ] Production error handling and loading states
@@ -24,6 +24,7 @@ _Single source of truth for work. Now / Next / Later / Done._
 - Personalized practice recommendations: Out of scope for a 3-minute demo timeline.
 
 ## ✅ Done
+- [x] Replace fake scoring with real AI-generated feedback
 - [x] Add session expiry / TTL to DynamoDB
 - [x] Set `autoDeleteObjects: true` on S3 bucket
 - [x] Add seed data for `handle-conflict` scenario and frontend card

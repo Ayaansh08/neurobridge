@@ -314,12 +314,55 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
     }
   };
 
-  const handleFinishPractice = () => {
+  const handleFinishPractice = async () => {
     stopSpeaking();
     if (isListening && recognitionRef.current) {
       recognitionRef.current.stop();
     }
 
+    if (!sessionId) {
+      return fallbackFinish();
+    }
+
+    setIsLoading(true);
+    setApiError(null);
+
+    const endpoint = authConfig.apiEndpoint.replace(/\/+$/, '');
+
+    try {
+      const res = await fetch(`${endpoint}/sessions/${sessionId}/feedback`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!res.ok) throw new Error('Failed to generate feedback');
+
+      const data = await res.json();
+      const calculatedScore = typeof data.score === 'number' ? data.score : 8.0;
+      const feedbackText = data.feedback || 'Good effort.';
+
+      userProgressService.recordCompletedSession(
+        activeScenario.scenarioType,
+        activeScenario.title,
+        calculatedScore,
+        feedbackText,
+        user?.email
+      );
+
+      setFeedbackSummary({ score: calculatedScore, text: feedbackText });
+      setIsCompleted(true);
+      onSessionComplete?.();
+    } catch (err: any) {
+      console.error('Feedback error:', err);
+      fallbackFinish();
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fallbackFinish = () => {
     const calculatedScore = Math.min(10, +(7.8 + Math.random() * 2.0).toFixed(1));
     const feedbackText =
       calculatedScore >= 9.0

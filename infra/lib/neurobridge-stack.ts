@@ -232,6 +232,45 @@ export class NeuroBridgeStack extends cdk.Stack {
       })
     );
 
+    // 4e. generate-feedback: POST /sessions/{sessionId}/feedback
+    const generateFeedbackHandler = new lambdaNodejs.NodejsFunction(this, 'GenerateFeedbackFunction', {
+      functionName: 'neurobridge-generate-feedback',
+      runtime: lambda.Runtime.NODEJS_20_X,
+      projectRoot: path.join(__dirname, '../../'),
+      entry: path.join(__dirname, '../../backend/lambdas/generate-feedback/index.ts'),
+      handler: 'handler',
+      memorySize: 256,
+      architecture: lambda.Architecture.ARM_64,
+      timeout: cdk.Duration.seconds(30),
+      environment: {
+        SESSIONS_TABLE_NAME: sessionsTable.tableName,
+        BEDROCK_MODEL_ID: 'global.amazon.nova-2-lite-v1:0',
+      },
+      bundling: {
+        minify: true,
+        sourceMap: true,
+        target: 'node20',
+        externalModules: [],
+      },
+    });
+
+    generateFeedbackHandler.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: ['dynamodb:GetItem', 'dynamodb:PutItem'],
+        resources: [sessionsTable.tableArn],
+      })
+    );
+
+    generateFeedbackHandler.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: ['bedrock:InvokeModel'],
+        resources: [
+          `arn:aws:bedrock:${this.region}:${this.account}:inference-profile/global.amazon.nova-2-lite-v1:0`,
+          `arn:aws:bedrock:${this.region}::foundation-model/amazon.nova-2-lite-v1:0`,
+        ],
+      })
+    );
+
     // -------------------------------------------------------------------------
     // 5. API Gateway: REST API
     // Cost minimization: No custom domain, no caching enabled.
@@ -284,6 +323,15 @@ export class NeuroBridgeStack extends cdk.Stack {
     messagesResource.addMethod(
       'POST',
       new apigateway.LambdaIntegration(sendMessageHandler, {
+        proxy: true,
+      })
+    );
+
+    // Route: POST /sessions/{sessionId}/feedback
+    const feedbackResource = singleSessionResource.addResource('feedback');
+    feedbackResource.addMethod(
+      'POST',
+      new apigateway.LambdaIntegration(generateFeedbackHandler, {
         proxy: true,
       })
     );

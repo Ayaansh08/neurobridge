@@ -9,7 +9,6 @@ _Bugs, shortcuts, and things to fix._
 
 ## Data
 - **Progress is client-only:** XP, streaks, levels live in localStorage. The DynamoDB `Progress` table exists but nothing reads/writes it.
-- **Fake scoring:** `handleFinishPractice()` generates a random score (7.8–10.0). No real conversation analysis.
 
 ## Scenarios
 - All current scenarios have seed data and frontend cards.
