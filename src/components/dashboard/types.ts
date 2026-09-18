@@ -21,6 +21,9 @@ export interface ScenarioItem {
   description: string;
   difficulty: DifficultyTag;
   icon: 'interview' | 'conflict' | 'boundary' | 'raise' | 'custom';
+  isFeatured?: boolean;
+  duration?: string;
+  tagline?: string;
 }
 
 /**
@@ -62,6 +65,7 @@ export interface SidebarProps {
   currentTab: string;
   onTabChange: (tab: string) => void;
   userEmail?: string;
+  userName?: string;
   onSignOut: () => void;
 }
 
@@ -72,3 +76,4 @@ export interface DashboardHeaderProps {
   nextLevelXp: number;
   onStartPracticing?: () => void;
 }
+

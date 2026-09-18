@@ -182,13 +182,62 @@ export class NeuroBridgeStack extends cdk.Stack {
       })
     );
 
+    // 4d. send-message: POST /sessions/{sessionId}/messages
+    const sendMessageHandler = new lambdaNodejs.NodejsFunction(this, 'SendMessageFunction', {
+      functionName: 'neurobridge-send-message',
+      runtime: lambda.Runtime.NODEJS_20_X,
+      projectRoot: path.join(__dirname, '../../'),
+      entry: path.join(__dirname, '../../backend/lambdas/send-message/index.ts'),
+      handler: 'handler',
+      memorySize: 256, // Sufficient for Bedrock runtime handling
+      architecture: lambda.Architecture.ARM_64,
+      timeout: cdk.Duration.seconds(30), // Bedrock invocation safety timeout
+      environment: {
+        SESSIONS_TABLE_NAME: sessionsTable.tableName,
+        RULES_TABLE_NAME: rulesTable.tableName,
+        BEDROCK_MODEL_ID: 'global.amazon.nova-2-lite-v1:0',
+      },
+      bundling: {
+        minify: true,
+        sourceMap: true,
+        target: 'node20',
+        externalModules: [],
+      },
+    });
+
+    // Least privilege for send-message:
+    // 1. DynamoDB: GetItem on Sessions & RulesTable, PutItem on Sessions
+    sendMessageHandler.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: ['dynamodb:GetItem', 'dynamodb:PutItem'],
+        resources: [sessionsTable.tableArn],
+      })
+    );
+    sendMessageHandler.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: ['dynamodb:GetItem'],
+        resources: [rulesTable.tableArn],
+      })
+    );
+
+    // 2. Bedrock: InvokeModel scoped to Nova 2 Lite via its ap-south-1 global inference profile.
+    sendMessageHandler.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: ['bedrock:InvokeModel'],
+        resources: [
+          `arn:aws:bedrock:${this.region}:${this.account}:inference-profile/global.amazon.nova-2-lite-v1:0`,
+          `arn:aws:bedrock:${this.region}::foundation-model/amazon.nova-2-lite-v1:0`,
+        ],
+      })
+    );
+
     // -------------------------------------------------------------------------
     // 5. API Gateway: REST API
     // Cost minimization: No custom domain, no caching enabled.
     // -------------------------------------------------------------------------
     const api = new apigateway.RestApi(this, 'NeuroBridgeApi', {
       restApiName: 'NeuroBridge API',
-      description: 'API Gateway for NeuroBridge Phase 1 & 2',
+      description: 'API Gateway for NeuroBridge Phase 1, 2 & 3',
       defaultCorsPreflightOptions: {
         // NOTE: Allow-Origin is set to '*' for dev/hackathon convenience.
         // This should be tightened to the actual frontend origin before production.
@@ -225,6 +274,15 @@ export class NeuroBridgeStack extends cdk.Stack {
     singleSessionResource.addMethod(
       'GET',
       new apigateway.LambdaIntegration(getSessionHandler, {
+        proxy: true,
+      })
+    );
+
+    // Route: POST /sessions/{sessionId}/messages
+    const messagesResource = singleSessionResource.addResource('messages');
+    messagesResource.addMethod(
+      'POST',
+      new apigateway.LambdaIntegration(sendMessageHandler, {
         proxy: true,
       })
     );

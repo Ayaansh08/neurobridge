@@ -5,6 +5,7 @@ import {
   ShieldIcon,
   TrendingUpIcon,
   SparklesIcon,
+  RefreshIcon,
 } from './Icons';
 import type { SessionRowProps } from './types';
 
@@ -12,23 +13,23 @@ export const SessionRow: React.FC<SessionRowProps> = ({ session, onRetry }) => {
   const getScenarioIcon = () => {
     switch (session.scenarioType) {
       case 'job-interview':
-        return <BriefcaseIcon size={16} />;
+        return <BriefcaseIcon size={15} />;
       case 'handle-conflict':
-        return <UsersIcon size={16} />;
+        return <UsersIcon size={15} />;
       case 'set-boundary':
-        return <ShieldIcon size={16} />;
+        return <ShieldIcon size={15} />;
       case 'talk-to-manager':
-        return <TrendingUpIcon size={16} />;
+        return <TrendingUpIcon size={15} />;
       default:
-        return <SparklesIcon size={16} />;
+        return <SparklesIcon size={15} />;
     }
   };
 
-  // Determine score badge color
+  // Determine soft calm tone for score
   const getScoreTheme = (score: number) => {
-    if (score >= 8.5) return 'score-badge--emerald';
-    if (score >= 7.5) return 'score-badge--cyan';
-    return 'score-badge--blue';
+    if (score >= 8.5) return 'session-score--sage';
+    if (score >= 7.5) return 'session-score--clay';
+    return 'session-score--sand';
   };
 
   return (
@@ -51,7 +52,7 @@ export const SessionRow: React.FC<SessionRowProps> = ({ session, onRetry }) => {
       {/* Score / Feedback Column */}
       <td className="session-col-feedback">
         <div className="session-feedback-cell">
-          <span className={`session-score-badge ${getScoreTheme(session.score)}`}>
+          <span className={`session-score-pill ${getScoreTheme(session.score)}`}>
             {session.score.toFixed(1)} / {session.maxScore}
           </span>
           <span className="session-feedback-text">{session.feedback}</span>
@@ -64,10 +65,13 @@ export const SessionRow: React.FC<SessionRowProps> = ({ session, onRetry }) => {
           type="button"
           className="session-retry-btn"
           onClick={() => onRetry?.(session)}
+          title={`Revisit ${session.scenarioTitle}`}
         >
-          Retry
+          <RefreshIcon size={13} className="session-retry-icon" />
+          <span>Practice again</span>
         </button>
       </td>
     </tr>
   );
 };
+

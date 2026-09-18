@@ -40,8 +40,30 @@ function AppRoutes() {
 
   if (path === '/signup') return <SignupPage />;
 
-  if (path === '/app' || isAuthenticated) {
-    return <Dashboard />;
+  if (path.startsWith('/app') || isAuthenticated) {
+    let tab = 'dashboard';
+    let scenarioId: string | undefined = undefined;
+
+    if (path.startsWith('/app/practice/')) {
+      tab = 'practice';
+      scenarioId = path.replace('/app/practice/', '');
+    } else if (path === '/app/practice') {
+      tab = 'practice';
+    } else if (path === '/app/scenarios') {
+      tab = 'scenarios';
+    } else if (path === '/app/progress') {
+      tab = 'progress';
+    } else if (path === '/app/settings') {
+      tab = 'settings';
+    }
+
+    return (
+      <Dashboard
+        initialTab={tab}
+        initialScenarioId={scenarioId}
+        onNavigate={navigate}
+      />
+    );
   }
 
   return <LoginPage />;
@@ -56,3 +78,4 @@ export function App() {
 }
 
 export default App;
+

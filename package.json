@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "seed:build": "esbuild backend/scripts/seed-scenarios.ts --bundle --platform=node --outfile=backend/scripts/seed.cjs",
+    "seed": "npm run seed:build && node backend/scripts/seed.cjs"
   },
   "dependencies": {
     "amazon-cognito-identity-js": "^6.3.20",
@@ -17,6 +19,9 @@
     "react-dom": "^19.2.8"
   },
   "devDependencies": {
+    "@aws-sdk/client-bedrock-runtime": "^3.1135.0",
+    "@aws-sdk/client-dynamodb": "^3.1135.0",
+    "@aws-sdk/lib-dynamodb": "^3.1135.0",
     "@types/node": "^24.13.3",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.7",

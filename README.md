@@ -191,6 +191,28 @@ npm run build
 npm run lint
 ```
 
+## Seeding Scenario Data
+
+Scenario data with prompt templates and opening lines is defined in `backend/scripts/seed-scenarios.ts` (single source of truth).
+
+To compile and execute the seed script against your DynamoDB `RulesTable`:
+
+**PowerShell / Bash:**
+```bash
+npm run seed
+```
+
+**Dry-run only (no DynamoDB writes):**
+```bash
+npm run seed:build
+node backend/scripts/seed.cjs --dry-run
+```
+
+**Windows Command Prompt (cmd.exe):**
+```cmd
+npm run seed
+```
+
 ## Deploying Infrastructure
 
 Infrastructure commands are run from the `infra` directory:

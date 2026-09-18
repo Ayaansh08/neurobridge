@@ -1,84 +1,142 @@
-import React, { useState } from 'react';
-import Aurora from '../Aurora';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Sidebar } from './Sidebar';
 import { DashboardHeader } from './DashboardHeader';
 import { StatCard } from './StatCard';
 import { ScenarioCard } from './ScenarioCard';
 import { SessionRow } from './SessionRow';
-import { mockUserStats, mockScenarios, mockRecentSessions } from './mockData';
-import type { ScenarioItem, SessionSummary } from './types';
+import { PracticeView } from './PracticeView';
+import { ProgressView } from './ProgressView';
+import { SettingsView } from './SettingsView';
+import { defaultScenarios, userProgressService } from '../../services/userProgressService';
+import type { ScenarioItem, SessionSummary, UserStats } from './types';
 import './Dashboard.css';
 
-export const Dashboard: React.FC = () => {
+interface DashboardProps {
+  initialTab?: string;
+  initialScenarioId?: string;
+  onNavigate?: (path: string) => void;
+}
+
+export const Dashboard: React.FC<DashboardProps> = ({
+  initialTab = 'dashboard',
+  initialScenarioId,
+  onNavigate,
+}) => {
   const { user, logout } = useAuth();
-  const [currentTab, setCurrentTab] = useState('dashboard');
+  const [currentTab, setCurrentTab] = useState(initialTab);
+  const [activeScenarioId, setActiveScenarioId] = useState<string | undefined>(initialScenarioId);
   const [activeMessage, setActiveMessage] = useState<string | null>(null);
 
-  // Derive display name from user's email or fallback to 'Krishna' as seen in the mockup
-  const getDisplayName = (email?: string): string => {
-    if (!email) return 'Krishna';
-    const localPart = email.split('@')[0];
-    if (localPart.toLowerCase().includes('krishna')) {
-      return 'Krishna';
+  // Sync tab if initialTab prop changes via browser popstate
+  useEffect(() => {
+    setCurrentTab(initialTab);
+  }, [initialTab]);
+
+  useEffect(() => {
+    if (initialScenarioId) {
+      setActiveScenarioId(initialScenarioId);
     }
-    // Capitalize first letter of email handle
+  }, [initialScenarioId]);
+
+  // Derive display name dynamically from user's email or account object
+  const getDisplayName = (email?: string): string => {
+    if (!email) return 'Guest';
+    const localPart = email.split('@')[0];
     const nameOnly = localPart.split(/[._-]/)[0];
     return nameOnly.charAt(0).toUpperCase() + nameOnly.slice(1);
   };
 
   const displayName = getDisplayName(user?.email);
-  const userEmail = user?.email || 'krishnagoeljpkw@gmail.com';
+  const userEmail = user?.email;
+
+  // Real, persistent user progress and session history state
+  const [userStats, setUserStats] = useState<UserStats>(() =>
+    userProgressService.getUserStats(userEmail)
+  );
+  const [recentSessions, setRecentSessions] = useState<SessionSummary[]>(() =>
+    userProgressService.getUserSessions(userEmail)
+  );
+
+  const refreshUserData = useCallback(() => {
+    setUserStats(userProgressService.getUserStats(userEmail));
+    setRecentSessions(userProgressService.getUserSessions(userEmail));
+  }, [userEmail]);
+
+  useEffect(() => {
+    refreshUserData();
+  }, [refreshUserData]);
+
+  const handleTabNavigate = (tab: string) => {
+    setCurrentTab(tab);
+    const targetPath = tab === 'dashboard' ? '/app' : `/app/${tab}`;
+    if (onNavigate) {
+      onNavigate(targetPath);
+    } else {
+      window.history.pushState({}, '', targetPath);
+      window.dispatchEvent(new PopStateEvent('popstate'));
+    }
+  };
 
   const handleStartPracticing = () => {
-    setActiveMessage('Starting quick practice session with your AI coach...');
-    setTimeout(() => setActiveMessage(null), 3500);
+    setActiveScenarioId('job-interview');
+    handleTabNavigate('practice');
   };
 
   const handleSelectScenario = (scenario: ScenarioItem) => {
-    setActiveMessage(`Launching "${scenario.title}" simulation...`);
-    setTimeout(() => setActiveMessage(null), 3500);
+    setActiveScenarioId(scenario.id);
+    const targetPath = `/app/practice/${scenario.id}`;
+    if (onNavigate) {
+      onNavigate(targetPath);
+    } else {
+      window.history.pushState({}, '', targetPath);
+      window.dispatchEvent(new PopStateEvent('popstate'));
+    }
+    setCurrentTab('practice');
   };
 
   const handleRetrySession = (session: SessionSummary) => {
-    setActiveMessage(`Restarting session: "${session.scenarioTitle}"...`);
-    setTimeout(() => setActiveMessage(null), 3500);
+    setActiveScenarioId(session.scenarioType);
+    setCurrentTab('practice');
+    const targetPath = `/app/practice/${session.scenarioType}`;
+    if (onNavigate) {
+      onNavigate(targetPath);
+    } else {
+      window.history.pushState({}, '', targetPath);
+      window.dispatchEvent(new PopStateEvent('popstate'));
+    }
   };
 
   const handleSignOut = () => {
     logout();
-    window.history.pushState({}, '', '/login');
-    window.dispatchEvent(new PopStateEvent('popstate'));
+    const targetPath = '/login';
+    if (onNavigate) {
+      onNavigate(targetPath);
+    } else {
+      window.history.pushState({}, '', targetPath);
+      window.dispatchEvent(new PopStateEvent('popstate'));
+    }
   };
+
+  // Dynamically map scenarios and select featured item
+  const featuredScenario = defaultScenarios.find((s) => s.isFeatured) || defaultScenarios[0];
+  const secondaryScenarios = defaultScenarios.filter((s) => s.id !== featuredScenario.id);
 
   return (
     <div className="dashboard-layout">
-      {/* Background Aurora */}
-      <div className="dashboard-aurora-wrapper" aria-hidden="true">
-        <Aurora
-          colorStops={['#1D4ED8', '#38BDF8', '#93C5FD']}
-          amplitude={0.85}
-          blend={0.42}
-          speed={0.55}
-        />
-        <div className="dashboard-aurora-overlay" />
-      </div>
+      {/* Subtle organic paper grain texture overlay */}
+      <div className="dashboard-paper-grain" aria-hidden="true" />
 
-      {/* Fixed Left Sidebar */}
+      {/* Fixed Quiet Left Sidebar with real navigation links and active route reflection */}
       <Sidebar
         currentTab={currentTab}
-        onTabChange={(tab) => {
-          setCurrentTab(tab);
-          if (tab !== 'dashboard') {
-            setActiveMessage(`Switched to ${tab.charAt(0).toUpperCase() + tab.slice(1)} view`);
-            setTimeout(() => setActiveMessage(null), 2500);
-          }
-        }}
+        onTabChange={handleTabNavigate}
         userEmail={userEmail}
+        userName={displayName}
         onSignOut={handleSignOut}
       />
 
-      {/* Main Content Area */}
+      {/* Main Low-Stimulation Content Area */}
       <main className="dashboard-main">
         <div className="dashboard-container">
           {/* Notification Toast if an action is triggered */}
@@ -89,106 +147,197 @@ export const Dashboard: React.FC = () => {
             </div>
           )}
 
-          {/* Top Header */}
-          <DashboardHeader
-            userDisplayName={displayName}
-            level={mockUserStats.currentLevel}
-            currentXp={mockUserStats.currentLevelXp}
-            nextLevelXp={mockUserStats.nextLevelXp}
-            onStartPracticing={handleStartPracticing}
-          />
-
-          {/* 3-Card Stats Row */}
-          <section className="dashboard-stats-row" aria-label="Key Statistics">
-            <StatCard
-              title="Sessions Completed"
-              value={mockUserStats.sessionsCompleted}
-              subtitle={mockUserStats.weeklySessionsChange}
-              iconType="sessions"
+          {/* Sub-Views for Navigation Tabs */}
+          {currentTab === 'practice' && (
+            <PracticeView
+              initialScenarioId={activeScenarioId}
+              onSessionComplete={() => {
+                refreshUserData();
+                setActiveMessage('Session completed! XP and stats updated.');
+                setTimeout(() => setActiveMessage(null), 3500);
+              }}
+              onNavigate={handleTabNavigate}
             />
-            <StatCard
-              title="Current Streak"
-              value={mockUserStats.currentStreak}
-              subtitle={mockUserStats.streakStatus}
-              iconType="streak"
-            />
-            <StatCard
-              title="XP Points"
-              value={mockUserStats.totalXp.toLocaleString()}
-              subtitle={mockUserStats.weeklyXpChange}
-              iconType="xp"
-            />
-          </section>
+          )}
 
-          {/* Choose a Scenario Grid */}
-          <section className="dashboard-section" aria-labelledby="scenarios-title">
-            <div className="dashboard-section-header">
-              <h2 id="scenarios-title" className="dashboard-section-title">
-                Choose a Scenario
-              </h2>
-              <p className="dashboard-section-subtitle">
-                Pick a scenario and start practicing with your AI coach.
-              </p>
-            </div>
-
-            <div className="dashboard-scenarios-grid">
-              {mockScenarios.map((scenario) => (
-                <ScenarioCard
-                  key={scenario.id}
-                  scenario={scenario}
-                  onSelect={handleSelectScenario}
-                />
-              ))}
-            </div>
-          </section>
-
-          {/* Recent Sessions Table */}
-          <section className="dashboard-section" aria-labelledby="sessions-title">
-            <div className="dashboard-section-header dashboard-section-header--split">
-              <div>
-                <h2 id="sessions-title" className="dashboard-section-title">
-                  Recent Sessions
+          {currentTab === 'scenarios' && (
+            <section className="dashboard-section" aria-labelledby="scenarios-all-title">
+              <div className="dashboard-section-header">
+                <span className="dashboard-section-eyebrow">CURATED CONVERSATIONS</span>
+                <h2 id="scenarios-all-title" className="dashboard-section-title">
+                  All Practice Scenarios
                 </h2>
                 <p className="dashboard-section-subtitle">
-                  Your latest practice sessions and feedback.
+                  Choose any scenario to practice low-stimulation rehearsals with your AI coach.
                 </p>
               </div>
-              <button
-                type="button"
-                className="dashboard-view-all-btn"
-                onClick={() => {
-                  setActiveMessage('Loading all historical sessions...');
-                  setTimeout(() => setActiveMessage(null), 2500);
-                }}
-              >
-                View all →
-              </button>
-            </div>
 
-            <div className="dashboard-table-card">
-              <div className="dashboard-table-scroll">
-                <table className="sessions-table">
-                  <thead>
-                    <tr>
-                      <th scope="col" className="th-scenario">Scenario</th>
-                      <th scope="col" className="th-date">Date</th>
-                      <th scope="col" className="th-feedback">Score / Feedback</th>
-                      <th scope="col" className="th-action">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {mockRecentSessions.map((session) => (
-                      <SessionRow
-                        key={session.sessionId}
-                        session={session}
-                        onRetry={handleRetrySession}
+              <div className="dashboard-scenarios-asymmetric">
+                <div className="scenarios-featured-col">
+                  <ScenarioCard
+                    scenario={featuredScenario}
+                    onSelect={handleSelectScenario}
+                  />
+                </div>
+                <div className="scenarios-compact-col">
+                  {secondaryScenarios.map((scenario) => (
+                    <ScenarioCard
+                      key={scenario.id}
+                      scenario={scenario}
+                      onSelect={handleSelectScenario}
+                    />
+                  ))}
+                </div>
+              </div>
+            </section>
+          )}
+
+          {currentTab === 'progress' && (
+            <ProgressView
+              stats={userStats}
+              sessions={recentSessions}
+              onNavigate={handleTabNavigate}
+              onRetrySession={handleRetrySession}
+            />
+          )}
+
+          {currentTab === 'settings' && <SettingsView />}
+
+          {/* Main Dashboard Overview */}
+          {(currentTab === 'dashboard' || currentTab === '') && (
+            <>
+              {/* Top Header */}
+              <DashboardHeader
+                userDisplayName={displayName}
+                level={userStats.currentLevel}
+                currentXp={userStats.currentLevelXp}
+                nextLevelXp={userStats.nextLevelXp}
+                onStartPracticing={handleStartPracticing}
+              />
+
+              {/* Asymmetric Stats Section: 1 Bespoke Streak Card + 2 Compact Stat Chips */}
+              <section className="dashboard-stats-asymmetric" aria-label="Personal Momentum and Stats">
+                <StatCard
+                  title="Current Streak"
+                  value={userStats.currentStreak}
+                  subtitle={userStats.streakStatus}
+                  iconType="streak"
+                />
+                <div className="dashboard-stats-chips-column">
+                  <StatCard
+                    title="Sessions Completed"
+                    value={userStats.sessionsCompleted}
+                    subtitle={userStats.weeklySessionsChange}
+                    iconType="sessions"
+                  />
+                  <StatCard
+                    title="Practice XP Points"
+                    value={userStats.totalXp.toLocaleString()}
+                    subtitle={userStats.weeklyXpChange}
+                    iconType="xp"
+                  />
+                </div>
+              </section>
+
+              {/* Choose a Scenario Section: Asymmetric 2-Column Editorial Layout */}
+              <section className="dashboard-section" aria-labelledby="scenarios-title">
+                <div className="dashboard-section-header">
+                  <span className="dashboard-section-eyebrow">REHEARSAL PROMPTS</span>
+                  <h2 id="scenarios-title" className="dashboard-section-title">
+                    Choose a Scenario
+                  </h2>
+                  <p className="dashboard-section-subtitle">
+                    Select a real-world scenario to practice with real-time, low-stimulation feedback.
+                  </p>
+                </div>
+
+                <div className="dashboard-scenarios-asymmetric">
+                  {/* Featured / Recommended Large Editorial Card */}
+                  <div className="scenarios-featured-col">
+                    <ScenarioCard
+                      scenario={featuredScenario}
+                      onSelect={handleSelectScenario}
+                    />
+                  </div>
+
+                  {/* Compact Scenario List */}
+                  <div className="scenarios-compact-col">
+                    {secondaryScenarios.map((scenario) => (
+                      <ScenarioCard
+                        key={scenario.id}
+                        scenario={scenario}
+                        onSelect={handleSelectScenario}
                       />
                     ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </section>
+                  </div>
+                </div>
+              </section>
+
+              {/* Recent Sessions List with Empty State Support */}
+              <section className="dashboard-section" aria-labelledby="sessions-title">
+                <div className="dashboard-section-header dashboard-section-header--split">
+                  <div>
+                    <span className="dashboard-section-eyebrow">LOGBOOK</span>
+                    <h2 id="sessions-title" className="dashboard-section-title">
+                      Recent Sessions
+                    </h2>
+                    <p className="dashboard-section-subtitle">
+                      Review your recent conversational pacing, assertions, and key takeaways.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    className="dashboard-view-all-btn"
+                    onClick={() => handleTabNavigate('progress')}
+                  >
+                    <span>View all sessions</span>
+                    <span className="view-all-arrow">→</span>
+                  </button>
+                </div>
+
+                <div className="dashboard-table-card">
+                  {recentSessions.length === 0 ? (
+                    <div className="dashboard-empty-state">
+                      <div className="empty-state-dot" />
+                      <h4 className="empty-state-title">No sessions recorded yet</h4>
+                      <p className="empty-state-desc">
+                        Your practice feedback and conversational scores will appear here after your first rehearsal.
+                      </p>
+                      <button
+                        type="button"
+                        className="dashboard-cta-btn"
+                        onClick={handleStartPracticing}
+                      >
+                        <span>Start Your First Practice</span>
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="dashboard-table-scroll">
+                      <table className="sessions-table">
+                        <thead>
+                          <tr>
+                            <th scope="col" className="th-scenario">Scenario</th>
+                            <th scope="col" className="th-date">Date</th>
+                            <th scope="col" className="th-feedback">Score & Feedback</th>
+                            <th scope="col" className="th-action">Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {recentSessions.slice(0, 5).map((session) => (
+                            <SessionRow
+                              key={session.sessionId}
+                              session={session}
+                              onRetry={handleRetrySession}
+                            />
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
+              </section>
+            </>
+          )}
         </div>
       </main>
     </div>
@@ -196,3 +345,5 @@ export const Dashboard: React.FC = () => {
 };
 
 export default Dashboard;
+
+
