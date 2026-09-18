@@ -98,6 +98,7 @@ export const handler: APIGatewayProxyHandler = async (event): Promise<APIGateway
 
     const now = new Date().toISOString();
     const sessionId = randomUUID();
+    const expiresAt = Math.floor(Date.now() / 1000) + (24 * 60 * 60); // 24 hours TTL
 
     const newSession: SessionRecord = {
       sessionId,
@@ -114,6 +115,7 @@ export const handler: APIGatewayProxyHandler = async (event): Promise<APIGateway
       status: 'active',
       createdAt: now,
       updatedAt: now,
+      expiresAt,
     };
 
     // Save new session to Sessions table

@@ -57,6 +57,7 @@ export class NeuroBridgeStack extends cdk.Stack {
         name: 'sessionId',
         type: dynamodb.AttributeType.STRING,
       },
+      timeToLiveAttribute: 'expiresAt',
       billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
       removalPolicy: cdk.RemovalPolicy.DESTROY, // Phase 1 dev choice
     });
@@ -94,7 +95,7 @@ export class NeuroBridgeStack extends cdk.Stack {
         },
       ],
       removalPolicy: cdk.RemovalPolicy.DESTROY, // Phase 1 dev choice
-      autoDeleteObjects: false, // No objects uploaded in Phase 1
+      autoDeleteObjects: true,
     });
 
     // -------------------------------------------------------------------------

@@ -3,6 +3,7 @@
 _Newest first. What changed and why._
 
 ## 2026-09-18 — Triage and mockData cleanup
+- Optional infrastructure cleanup: Added DynamoDB TTL (`expiresAt`) to Sessions table and enabled `autoDeleteObjects` on S3 bucket.
 - Added `handle-conflict` scenario (Riley the stressed co-founder) to seed data and frontend dashboard.
 - Polished login/signup UI: disabled inputs during network requests and verified loading spinner functionality.
 - Removed orphaned `mockData.ts` and its exports to clear tech debt.

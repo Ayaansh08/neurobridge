@@ -36,4 +36,5 @@ export interface SessionRecord {
   status: 'active' | 'completed';
   createdAt: string;
   updatedAt: string;
+  expiresAt?: number;
 }
