@@ -13,8 +13,7 @@ _Bugs, shortcuts, and things to fix._
 - **No session expiry:** DynamoDB sessions persist forever until stack is destroyed.
 
 ## Scenarios
-- **2 scenarios have no seed data:** `handle-conflict` and `group-conversation` are valid types in code but have no rules in `seed-scenarios.ts` and no frontend cards. Creating a session with them falls back to a generic opening.
-- **`mockData.ts` is orphaned:** Dashboard now uses real `userProgressService` + API calls. Mock file is unused.
+- **1 scenario has no seed data:** `handle-conflict` is a valid type in code but has no rules in `seed-scenarios.ts` and no frontend card. Creating a session with it falls back to a generic opening. (`group-conversation` was cut for demo).
 
 ## Frontend
 - **`VITE_API_GATEWAY_URL` must be set:** Practice view shows an error banner if missing. No graceful offline/demo mode.

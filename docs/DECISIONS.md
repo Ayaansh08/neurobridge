@@ -10,4 +10,5 @@ _Date — decision — why — what else we considered._
 | Pre-docs | RemovalPolicy.DESTROY on all stateful resources | Hackathon stack — easy cleanup, no orphaned resources | RETAIN (safer but leaves resources after `cdk destroy`) |
 | Pre-docs | CORS open to all origins (`*`) | Dev speed during hackathon | Restrict to localhost + deployed domain (do before production) |
 | Pre-docs | XP/progress in localStorage, not DynamoDB | Fast to build, no extra API calls | DynamoDB Progress table exists but unused — migrate later |
-| 2026-09-18 | Keep `handle-conflict` and `group-conversation` as planned | Will implement seed data and frontend cards when time allows | Remove from types (cleaner but loses planned work) |
+| 2026-09-18 | Keep `handle-conflict` | Will implement seed data and frontend card to complete standard scenarios | Remove from types |
+| 2026-09-18 | Cut complex scope for demo | Removed Cognito authorizer, Google OAuth, Progress DB, etc., to focus entirely on demo completion by Sept 20 | Build all planned features (too slow) |

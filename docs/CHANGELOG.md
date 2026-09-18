@@ -2,6 +2,10 @@
 
 _Newest first. What changed and why._
 
+## 2026-09-18 — Triage and mockData cleanup
+- Removed orphaned `mockData.ts` and its exports to clear tech debt.
+- Updated docs to reflect triage cuts for Sept 20 demo (cut group-conversation, Cognito authorizer, Google OAuth, Progress DB, etc.).
+
 ## 2026-09-18 — Documentation setup
 - Created `docs/` folder with project docs, architecture, API contracts, setup guide, and agent rules.
 - Added `AGENTS.md` with standing rules for AI pair-programming.

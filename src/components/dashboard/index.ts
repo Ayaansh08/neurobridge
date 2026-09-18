@@ -5,4 +5,3 @@ export { StatCard } from './StatCard';
 export { ScenarioCard } from './ScenarioCard';
 export { SessionRow } from './SessionRow';
 export * from './types';
-export * from './mockData';
