@@ -3,6 +3,7 @@
 _Newest first. What changed and why._
 
 ## 2026-09-18 — Triage and mockData cleanup
+- Added `handle-conflict` scenario (Riley the stressed co-founder) to seed data and frontend dashboard.
 - Polished login/signup UI: disabled inputs during network requests and verified loading spinner functionality.
 - Removed orphaned `mockData.ts` and its exports to clear tech debt.
 - Updated docs to reflect triage cuts for Sept 20 demo (cut group-conversation, Cognito authorizer, Google OAuth, Progress DB, etc.).

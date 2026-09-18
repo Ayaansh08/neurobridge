@@ -13,7 +13,7 @@ _Bugs, shortcuts, and things to fix._
 - **No session expiry:** DynamoDB sessions persist forever until stack is destroyed.
 
 ## Scenarios
-- **1 scenario has no seed data:** `handle-conflict` is a valid type in code but has no rules in `seed-scenarios.ts` and no frontend card. Creating a session with it falls back to a generic opening. (`group-conversation` was cut for demo).
+- All current scenarios have seed data and frontend cards.
 
 ## Frontend
 - **`VITE_API_GATEWAY_URL` must be set:** Practice view shows an error banner if missing. No graceful offline/demo mode.

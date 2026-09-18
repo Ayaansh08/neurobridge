@@ -72,6 +72,15 @@ export const defaultScenarios: ScenarioItem[] = [
     icon: 'custom',
     duration: '8 min',
   },
+  {
+    id: 'handle-conflict',
+    scenarioType: 'handle-conflict',
+    title: 'Handle Product Conflict',
+    description: 'Navigate a tense disagreement over product direction with stressed startup co-founder Riley.',
+    difficulty: 'Advanced',
+    icon: 'conflict',
+    duration: '15 min',
+  },
 ];
 
 export const userProgressService = {
