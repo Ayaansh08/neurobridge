@@ -1,15 +1,77 @@
 :root {
-  --color-bg: #070A12;
-  --color-text-primary: #F5F7EF;
-  --color-text-muted: #A9B7C0;
-  --color-accent: #5CC8FF;
-  --color-accent-hover: #93DDFF;
-  --color-border: #24384F;
-  --color-input-bg: rgba(13, 21, 32, 0.78);
-  --color-error: #FF8C8C;
+  /* ─── Quiet Night Design System Tokens ───────────────────────── */
+  --nb-bg-paper: #16151A;               /* Warm near-black charcoal */
+  --nb-surface-card: #1F1E24;          /* Standard surface card */
+  --nb-surface-card-hover: #26252C;    /* Subtle card hover */
+  --nb-surface-elevated: #232228;      /* Elevated surface / sidebar */
+  --nb-surface-subtle: #2A2930;        /* Subtle input / button fill */
+  --nb-surface-sidebar: #232228;       /* Sidebar background */
+  
+  --nb-border-subtle: #2E2D34;         /* 1px subtle border */
+  --nb-border-hover: #3E3D46;          /* Hover border */
+  --nb-border-medium: #3A3942;         /* Medium card border */
+  --nb-border-active: #A85C8C;         /* Active state mauve border */
+  
+  --nb-ink-primary: #EDEAE4;           /* Warm off-white */
+  --nb-ink-secondary: #8F8C94;         /* Desaturated secondary ink */
+  --nb-ink-muted: #737078;             /* Tertiary/timestamp ink */
+  --nb-ink-eyebrow: #9B98A1;           /* Eyebrow uppercase tracking */
+  --nb-ink-inverse: #16151A;           /* Dark text on light accent */
 
-  --font-serif: 'Fraunces', 'Newsreader', Georgia, serif;
-  --font-sans: 'Public Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  /* ─── Single Accent: Muted Plum / Mauve ─────────────────────── */
+  --nb-accent: #A85C8C;
+  --nb-accent-hover: #984E7D;
+  --nb-accent-surface: #2E2029;
+  --nb-accent-border: #4A2E40;
+
+  /* ─── Semantic Tones (Sage for Success, Sand for Caution, Coral for Error) ── */
+  --nb-emerald: #6E9B7D;
+  --nb-emerald-surface: #1F2E27;
+  --nb-emerald-border: #2D4439;
+
+  --nb-sand-text: #C9A15C;
+  --nb-sand-surface: #2E271A;
+  --nb-sand-border: #443825;
+
+  --nb-plum-text: #A85C8C;
+  --nb-plum-surface: #2E2029;
+  --nb-plum-border: #4A2E40;
+
+  --nb-error: #D96B6B;
+  --nb-error-surface: #2E1F1F;
+  --nb-error-border: #4D2626;
+
+  /* ─── Typography ─── */
+  --font-serif-display: 'Fraunces', 'Lora', Georgia, serif;
+  --font-serif: var(--font-serif-display);
+  --font-display: var(--font-serif-display);
+  --font-body: 'Public Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-sans: var(--font-body);
+
+  /* ─── Scale, Radii & Shadows ─── */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
+  --radius-full: 9999px;
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.6);
+
+  --motion-fast: 120ms ease;
+  --motion-base: 200ms ease;
+  --motion-smooth: 300ms cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* ─── Aliases for Legacy CSS ─── */
+  --color-bg: var(--nb-bg-paper);
+  --color-text-primary: var(--nb-ink-primary);
+  --color-text-muted: var(--nb-ink-secondary);
+  --color-accent: var(--nb-accent);
+  --color-accent-hover: var(--nb-accent-hover);
+  --color-border: var(--nb-border-subtle);
+  --color-input-bg: var(--nb-surface-subtle);
+  --color-error: var(--nb-error);
 
   box-sizing: border-box;
 }
@@ -23,9 +85,11 @@ html, body {
   padding: 0;
   width: 100%;
   min-height: 100%;
-  background-color: var(--color-bg);
-  color: var(--color-text-primary);
-  font-family: var(--font-sans);
+  background-color: var(--nb-bg-paper);
+  color: var(--nb-ink-primary);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -39,11 +103,47 @@ html, body {
   flex-direction: column;
 }
 
-button, input, a {
+button, input, textarea, select, a {
   font-family: inherit;
 }
 
 a {
   color: inherit;
   text-decoration: none;
+}
+
+/* ─── Comfort Mode Data Attribute Hooks ───────────────────────── */
+html[data-text-size="large"] {
+  font-size: 18px;
+}
+
+html[data-contrast="high"] {
+  --nb-bg-paper: #0D0C0F;
+  --nb-surface-card: #18171C;
+  --nb-surface-card-hover: #222128;
+  --nb-surface-elevated: #1C1B21;
+  --nb-surface-subtle: #24232B;
+  --nb-border-subtle: #4D4B57;
+  --nb-border-medium: #62606E;
+  --nb-ink-primary: #FFFFFF;
+  --nb-ink-secondary: #B8B5C0;
+  --nb-accent: #C775AA;
+}
+
+html[data-motion="reduced"] *,
+html[data-motion="reduced"] *::before,
+html[data-motion="reduced"] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

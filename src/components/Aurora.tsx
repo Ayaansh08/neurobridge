@@ -98,7 +98,7 @@ void main() {
   float height = snoise(vec2(uv.x * 2.0 + uTime * 0.1, uTime * 0.25)) * 0.5 * uAmplitude;
   height = exp(height);
   height = (uv.y * 2.0 - height + 0.2);
-  float intensity = 0.6 * height;
+  float intensity = 0.55 * height;
 
   float midPoint = 0.20;
   float auroraAlpha = smoothstep(midPoint - uBlend * 0.5, midPoint + uBlend * 0.5, intensity);
@@ -129,13 +129,12 @@ interface AuroraProps {
 
 export default function Aurora(props: AuroraProps) {
   const {
-    colorStops = ['#1D4ED8', '#38BDF8', '#93C5FD'],
-    amplitude = 1,
-    blend = 0.5,
+    colorStops = ['#18121D', '#3D1C34', '#7A3D63'],
+    amplitude = 0.65,
+    blend = 0.45,
     lightMode = false,
   } = props;
   const propsRef = useRef<AuroraProps>(props);
-
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -146,23 +145,33 @@ export default function Aurora(props: AuroraProps) {
     const container = containerRef.current;
     if (!container) return;
 
-    const renderer = new Renderer({
-      alpha: true,
-      premultipliedAlpha: true,
-      antialias: true,
-    });
+    let renderer: Renderer | undefined;
+    let program: Program | undefined;
+    let animationId = 0;
+
+    try {
+      renderer = new Renderer({
+        alpha: true,
+        premultipliedAlpha: true,
+        antialias: false,
+        dpr: Math.min(window.devicePixelRatio || 1, 1.5),
+      });
+    } catch {
+      return;
+    }
+
     const gl = renderer.gl;
+    if (!gl) return;
+
     gl.clearColor(0, 0, 0, 0);
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
     gl.canvas.style.backgroundColor = 'transparent';
 
-    let program: Program | undefined;
-
     function resize() {
-      if (!container) return;
-      const width = container.offsetWidth;
-      const height = container.offsetHeight;
+      if (!container || !renderer) return;
+      const width = container.offsetWidth || window.innerWidth;
+      const height = container.offsetHeight || window.innerHeight;
       renderer.setSize(width, height);
       if (program) {
         program.uniforms.uResolution.value = [width, height];
@@ -181,6 +190,9 @@ export default function Aurora(props: AuroraProps) {
       return [color.r, color.g, color.b];
     });
 
+    const initialWidth = container.offsetWidth || window.innerWidth;
+    const initialHeight = container.offsetHeight || window.innerHeight;
+
     program = new Program(gl, {
       vertex: VERT,
       fragment: FRAG,
@@ -188,7 +200,7 @@ export default function Aurora(props: AuroraProps) {
         uTime: { value: 0 },
         uAmplitude: { value: amplitude },
         uColorStops: { value: colorStopsArray },
-        uResolution: { value: [container.offsetWidth, container.offsetHeight] },
+        uResolution: { value: [initialWidth, initialHeight] },
         uBlend: { value: blend },
         uLightMode: { value: lightMode ? 1 : 0 },
       },
@@ -197,32 +209,43 @@ export default function Aurora(props: AuroraProps) {
     const mesh = new Mesh(gl, { geometry, program });
     container.appendChild(gl.canvas);
 
-    let animationId = 0;
-    const update = (timestamp: number) => {
+    const isReducedMotion =
+      (typeof window !== 'undefined' &&
+        window.matchMedia &&
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches) ||
+      document.documentElement.getAttribute('data-motion') === 'reduced';
+
+    if (isReducedMotion) {
+      program.uniforms.uTime.value = 0.5;
+      renderer.render({ scene: mesh });
+      resize();
+    } else {
+      const update = (timestamp: number) => {
+        animationId = requestAnimationFrame(update);
+        const { time = timestamp * 0.005, speed = 0.35 } = propsRef.current;
+
+        if (program && renderer) {
+          program.uniforms.uTime.value = time * speed * 0.1;
+          program.uniforms.uAmplitude.value = propsRef.current.amplitude ?? amplitude;
+          program.uniforms.uBlend.value = propsRef.current.blend ?? blend;
+          program.uniforms.uLightMode.value = (propsRef.current.lightMode ?? lightMode) ? 1 : 0;
+          const stops = propsRef.current.colorStops ?? colorStops;
+          program.uniforms.uColorStops.value = stops.map((hex) => {
+            const color = new Color(hex);
+            return [color.r, color.g, color.b];
+          });
+          renderer.render({ scene: mesh });
+        }
+      };
+
       animationId = requestAnimationFrame(update);
-      const { time = timestamp * 0.01, speed = 1 } = propsRef.current;
-
-      if (program) {
-        program.uniforms.uTime.value = time * speed * 0.1;
-        program.uniforms.uAmplitude.value = propsRef.current.amplitude ?? amplitude;
-        program.uniforms.uBlend.value = propsRef.current.blend ?? blend;
-        program.uniforms.uLightMode.value = (propsRef.current.lightMode ?? lightMode) ? 1 : 0;
-        const stops = propsRef.current.colorStops ?? colorStops;
-        program.uniforms.uColorStops.value = stops.map((hex) => {
-          const color = new Color(hex);
-          return [color.r, color.g, color.b];
-        });
-        renderer.render({ scene: mesh });
-      }
-    };
-
-    animationId = requestAnimationFrame(update);
-    resize();
+      resize();
+    }
 
     return () => {
-      cancelAnimationFrame(animationId);
+      if (animationId) cancelAnimationFrame(animationId);
       window.removeEventListener('resize', resize);
-      if (gl.canvas.parentNode === container) {
+      if (gl.canvas && gl.canvas.parentNode === container) {
         container.removeChild(gl.canvas);
       }
       gl.getExtension('WEBGL_lose_context')?.loseContext();
