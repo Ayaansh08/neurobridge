@@ -1,3 +1,13 @@
+﻿## [Unreleased]
+### Fixed
+- Recomputed Streak and XP tracking using strict local calendar dates.
+- Re-wired SettingsView to link to Comfort modal properly.
+### Removed
+- Removed fake AI Response Length and Coaching Tone settings that were non-functional.
+### Changed
+- Dashboard stats section is now hidden until a user finishes their first session.
+- Re-routed last session row in Dashboard to link directly to Progress view.
+
 # Changelog
 
 ## 2026-09-19 - "Quiet Night" UI Redesign for Hackathon UI Prize Track
@@ -5,7 +15,7 @@
 - **Auth Screens**: Unified `LoginPage.tsx` and `SignupPage.tsx` into subtle card layouts with logo mark, wordmark, accessible password show/hide toggle, live password rule feedback (8+ chars, numbers, uppercase), 6-digit confirmation step, and required medical disclaimer footer ("NeuroBridge is a practice tool, not a clinical therapy service").
 - **Aurora Background**: Shifted WebGL Aurora to warm muted plum tones (`['#18121D', '#3D1C34', '#7A3D63']`) with reduced-motion fallbacks and WebGL context safety.
 - **Practice View**:
-  - Persona header badge with character initials, character name & professional role (e.g., "Taylor · Engineering Hiring Manager").
+  - Persona header badge with character initials, character name & professional role (e.g., "Taylor Â· Engineering Hiring Manager").
   - "Your Goal" focus prompt and collapsible "Scenario Tips & Guidance" accordion.
   - Scenario switcher modal replacing raw `<select>` dropdown.
   - Conversational pacing delay (relaxed 1.2s, moderate 0.6s, instant 0s) integrated into message delivery with "{Character} is thinking..." indicator.
@@ -45,7 +55,7 @@
 
 _Newest first. What changed and why._
 
-## 2026-09-18 â€” Triage and mockData cleanup
+## 2026-09-18 Ã¢â‚¬â€ Triage and mockData cleanup
 - Implemented real AI feedback using Bedrock. Added `generate-feedback` Lambda and wired `PracticeView.tsx` to call it, replacing fake Math.random() scoring.
 - Optional infrastructure cleanup: Added DynamoDB TTL (`expiresAt`) to Sessions table and enabled `autoDeleteObjects` on S3 bucket.
 - Added `handle-conflict` scenario (Riley the stressed co-founder) to seed data and frontend dashboard.
@@ -53,7 +63,7 @@ _Newest first. What changed and why._
 - Removed orphaned `mockData.ts` and its exports to clear tech debt.
 - Updated docs to reflect triage cuts for Sept 20 demo (cut group-conversation, Cognito authorizer, Google OAuth, Progress DB, etc.).
 
-## 2026-09-18 â€” Documentation setup
+## 2026-09-18 Ã¢â‚¬â€ Documentation setup
 - Created `docs/` folder with project docs, architecture, API contracts, setup guide, and agent rules.
 - Added `AGENTS.md` with standing rules for AI pair-programming.
 
@@ -65,5 +75,6 @@ _Newest first. What changed and why._
 - Voice input/output via browser Web Speech API.
 - Scenario seed data for 7 of 9 scenario types.
 - XP/progress tracking in localStorage.
+
 
 
