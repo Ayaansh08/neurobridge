@@ -20,6 +20,8 @@
 # Changelog
 
 ## 2026-09-19 - "Quiet Night" UI Redesign
+- **Landing Page**: Completely revamped the public landing page to use the Quiet Night theme (charcoal, plum, sage). Removed all legacy blue/navy colors. Updated copy to reflect the app's true mechanics (no pressure practice, structured feedback). Added a 3D tilted preview card on desktop to demonstrate the AI conversation interface.
+- **Auth Screens**: Unified logo with app sidebar, improved accessibility (aria-pressed), styled browser autofill to retain dark theme, added optional display name to signup, and removed non-functional forgot password links.
 - **Auth Screens**: Removed disabled Google button for cleaner UI.
 - **Distinctive UI**: Added soft gradient tokens, unified card border radii to a single scale, and implemented a CSS 3D tilted hero card on the desktop dashboard. for Hackathon UI Prize Track
 - **Design System**: Established "Quiet Night" foundation with warm charcoal `#16151A`, subtle elevated surfaces `#1F1E24`/`#232228`, jewel-tone plum `#A85C8C`, sage green `#6E9B7D`/`#79D193`, and editorial `Fraunces` serif headings.
