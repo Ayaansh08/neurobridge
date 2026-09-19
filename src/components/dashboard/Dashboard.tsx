@@ -48,7 +48,14 @@ export const Dashboard: React.FC<DashboardProps> = ({
   useEffect(() => {
     const handleNameChange = () => setCustomDisplayName(userProgressService.getDisplayName(user?.email));
     window.addEventListener('nb_displayname_changed', handleNameChange);
-    return () => window.removeEventListener('nb_displayname_changed', handleNameChange);
+    
+    const handleOpenComfort = () => setIsComfortOpen(true);
+    window.addEventListener('nb_open_comfort', handleOpenComfort);
+
+    return () => {
+      window.removeEventListener('nb_displayname_changed', handleNameChange);
+      window.removeEventListener('nb_open_comfort', handleOpenComfort);
+    };
   }, [user?.email]);
 
   const getDisplayName = (email?: string): string => {
@@ -237,28 +244,37 @@ export const Dashboard: React.FC<DashboardProps> = ({
               />
 
               {/* Asymmetric Stats Section: 1 Bespoke Streak Card + 2 Compact Stat Chips */}
-              <section className="dashboard-stats-asymmetric" aria-label="Personal Momentum and Stats">
-                <StatCard
-                  title="Current Streak"
-                  value={userStats.currentStreak}
-                  subtitle={userStats.streakStatus}
-                  iconType="streak"
-                />
-                <div className="dashboard-stats-chips-column">
+              {userStats.sessionsCompleted > 0 ? (
+                <section className="dashboard-stats-asymmetric" aria-label="Personal Momentum and Stats">
                   <StatCard
-                    title="Sessions Completed"
-                    value={userStats.sessionsCompleted}
-                    subtitle={userStats.weeklySessionsChange}
-                    iconType="sessions"
+                    title="Current Streak"
+                    value={userStats.currentStreak}
+                    subtitle={userStats.streakStatus}
+                    iconType="streak"
                   />
-                  <StatCard
-                    title="Practice XP Points"
-                    value={userStats.totalXp.toLocaleString()}
-                    subtitle={userStats.weeklyXpChange}
-                    iconType="xp"
-                  />
-                </div>
-              </section>
+                  <div className="dashboard-stats-chips-column">
+                    <StatCard
+                      title="Sessions Completed"
+                      value={userStats.sessionsCompleted}
+                      subtitle=""
+                      iconType="sessions"
+                    />
+                    <StatCard
+                      title="Practice XP Points"
+                      value={userStats.totalXp.toLocaleString()}
+                      subtitle={userStats.weeklyXpChange}
+                      iconType="xp"
+                    />
+                  </div>
+                </section>
+              ) : (
+                <section className="dashboard-welcome-firstrun" style={{ padding: '24px', background: 'var(--nb-charcoal-subtle)', borderRadius: '16px', marginBottom: '40px', border: '1px solid var(--nb-charcoal-border)' }}>
+                  <h3 style={{ margin: '0 0 8px 0', fontSize: '1.25rem', color: 'var(--nb-sage)', fontWeight: 500, fontFamily: 'Fraunces, serif' }}>Ready when you are</h3>
+                  <p style={{ margin: 0, color: 'var(--nb-gray-400)', fontSize: '0.95rem', lineHeight: 1.5 }}>
+                    Your practice stats and momentum streak will appear here once you complete your first rehearsal. Pick a scenario below to start.
+                  </p>
+                </section>
+              )}
 
               {/* Choose a Scenario Section: Asymmetric 2-Column Editorial Layout */}
               <section className="dashboard-section" aria-labelledby="scenarios-title">
@@ -331,12 +347,13 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         </thead>
                         <tbody>
                           {recentSessions.slice(0, 1).map((session) => (
-                            <SessionRow
-                              key={session.sessionId}
-                              session={session}
-                              onRetry={handleRetrySession}
-                            />
-                          ))}
+                          <SessionRow
+                            key={session.sessionId}
+                            session={session}
+                            onRetry={handleRetrySession}
+                            onRowClick={() => handleTabNavigate('progress')}
+                          />
+                        ))}
                         </tbody>
                       </table>
                     </div>

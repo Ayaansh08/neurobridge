@@ -9,7 +9,7 @@ import {
 } from './Icons';
 import type { SessionRowProps } from './types';
 
-export const SessionRow: React.FC<SessionRowProps> = ({ session, onRetry }) => {
+export const SessionRow: React.FC<SessionRowProps> = ({ session, onRetry, onRowClick }) => {
 
   const computeScore = (dimensions: any) => {
     if (!dimensions) return 0;
@@ -39,7 +39,7 @@ export const SessionRow: React.FC<SessionRowProps> = ({ session, onRetry }) => {
   };
 
   return (
-    <tr className="session-table-row">
+    <tr className="session-table-row" onClick={onRowClick} style={onRowClick ? { cursor: "pointer" } : {}}>
       {/* Scenario Column */}
       <td className="session-col-scenario">
         <div className="session-scenario-cell">
