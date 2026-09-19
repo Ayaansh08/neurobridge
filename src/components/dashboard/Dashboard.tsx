@@ -8,6 +8,7 @@ import { SessionRow } from './SessionRow';
 import { PracticeView } from './PracticeView';
 import { ProgressView } from './ProgressView';
 import { SettingsView } from './SettingsView';
+import { ComfortPanel } from './ComfortPanel';
 import { defaultScenarios, userProgressService } from '../../services/userProgressService';
 import type { ScenarioItem, SessionSummary, UserStats } from './types';
 import './Dashboard.css';
@@ -27,6 +28,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
   const [currentTab, setCurrentTab] = useState(initialTab);
   const [activeScenarioId, setActiveScenarioId] = useState<string | undefined>(initialScenarioId);
   const [activeMessage, setActiveMessage] = useState<string | null>(null);
+  const [isComfortOpen, setIsComfortOpen] = useState(false);
 
   // Sync tab if initialTab prop changes via browser popstate
   useEffect(() => {
@@ -134,6 +136,13 @@ export const Dashboard: React.FC<DashboardProps> = ({
         userEmail={userEmail}
         userName={displayName}
         onSignOut={handleSignOut}
+        onOpenComfort={() => setIsComfortOpen(true)}
+      />
+
+      {/* Sensory Comfort Modal */}
+      <ComfortPanel
+        isOpen={isComfortOpen}
+        onClose={() => setIsComfortOpen(false)}
       />
 
       {/* Main Low-Stimulation Content Area */}
@@ -213,6 +222,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 currentXp={userStats.currentLevelXp}
                 nextLevelXp={userStats.nextLevelXp}
                 onStartPracticing={handleStartPracticing}
+                onOpenComfort={() => setIsComfortOpen(true)}
               />
 
               {/* Asymmetric Stats Section: 1 Bespoke Streak Card + 2 Compact Stat Chips */}

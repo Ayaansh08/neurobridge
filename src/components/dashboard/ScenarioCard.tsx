@@ -1,29 +1,41 @@
 import React from 'react';
 import {
   BriefcaseIcon,
-  UsersIcon,
   ShieldIcon,
   TrendingUpIcon,
   SparklesIcon,
   ArrowRightIcon,
+  GraduationCapIcon,
+  PhoneIcon,
+  UserPlusIcon,
+  HelpCircleIcon,
+  ZapIcon,
 } from './Icons';
 import type { ScenarioCardProps } from './types';
 
 export const ScenarioCard: React.FC<ScenarioCardProps> = ({ scenario, onSelect }) => {
   const renderIcon = () => {
+    const iconSize = scenario.isFeatured ? 22 : 18;
     switch (scenario.icon) {
       case 'interview':
-        return <BriefcaseIcon size={scenario.isFeatured ? 22 : 18} />;
-      case 'conflict':
-        return <UsersIcon size={scenario.isFeatured ? 22 : 18} />;
-      case 'boundary':
-        return <ShieldIcon size={scenario.isFeatured ? 22 : 18} />;
+        return <BriefcaseIcon size={iconSize} />;
       case 'raise':
-        return <TrendingUpIcon size={scenario.isFeatured ? 22 : 18} />;
+        return <TrendingUpIcon size={iconSize} />;
+      case 'professor':
+        return <GraduationCapIcon size={iconSize} />;
+      case 'boundary':
+        return <ShieldIcon size={iconSize} />;
+      case 'help':
+        return <HelpCircleIcon size={iconSize} />;
+      case 'phone':
+        return <PhoneIcon size={iconSize} />;
+      case 'meet':
+        return <UserPlusIcon size={iconSize} />;
+      case 'conflict':
+        return <ZapIcon size={iconSize} />;
       case 'custom':
-        return <SparklesIcon size={scenario.isFeatured ? 22 : 18} />;
       default:
-        return <SparklesIcon size={scenario.isFeatured ? 22 : 18} />;
+        return <SparklesIcon size={iconSize} />;
     }
   };
 

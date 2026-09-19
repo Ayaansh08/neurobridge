@@ -33,7 +33,7 @@ export const defaultScenarios: ScenarioItem[] = [
     title: 'Talk to Professor',
     description: 'Discuss coursework, extensions, and research during office hours with Professor Vance.',
     difficulty: 'Intermediate',
-    icon: 'custom',
+    icon: 'professor',
     duration: '8 min',
   },
   {
@@ -51,7 +51,7 @@ export const defaultScenarios: ScenarioItem[] = [
     title: 'Asking for Help',
     description: 'Reach out to senior engineer Jordan to unblock a complex technical issue respectfully.',
     difficulty: 'Beginner',
-    icon: 'conflict',
+    icon: 'help',
     duration: '10 min',
   },
   {
@@ -60,7 +60,7 @@ export const defaultScenarios: ScenarioItem[] = [
     title: 'Clinic Phone Call',
     description: 'Schedule appointments and navigate real-time calendar constraints with receptionist Morgan.',
     difficulty: 'Beginner',
-    icon: 'custom',
+    icon: 'phone',
     duration: '6 min',
   },
   {
@@ -69,7 +69,7 @@ export const defaultScenarios: ScenarioItem[] = [
     title: 'Meet Someone New',
     description: 'Start a casual, low-pressure conversation at a tech meetup with attendee Alex.',
     difficulty: 'Beginner',
-    icon: 'custom',
+    icon: 'meet',
     duration: '8 min',
   },
   {
