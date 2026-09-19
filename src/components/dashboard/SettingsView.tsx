@@ -129,54 +129,21 @@ export const SettingsView: React.FC = () => {
             ))}
           </div>
         </div>
-
-        {/* AI Response Style & Length */}
-        <div className="settings-card">
-          <div className="settings-card-header">
-            <h3 className="settings-card-title">AI Response Length</h3>
-            <p className="settings-card-desc">Set how concise or elaborate practice partners should be.</p>
+          <div className="settings-card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div>
+              <h3 className="settings-card-title">Sensory Comfort & Accessibility</h3>
+              <p className="settings-card-desc">Toggles for readability, motion reduction, and high contrast.</p>
+            </div>
+            <button 
+              type="button" 
+              className="dashboard-btn dashboard-btn--secondary"
+              onClick={() => {
+                window.dispatchEvent(new Event('nb_open_comfort'));
+              }}
+            >
+              Open Comfort Settings
+            </button>
           </div>
-          <div className="settings-options-row">
-            {[
-              { id: 'concise' as const, label: 'Concise (1â€“2 sentences)' },
-              { id: 'balanced' as const, label: 'Balanced (Standard dialogue)' },
-              { id: 'detailed' as const, label: 'Detailed (Expanded roleplay)' },
-            ].map((item) => (
-              <button
-                key={item.id}
-                type="button"
-                className={`settings-option-btn ${settings.responseLength === item.id ? 'settings-option-btn--active' : ''}`}
-                onClick={() => handleUpdate('responseLength', item.id)}
-              >
-                {item.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Coaching Tone */}
-        <div className="settings-card">
-          <div className="settings-card-header">
-            <h3 className="settings-card-title">Coaching Tone</h3>
-            <p className="settings-card-desc">Choose the feedback style that makes you feel most supported.</p>
-          </div>
-          <div className="settings-options-row">
-            {[
-              { id: 'gentle' as const, label: 'Gentle & Encouraging' },
-              { id: 'direct' as const, label: 'Direct & Candid' },
-              { id: 'structured' as const, label: 'Structured & Analytical' },
-            ].map((item) => (
-              <button
-                key={item.id}
-                type="button"
-                className={`settings-option-btn ${settings.coachingTone === item.id ? 'settings-option-btn--active' : ''}`}
-                onClick={() => handleUpdate('coachingTone', item.id)}
-              >
-                {item.label}
-              </button>
-            ))}
-          </div>
-        </div>
 
         {/* Footer actions */}
         <div className="settings-footer-actions">

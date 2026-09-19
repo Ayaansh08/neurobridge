@@ -1,7 +1,5 @@
 export interface UserSettings {
   pacingSpeed: 'relaxed' | 'moderate' | 'fast';
-  responseLength: 'concise' | 'balanced' | 'detailed';
-  coachingTone: 'gentle' | 'direct' | 'structured';
   textSize: 'regular' | 'large';
   contrast: 'standard' | 'high';
   motion: 'standard' | 'reduced';
@@ -11,8 +9,6 @@ const SETTINGS_STORAGE_KEY = 'neurobridge_settings';
 
 export const DEFAULT_SETTINGS: UserSettings = {
   pacingSpeed: 'relaxed',
-  responseLength: 'concise',
-  coachingTone: 'gentle',
   textSize: 'regular',
   contrast: 'standard',
   motion: 'standard',
