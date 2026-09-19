@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { userProgressService } from '../../services/userProgressService';
 import { settingsService, type UserSettings, DEFAULT_SETTINGS } from '../../services/settingsService';
-import { CheckCircleIcon, RefreshIcon, ComfortSlidersIcon } from './Icons';
+import { CheckCircleIcon, RefreshIcon } from './Icons';
 
 export const SettingsView: React.FC = () => {
   const { user } = useAuth();
@@ -138,7 +138,7 @@ export const SettingsView: React.FC = () => {
           </div>
           <div className="settings-options-row">
             {[
-              { id: 'concise' as const, label: 'Concise (1–2 sentences)' },
+              { id: 'concise' as const, label: 'Concise (1â€“2 sentences)' },
               { id: 'balanced' as const, label: 'Balanced (Standard dialogue)' },
               { id: 'detailed' as const, label: 'Detailed (Expanded roleplay)' },
             ].map((item) => (
@@ -178,93 +178,6 @@ export const SettingsView: React.FC = () => {
           </div>
         </div>
 
-        {/* Comfort & Accessibility Controls */}
-        <div className="settings-card">
-          <div className="settings-card-header">
-            <div className="settings-card-title-row">
-              <ComfortSlidersIcon size={18} className="settings-card-icon" />
-              <h3 className="settings-card-title">Sensory Comfort & Accessibility</h3>
-            </div>
-            <p className="settings-card-desc">
-              Instant toggles for low-stimulation readability, motion reduction, and high contrast.
-            </p>
-          </div>
-
-          <div className="settings-comfort-grid">
-            {/* Text Size */}
-            <div className="settings-comfort-item">
-              <div className="settings-comfort-info">
-                <span className="settings-comfort-label">Text Size</span>
-                <span className="settings-comfort-sub">Adjust typography scale across the app</span>
-              </div>
-              <div className="settings-pill-toggle">
-                <button
-                  type="button"
-                  className={`settings-pill-btn ${settings.textSize === 'regular' ? 'settings-pill-btn--active' : ''}`}
-                  onClick={() => handleUpdate('textSize', 'regular')}
-                >
-                  Standard
-                </button>
-                <button
-                  type="button"
-                  className={`settings-pill-btn ${settings.textSize === 'large' ? 'settings-pill-btn--active' : ''}`}
-                  onClick={() => handleUpdate('textSize', 'large')}
-                >
-                  Large (18px)
-                </button>
-              </div>
-            </div>
-
-            {/* High Contrast */}
-            <div className="settings-comfort-item">
-              <div className="settings-comfort-info">
-                <span className="settings-comfort-label">Contrast Mode</span>
-                <span className="settings-comfort-sub">Enhanced borders and vivid white ink</span>
-              </div>
-              <div className="settings-pill-toggle">
-                <button
-                  type="button"
-                  className={`settings-pill-btn ${settings.contrast === 'standard' ? 'settings-pill-btn--active' : ''}`}
-                  onClick={() => handleUpdate('contrast', 'standard')}
-                >
-                  Standard
-                </button>
-                <button
-                  type="button"
-                  className={`settings-pill-btn ${settings.contrast === 'high' ? 'settings-pill-btn--active' : ''}`}
-                  onClick={() => handleUpdate('contrast', 'high')}
-                >
-                  High Contrast
-                </button>
-              </div>
-            </div>
-
-            {/* Motion */}
-            <div className="settings-comfort-item">
-              <div className="settings-comfort-info">
-                <span className="settings-comfort-label">Motion & Animations</span>
-                <span className="settings-comfort-sub">Disable WebGL waves and smooth transitions</span>
-              </div>
-              <div className="settings-pill-toggle">
-                <button
-                  type="button"
-                  className={`settings-pill-btn ${settings.motion === 'standard' ? 'settings-pill-btn--active' : ''}`}
-                  onClick={() => handleUpdate('motion', 'standard')}
-                >
-                  Standard
-                </button>
-                <button
-                  type="button"
-                  className={`settings-pill-btn ${settings.motion === 'reduced' ? 'settings-pill-btn--active' : ''}`}
-                  onClick={() => handleUpdate('motion', 'reduced')}
-                >
-                  Reduced Motion
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
         {/* Footer actions */}
         <div className="settings-footer-actions">
           <button
@@ -287,3 +200,4 @@ export const SettingsView: React.FC = () => {
     </div>
   );
 };
+

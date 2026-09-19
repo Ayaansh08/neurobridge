@@ -173,9 +173,9 @@ export const userProgressService = {
     // Fixed session completion reward (+100 XP) — non-judgmental progression
     const xpGained = 100;
     const newTotalXp = currentStats.totalXp + xpGained;
-    let newLevel = currentStats.currentLevel;
-    let newCurrentXp = currentStats.currentLevelXp + xpGained;
-    let newNextLevelXp = currentStats.nextLevelXp;
+    let newLevel = currentStats.currentLevel || 1;
+    let newCurrentXp = (currentStats.currentLevelXp || 0) + xpGained;
+    let newNextLevelXp = currentStats.nextLevelXp || 250;
 
     while (newCurrentXp >= newNextLevelXp) {
       newCurrentXp -= newNextLevelXp;
@@ -183,14 +183,37 @@ export const userProgressService = {
       newNextLevelXp = Math.round(newNextLevelXp * 1.5);
     }
 
+    const todayStr = new Date().toDateString();
+    const lastActiveKey = userEmail ? `nb_last_active_${userEmail}` : 'nb_last_active';
+    const xpTodayKey = userEmail ? `nb_xp_today_${userEmail}` : 'nb_xp_today';
+    
+    const lastActiveDate = localStorage.getItem(lastActiveKey);
+    let streak = currentStats.currentStreak || 0;
+    let xpToday = parseInt(localStorage.getItem(xpTodayKey) || '0', 10);
+
+    if (lastActiveDate !== todayStr) {
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      if (lastActiveDate === yesterday.toDateString()) {
+        streak += 1;
+      } else {
+        streak = 1;
+      }
+      xpToday = 0;
+      localStorage.setItem(lastActiveKey, todayStr);
+    }
+
+    xpToday += xpGained;
+    localStorage.setItem(xpTodayKey, xpToday.toString());
+
     const updatedStats: UserStats = {
       ...currentStats,
-      sessionsCompleted: currentStats.sessionsCompleted + 1,
-      weeklySessionsChange: `+${currentStats.sessionsCompleted + 1} total`,
-      currentStreak: Math.max(1, currentStats.currentStreak + 1),
-      streakStatus: 'Momentum active · keep it going',
+      sessionsCompleted: (currentStats.sessionsCompleted || 0) + 1,
+      weeklySessionsChange: `+${(currentStats.sessionsCompleted || 0) + 1} total`,
+      currentStreak: streak,
+      streakStatus: streak > 1 ? 'Momentum active — keep it going' : 'Ready to build momentum',
       totalXp: newTotalXp,
-      weeklyXpChange: `+${xpGained} XP today`,
+      weeklyXpChange: `+${xpToday} XP today`,
       currentLevel: newLevel,
       currentLevelXp: newCurrentXp,
       nextLevelXp: newNextLevelXp,

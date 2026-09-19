@@ -48,7 +48,8 @@ function AppRoutes() {
       tab = 'practice';
       scenarioId = path.replace('/app/practice/', '');
     } else if (path === '/app/practice') {
-      tab = 'practice';
+      tab = 'scenarios';
+      setTimeout(() => navigate('/app/scenarios'), 0);
     } else if (path === '/app/scenarios') {
       tab = 'scenarios';
     } else if (path === '/app/progress') {

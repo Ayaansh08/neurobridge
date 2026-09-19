@@ -272,25 +272,11 @@ export const Dashboard: React.FC<DashboardProps> = ({
                   </p>
                 </div>
 
-                <div className="dashboard-scenarios-asymmetric">
-                  {/* Featured / Recommended Large Editorial Card */}
-                  <div className="scenarios-featured-col">
-                    <ScenarioCard
-                      scenario={featuredScenario}
-                      onSelect={handleSelectScenario}
-                    />
-                  </div>
-
-                  {/* Compact Scenario List */}
-                  <div className="scenarios-compact-col">
-                    {secondaryScenarios.map((scenario) => (
-                      <ScenarioCard
-                        key={scenario.id}
-                        scenario={scenario}
-                        onSelect={handleSelectScenario}
-                      />
-                    ))}
-                  </div>
+                <div style={{ width: '100%', maxWidth: '100%' }}>
+                  <ScenarioCard
+                    scenario={featuredScenario}
+                    onSelect={handleSelectScenario}
+                  />
                 </div>
               </section>
 
@@ -344,7 +330,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                           </tr>
                         </thead>
                         <tbody>
-                          {recentSessions.slice(0, 5).map((session) => (
+                          {recentSessions.slice(0, 1).map((session) => (
                             <SessionRow
                               key={session.sessionId}
                               session={session}
