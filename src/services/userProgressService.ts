@@ -95,6 +95,80 @@ export const userProgressService = {
     localStorage.setItem(key, name);
   },
 
+  recomputeStatsFromSessions(sessions: SessionSummary[], currentStats: UserStats): UserStats {
+    if (!sessions || sessions.length === 0) {
+      return { ...currentStats, sessionsCompleted: 0, currentStreak: 0, streakStatus: 'Ready to begin your practice', totalXp: 0, weeklyXpChange: '+0 XP today', currentLevel: 1, currentLevelXp: 0, nextLevelXp: 250 };
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    let xpToday = 0;
+    const uniqueDays: number[] = [];
+
+    // Sessions are mostly recent first, but sort to be safe
+    const sorted = [...sessions].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+    sorted.forEach((session) => {
+      const d = new Date(session.createdAt);
+      d.setHours(0, 0, 0, 0);
+      const time = d.getTime();
+
+      if (time === today.getTime()) {
+        xpToday += 100; // Fixed 100 XP per session
+      }
+
+      if (uniqueDays.length === 0 || uniqueDays[uniqueDays.length - 1] !== time) {
+        uniqueDays.push(time);
+      }
+    });
+
+    let streak = 0;
+    if (uniqueDays.length > 0) {
+      const firstDayTime = uniqueDays[0];
+      const diffDaysFromToday = Math.round((today.getTime() - firstDayTime) / (1000 * 60 * 60 * 24));
+      
+      if (diffDaysFromToday <= 1) {
+        streak = 1;
+        let currentCheck = firstDayTime;
+        for (let i = 1; i < uniqueDays.length; i++) {
+          const nextDayTime = uniqueDays[i];
+          const diff = Math.round((currentCheck - nextDayTime) / (1000 * 60 * 60 * 24));
+          if (diff === 1) {
+            streak++;
+            currentCheck = nextDayTime;
+          } else {
+            break;
+          }
+        }
+      }
+    }
+
+    const totalXp = sorted.length * 100;
+    let level = 1;
+    let currentXp = totalXp;
+    let nextLevelXp = 250;
+
+    while (currentXp >= nextLevelXp) {
+      currentXp -= nextLevelXp;
+      level += 1;
+      nextLevelXp = Math.round(nextLevelXp * 1.5);
+    }
+
+    return {
+      ...currentStats,
+      sessionsCompleted: sorted.length,
+      weeklySessionsChange: `+${sorted.length} total`,
+      currentStreak: streak,
+      streakStatus: streak > 1 ? 'Momentum active — keep it going' : (streak === 1 ? 'Streak started — come back tomorrow' : 'Ready to build momentum'),
+      totalXp: totalXp,
+      weeklyXpChange: `+${xpToday} XP today`,
+      currentLevel: level,
+      currentLevelXp: currentXp,
+      nextLevelXp: nextLevelXp,
+    };
+  },
+
   getUserStats(userEmail?: string): UserStats {
     const key = userEmail ? `${STORAGE_KEYS.STATS}_${userEmail}` : STORAGE_KEYS.STATS;
     const raw = localStorage.getItem(key);

@@ -78,6 +78,7 @@ export interface ScenarioCardProps {
 export interface SessionRowProps {
   session: SessionSummary;
   onRetry?: (session: SessionSummary) => void;
+  onRowClick?: () => void;
 }
 
 export interface SidebarProps {
