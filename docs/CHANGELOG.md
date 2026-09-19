@@ -19,7 +19,9 @@
 
 # Changelog
 
-## 2026-09-19 - "Quiet Night" UI Redesign for Hackathon UI Prize Track
+## 2026-09-19 - "Quiet Night" UI Redesign
+- **Auth Screens**: Removed disabled Google button for cleaner UI.
+- **Distinctive UI**: Added soft gradient tokens, unified card border radii to a single scale, and implemented a CSS 3D tilted hero card on the desktop dashboard. for Hackathon UI Prize Track
 - **Design System**: Established "Quiet Night" foundation with warm charcoal `#16151A`, subtle elevated surfaces `#1F1E24`/`#232228`, jewel-tone plum `#A85C8C`, sage green `#6E9B7D`/`#79D193`, and editorial `Fraunces` serif headings.
 - **Auth Screens**: Unified `LoginPage.tsx` and `SignupPage.tsx` into subtle card layouts with logo mark, wordmark, accessible password show/hide toggle, live password rule feedback (8+ chars, numbers, uppercase), 6-digit confirmation step, and required medical disclaimer footer ("NeuroBridge is a practice tool, not a clinical therapy service").
 - **Aurora Background**: Shifted WebGL Aurora to warm muted plum tones (`['#18121D', '#3D1C34', '#7A3D63']`) with reduced-motion fallbacks and WebGL context safety.
@@ -84,6 +86,7 @@ _Newest first. What changed and why._
 - Voice input/output via browser Web Speech API.
 - Scenario seed data for 7 of 9 scenario types.
 - XP/progress tracking in localStorage.
+
 
 
 
