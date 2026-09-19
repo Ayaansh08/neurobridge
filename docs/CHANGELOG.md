@@ -1,5 +1,9 @@
-# Changelog
+﻿# Changelog
 
+## 2026-09-19 - Merged origin/main and fixed frontend TS errors
+- Merged latest updates from origin/main.
+- Fixed TypeScript build errors in `ProgressView.tsx` and `userProgressService.ts` caused by the transition from numeric scores to qualitative feedback evaluations.
+- Rebuilt `seed.cjs` auto-generated file.
 ## 2026-09-19 - Multi-dimension qualitative feedback redesign
 - Replaced numeric score ("Score: X/10") with a 4-dimension qualitative breakdown (`clarity`, `tone`, `responsiveness`, `composure` with ratings `strong` | `developing` | `needs practice` and transcript-specific notes) in `backend/lambdas/generate-feedback/index.ts`.
 - Structured feedback into "What Went Well", "Practice Focus", and a warm "Encouragement" closing sentence.
@@ -20,7 +24,7 @@
 
 _Newest first. What changed and why._
 
-## 2026-09-18 — Triage and mockData cleanup
+## 2026-09-18 â€” Triage and mockData cleanup
 - Implemented real AI feedback using Bedrock. Added `generate-feedback` Lambda and wired `PracticeView.tsx` to call it, replacing fake Math.random() scoring.
 - Optional infrastructure cleanup: Added DynamoDB TTL (`expiresAt`) to Sessions table and enabled `autoDeleteObjects` on S3 bucket.
 - Added `handle-conflict` scenario (Riley the stressed co-founder) to seed data and frontend dashboard.
@@ -28,7 +32,7 @@ _Newest first. What changed and why._
 - Removed orphaned `mockData.ts` and its exports to clear tech debt.
 - Updated docs to reflect triage cuts for Sept 20 demo (cut group-conversation, Cognito authorizer, Google OAuth, Progress DB, etc.).
 
-## 2026-09-18 — Documentation setup
+## 2026-09-18 â€” Documentation setup
 - Created `docs/` folder with project docs, architecture, API contracts, setup guide, and agent rules.
 - Added `AGENTS.md` with standing rules for AI pair-programming.
 
@@ -40,3 +44,4 @@ _Newest first. What changed and why._
 - Voice input/output via browser Web Speech API.
 - Scenario seed data for 7 of 9 scenario types.
 - XP/progress tracking in localStorage.
+
