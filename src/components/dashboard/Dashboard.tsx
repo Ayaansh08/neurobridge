@@ -32,7 +32,13 @@ export const Dashboard: React.FC<DashboardProps> = ({
   const [activeScenarioId, setActiveScenarioId] = useState<string | undefined>(initialScenarioId);
   const [activeMessage, setActiveMessage] = useState<string | null>(null);
   const [isComfortOpen, setIsComfortOpen] = useState(false);
-  const hasActiveSession = !!restoredSessionData || !!localStorage.getItem(`nb_active_session_${user?.email || 'guest'}`);
+  const [hasActiveSession, setHasActiveSession] = useState(!!restoredSessionData || !!localStorage.getItem(`nb_active_session_${user?.email || 'guest'}`));
+  useEffect(() => {
+    const checkSession = () => setHasActiveSession(!!restoredSessionData || !!localStorage.getItem(`nb_active_session_${user?.email || 'guest'}`));
+    window.addEventListener('storage', checkSession);
+    const interval = setInterval(checkSession, 1000);
+    return () => { window.removeEventListener('storage', checkSession); clearInterval(interval); };
+  }, [user?.email, restoredSessionData]);
 
   // Sync tab if initialTab prop changes via browser popstate
   useEffect(() => {
@@ -169,6 +175,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
         userName={displayName}
         onSignOut={handleSignOut}
         onOpenComfort={() => setIsComfortOpen(true)}
+        hasActiveSession={hasActiveSession}
       />
 
       {/* Sensory Comfort Modal */}
