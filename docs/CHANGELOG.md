@@ -1,4 +1,13 @@
 ﻿## [Unreleased]
+### Added
+- Practice sessions are now auto-saved and restored upon browser refresh, preventing data loss.
+- Sessions finished or disconnected correctly reset the active session state.
+### Changed
+- Redesigned the Scenarios 'Recommended' card into a compact top banner with a primary call to action.
+- Adjusted Scenarios list layout to display as a balanced two-column grid on wide screens.
+- Sidebar 'Practice' tab now only appears when an active session is in progress.
+
+## [Unreleased]
 ### Fixed
 - Recomputed Streak and XP tracking using strict local calendar dates.
 - Re-wired SettingsView to link to Comfort modal properly.
@@ -75,6 +84,7 @@ _Newest first. What changed and why._
 - Voice input/output via browser Web Speech API.
 - Scenario seed data for 7 of 9 scenario types.
 - XP/progress tracking in localStorage.
+
 
 
 
