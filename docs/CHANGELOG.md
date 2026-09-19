@@ -1,4 +1,20 @@
-﻿# Changelog
+# Changelog
+
+## 2026-09-19 - "Quiet Night" UI Redesign for Hackathon UI Prize Track
+- **Design System**: Established "Quiet Night" foundation with warm charcoal `#16151A`, subtle elevated surfaces `#1F1E24`/`#232228`, jewel-tone plum `#A85C8C`, sage green `#6E9B7D`/`#79D193`, and editorial `Fraunces` serif headings.
+- **Auth Screens**: Unified `LoginPage.tsx` and `SignupPage.tsx` into subtle card layouts with logo mark, wordmark, accessible password show/hide toggle, live password rule feedback (8+ chars, numbers, uppercase), 6-digit confirmation step, and required medical disclaimer footer ("NeuroBridge is a practice tool, not a clinical therapy service").
+- **Aurora Background**: Shifted WebGL Aurora to warm muted plum tones (`['#18121D', '#3D1C34', '#7A3D63']`) with reduced-motion fallbacks and WebGL context safety.
+- **Practice View**:
+  - Persona header badge with character initials, character name & professional role (e.g., "Taylor · Engineering Hiring Manager").
+  - "Your Goal" focus prompt and collapsible "Scenario Tips & Guidance" accordion.
+  - Scenario switcher modal replacing raw `<select>` dropdown.
+  - Conversational pacing delay (relaxed 1.2s, moderate 0.6s, instant 0s) integrated into message delivery with "{Character} is thinking..." indicator.
+  - Session turn counter ("Turn X of 30").
+  - Confirmation dialog on "Finish and get feedback" to prevent accidental early session termination.
+  - Complete Rehearsal Insights breakdown with 4 dimension cards (Clarity, Tone, Responsiveness, Composure) and executive summary.
+- **Sensory Comfort Mode**: Added floating/sidebar-accessible `ComfortPanel` and `settingsService` with persistent `data-text-size="large"`, `data-contrast="high"`, and `data-motion="reduced"` attributes applied directly to `<html>`.
+- **Scenario Cards & Icons**: Hand-drawn bespoke SVG icons for all 7 scenarios with 2-line title wrapping and WCAG AA compliant difficulty badge contrast.
+- **Settings View**: Redesigned with grouped cards, conversational pacing explanations, AI response length toggles, coaching tone options, accessibility toggles, and default reset.
 
 ## 2026-09-19 - Add Executive Summary to feedback
 - Added a summary field (max 50 words) to FeedbackEvaluation to provide a concise, high-level overview of the user's practice session.

@@ -1,4 +1,4 @@
-﻿# Tasks
+# Tasks
 
 _Single source of truth for work. Now / Next / Later / Done._
 
@@ -22,7 +22,14 @@ _No critical tasks pending._
 - Persist auth tokens (refresh token flow): Hard reload drops state but isn't required for the golden path.
 - Personalized practice recommendations: Out of scope for a 3-minute demo timeline.
 
-## âœ… Done
+## ✅ Done
+- [x] Quiet Night UI redesign for First Commit "Best UI" prize track (charcoal foundation `#16151A`, muted plum `#A85C8C`, `Fraunces` serif headings)
+- [x] Auth screens visual unification (subtle cards, password toggle, live password rule feedback, confirmation code step, disclaimer footer)
+- [x] Practice view redesign (persona avatar badge, role metadata, goal banner, collapsible tips accordion, scenario switcher modal)
+- [x] Conversational pacing delay integration (relaxed 1.2s, moderate 0.6s, instant 0s) with thinking indicator
+- [x] Sensory Comfort mode panel & persistent data hooks (text size, high contrast, reduced motion)
+- [x] Hand-drawn bespoke icons for all 7 rehearsal scenarios with WCAG AA compliant difficulty pills
+- [x] Settings view rewrite with structured cards, pacing descriptions, comfort controls, and reset options
 - [x] Multi-dimension qualitative coaching feedback (Clarity, Tone, Responsiveness, Composure) & UI redesign
 - [x] Fix generate-feedback Bedrock IAM permissions and Converse API upgrade
 - [x] Strengthen scenario system prompts (anti-genericization, hostile handling, few-shot examples) & reduce Bedrock temperature to 0.4
