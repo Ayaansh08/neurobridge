@@ -14,11 +14,12 @@ _What's in the stack, what it costs, and how to clean up._
 |----------|-----------|---------|
 | Cognito User Pool | `NeuroBridgeUsers` | User authentication |
 | Cognito App Client | `NeuroBridgeAppClient` | Frontend auth (no client secret, USER_PASSWORD_AUTH) |
-| API Gateway REST API | `NeuroBridge API` | 4 routes: ping, sessions CRUD, messages |
+| API Gateway REST API | `NeuroBridge API` | 5 routes: ping, sessions CRUD, messages, feedback |
 | Lambda: ping | `neurobridge-ping` | Health check (128MB, ARM64) |
 | Lambda: create-session | `neurobridge-create-session` | Creates sessions (128MB, ARM64) |
 | Lambda: get-session | `neurobridge-get-session` | Fetches sessions (128MB, ARM64) |
 | Lambda: send-message | `neurobridge-send-message` | AI roleplay via Bedrock (256MB, ARM64) |
+| Lambda: generate-feedback | `neurobridge-generate-feedback` | Multi-dimension AI coaching analysis via Bedrock (256MB, ARM64) |
 | DynamoDB: Sessions | Partition key: `sessionId` | Practice session data |
 | DynamoDB: RulesTable | Partition key: `scenarioType` | AI prompts and difficulty levels |
 | DynamoDB: Progress | Partition key: `userId` | User progress (not yet used) |
@@ -42,6 +43,10 @@ All resources are **serverless / pay-per-request**. At hackathon usage levels:
 - **Cognito:** Free for first 50,000 monthly active users.
 - **S3:** Empty bucket, $0.
 - **Total estimate for hackathon:** Under $1.
+
+## Bedrock Access Notes
+- `neurobridge-send-message` and `neurobridge-generate-feedback` use `BEDROCK_MODEL_ID=global.amazon.nova-2-lite-v1:0`.
+- Their IAM policies allow `bedrock:InvokeModel` on the Nova 2 Lite inference profile, regional foundation model ARN, and the global foundation model ARN (`arn:aws:bedrock:::foundation-model/amazon.nova-2-lite-v1:0`) required for runtime authorization.
 
 ## Cleanup
 ```bash

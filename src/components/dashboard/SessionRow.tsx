@@ -25,13 +25,6 @@ export const SessionRow: React.FC<SessionRowProps> = ({ session, onRetry }) => {
     }
   };
 
-  // Determine soft calm tone for score
-  const getScoreTheme = (score: number) => {
-    if (score >= 8.5) return 'session-score--sage';
-    if (score >= 7.5) return 'session-score--clay';
-    return 'session-score--sand';
-  };
-
   return (
     <tr className="session-table-row">
       {/* Scenario Column */}
@@ -49,11 +42,11 @@ export const SessionRow: React.FC<SessionRowProps> = ({ session, onRetry }) => {
         <span className="session-date-text">{session.formattedDate}</span>
       </td>
 
-      {/* Score / Feedback Column */}
+      {/* Feedback Column */}
       <td className="session-col-feedback">
         <div className="session-feedback-cell">
-          <span className={`session-score-pill ${getScoreTheme(session.score)}`}>
-            {session.score.toFixed(1)} / {session.maxScore}
+          <span className="session-score-pill session-score--sage">
+            Completed
           </span>
           <span className="session-feedback-text">{session.feedback}</span>
         </div>

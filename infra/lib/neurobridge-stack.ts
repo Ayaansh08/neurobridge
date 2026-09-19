@@ -228,6 +228,7 @@ export class NeuroBridgeStack extends cdk.Stack {
         resources: [
           `arn:aws:bedrock:${this.region}:${this.account}:inference-profile/global.amazon.nova-2-lite-v1:0`,
           `arn:aws:bedrock:${this.region}::foundation-model/amazon.nova-2-lite-v1:0`,
+          'arn:aws:bedrock:::foundation-model/amazon.nova-2-lite-v1:0',
         ],
       })
     );
@@ -267,6 +268,7 @@ export class NeuroBridgeStack extends cdk.Stack {
         resources: [
           `arn:aws:bedrock:${this.region}:${this.account}:inference-profile/global.amazon.nova-2-lite-v1:0`,
           `arn:aws:bedrock:${this.region}::foundation-model/amazon.nova-2-lite-v1:0`,
+          'arn:aws:bedrock:::foundation-model/amazon.nova-2-lite-v1:0',
         ],
       })
     );

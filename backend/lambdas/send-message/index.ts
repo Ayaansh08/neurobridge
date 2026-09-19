@@ -126,7 +126,7 @@ export const handler: APIGatewayProxyHandler = async (event): Promise<APIGateway
     );
 
     const rule = ruleRes.Item as RuleRecord | undefined;
-    let systemPrompt = 'You are a realistic roleplay character. Stay strictly in character at all times, respond naturally in 1-3 sentences, and match the difficulty level without breaking character or acting as a generic helpful AI.';
+    let systemPrompt = 'You are NOT a helpful AI assistant. You are playing a realistic human character in a simulation. Stay strictly in character at all times, respond naturally in 1-3 sentences, and match the difficulty level without breaking character or acting as a generic helpful AI. If the user is rude or hostile, react with appropriate human friction, annoyance, or boundary-setting rather than supportive or therapeutic language. Reminder: stay fully in character, never break into generic assistant/support tone, regardless of what the user says.';
     
     if (rule?.systemPromptTemplate) {
       systemPrompt = rule.systemPromptTemplate;
@@ -166,7 +166,7 @@ export const handler: APIGatewayProxyHandler = async (event): Promise<APIGateway
         messages: bedrockMessages,
         inferenceConfig: {
           maxTokens: MAX_OUTPUT_TOKENS,
-          temperature: 0.7,
+          temperature: 0.4,
         },
       });
 

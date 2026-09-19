@@ -23,6 +23,10 @@ _No critical tasks pending._
 - Personalized practice recommendations: Out of scope for a 3-minute demo timeline.
 
 ## ✅ Done
+- [x] Multi-dimension qualitative coaching feedback (Clarity, Tone, Responsiveness, Composure) & UI redesign
+- [x] Fix generate-feedback Bedrock IAM permissions and Converse API upgrade
+- [x] Strengthen scenario system prompts (anti-genericization, hostile handling, few-shot examples) & reduce Bedrock temperature to 0.4
+- [x] Fix send-message Bedrock IAM 503 (`AccessDeniedException`)
 - [x] Deploy stack to AWS (`cdk deploy`)
 - [x] Seed scenario data (`npm run seed`)
 - [x] Replace fake scoring with real AI-generated feedback
@@ -33,7 +37,7 @@ _No critical tasks pending._
 - [x] Remove orphaned `mockData.ts`
 - [x] Cognito auth (sign up, verify, sign in, sign out)
 - [x] Dashboard UI (scenarios, progress, settings)
-- [x] Backend Lambda endpoints (ping, create-session, get-session, send-message)
+- [x] Backend Lambda endpoints (ping, create-session, get-session, send-message, generate-feedback)
 - [x] AI roleplay via Bedrock Nova 2 Lite
 - [x] Frontend connected to backend API
 - [x] Voice input/output (Web Speech API)

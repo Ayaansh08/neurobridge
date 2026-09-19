@@ -129,8 +129,8 @@ export const userProgressService = {
   recordCompletedSession(
     scenarioType: ScenarioType,
     scenarioTitle: string,
-    score: number,
     feedback: string,
+    evaluation?: FeedbackEvaluation,
     userEmail?: string
   ): { updatedStats: UserStats; newSession: SessionSummary } {
     const currentSessions = this.getUserSessions(userEmail);
@@ -149,9 +149,8 @@ export const userProgressService = {
         hour: 'numeric',
         minute: '2-digit',
       }),
-      score,
-      maxScore: 10,
       feedback,
+      evaluation,
       status: 'completed',
       createdAt: new Date().toISOString(),
     };
@@ -160,8 +159,8 @@ export const userProgressService = {
     const keySessions = userEmail ? `${STORAGE_KEYS.SESSIONS}_${userEmail}` : STORAGE_KEYS.SESSIONS;
     localStorage.setItem(keySessions, JSON.stringify(updatedSessions));
 
-    // Calculate progression
-    const xpGained = Math.round(score * 20);
+    // Fixed session completion reward (+100 XP) — non-judgmental progression
+    const xpGained = 100;
     const newTotalXp = currentStats.totalXp + xpGained;
     let newLevel = currentStats.currentLevel;
     let newCurrentXp = currentStats.currentLevelXp + xpGained;

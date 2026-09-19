@@ -1560,19 +1560,44 @@
 }
 
 .practice-completed-card {
-  padding: 48px 24px;
+  padding: 36px 32px;
   background: var(--nb-surface-card);
   border: 1px solid var(--nb-border-subtle);
-  border-radius: 12px;
+  border-radius: 14px;
   display: flex;
   flex-direction: column;
+  gap: 24px;
+  text-align: left;
+  max-width: 780px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.practice-completed-header {
+  display: flex;
   align-items: center;
-  text-align: center;
-  gap: 12px;
+  gap: 16px;
+  border-bottom: 1px solid var(--nb-border-subtle);
+  padding-bottom: 20px;
 }
 
 .practice-completed-icon {
-  color: var(--nb-emerald);
+  color: var(--nb-accent);
+  background: var(--nb-accent-surface);
+  border: 1px solid var(--nb-accent-border);
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.practice-completed-header-text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
 }
 
 .practice-completed-title {
@@ -1580,26 +1605,143 @@
   font-family: var(--font-serif-display);
   font-size: 24px;
   color: var(--nb-ink-primary);
+  line-height: 1.2;
 }
 
-.practice-completed-score {
+.practice-completed-subtitle {
   margin: 0;
-  font-size: 16px;
+  font-size: 13.5px;
+  color: var(--nb-ink-secondary);
+}
+
+.practice-dimensions-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+@media (max-width: 640px) {
+  .practice-dimensions-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.practice-dimension-card {
+  background: var(--nb-surface-elevated);
+  border: 1px solid var(--nb-border-subtle);
+  border-radius: 10px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.practice-dimension-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.practice-dimension-name {
+  font-size: 12.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
   color: var(--nb-ink-primary);
 }
 
-.practice-completed-feedback {
-  margin: 0;
-  max-width: 480px;
-  font-size: 14px;
+.practice-rating-badge {
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: capitalize;
+  padding: 3px 9px;
+  border-radius: 6px;
+  letter-spacing: 0.02em;
+}
+
+.practice-rating-badge--strong {
+  background: var(--nb-accent-surface);
+  border: 1px solid var(--nb-accent-border);
+  color: var(--nb-ink-primary);
+}
+
+.practice-rating-badge--developing {
+  background: var(--nb-surface-subtle);
+  border: 1px solid var(--nb-border-subtle);
+  color: var(--nb-ink-primary);
+}
+
+.practice-rating-badge--needs-practice {
+  background: var(--nb-surface-card);
+  border: 1px solid var(--nb-border-subtle);
   color: var(--nb-ink-secondary);
+}
+
+.practice-dimension-note {
+  margin: 0;
+  font-size: 13px;
   line-height: 1.5;
+  color: var(--nb-ink-secondary);
+}
+
+.practice-narrative-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.practice-narrative-block {
+  background: var(--nb-surface-elevated);
+  border: 1px solid var(--nb-border-subtle);
+  border-radius: 10px;
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.practice-narrative-eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--nb-accent);
+}
+
+.practice-narrative-text {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--nb-ink-primary);
+}
+
+.practice-encouragement-box {
+  background: linear-gradient(135deg, var(--nb-surface-card) 0%, var(--nb-accent-surface) 100%);
+  border: 1px solid var(--nb-accent-border);
+  border-radius: 10px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.practice-encouragement-icon {
+  color: var(--nb-accent);
+  flex-shrink: 0;
+}
+
+.practice-encouragement-text {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--nb-ink-primary);
+  font-style: italic;
 }
 
 .practice-completed-actions {
   display: flex;
   gap: 12px;
-  margin-top: 12px;
+  padding-top: 4px;
 }
 
 /* ─── Settings View & Progress View ──────────────────────────── */

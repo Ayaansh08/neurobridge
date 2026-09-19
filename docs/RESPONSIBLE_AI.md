@@ -13,15 +13,16 @@
 | Progress (planned) | DynamoDB `Progress` table | Not yet written to |
 
 ## Data retention
-- DynamoDB has no automatic expiry configured. Sessions persist until manually deleted or the stack is destroyed.
+- DynamoDB `Sessions` table has TTL enabled on `expiresAt` for automatic cleanup of stale sessions.
 - `RemovalPolicy.DESTROY` means `cdk destroy` deletes ALL data permanently.
 - localStorage persists until the user clears browser data.
 
 ## Content guardrails
-- AI characters stay in character and respond realistically to hostility (they push back, not accommodate).
-- System prompts include explicit boundaries: characters may disengage but never become abusive or threatening.
+- AI characters stay in character and respond realistically to hostility (they push back, not accommodate), guided by explicit anti-genericization preambles.
+- System prompts include explicit boundaries: characters may disengage or be stern, but never become abusive or threatening.
+- Feedback generation enforces non-judgmental, constructive coaching without numeric or percentage grades, even when the user spoke abrasively.
 - Hard session cap: 30 messages max per session (cost + safety guardrail).
-- Output capped at 300 tokens per AI turn (prevents runaway responses).
+- Output capped at 300 tokens per AI roleplay turn and 500 tokens for feedback analysis (prevents runaway responses).
 
 ## Privacy rules for developers
 - **Never** log message contents or email addresses to console/CloudWatch.
