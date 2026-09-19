@@ -12,3 +12,5 @@ _Date — decision — why — what else we considered._
 | Pre-docs | XP/progress in localStorage, not DynamoDB | Fast to build, no extra API calls | DynamoDB Progress table exists but unused — migrate later |
 | 2026-09-18 | Keep `handle-conflict` | Will implement seed data and frontend card to complete standard scenarios | Remove from types |
 | 2026-09-18 | Cut complex scope for demo | Removed Cognito authorizer, Google OAuth, Progress DB, etc., to focus entirely on demo completion by Sept 20 | Build all planned features (too slow) |
+| 2026-09-19 | Anti-genericization scenario prompts & low temperature (0.4) | Prevents Nova 2 Lite from falling into generic supportive bot speech and ensures realistic character friction and boundary defense | High-temperature generic system prompts |
+| 2026-09-19 | Multi-dimension qualitative coaching instead of numeric score | Aligns with non-judgmental product design: provides 4 dimensions (Clarity, Tone, Responsiveness, Composure) + constructive guidance instead of anxiety-inducing letter/number grades | Single numeric score (e.g. 7/10) or percentage score |

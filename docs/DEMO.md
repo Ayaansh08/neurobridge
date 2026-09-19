@@ -16,7 +16,7 @@ _The judges see ONLY the video. No live demo._
 | 0:00–0:30 | Landing page → Sign up flow | "NeuroBridge lets you practice difficult conversations before they happen. Sign up, verify email, and you're in." |
 | 0:30–1:00 | Dashboard with scenario cards | "Choose a scenario — job interview, setting boundaries, asking for a raise. Each has difficulty levels." |
 | 1:00–2:00 | Live practice session (job interview) | "The AI stays in character as Taylor, a hiring manager. Watch how it responds naturally — and pushes back if I'm rude." Send 3–4 messages. |
-| 2:00–2:20 | Complete session → score | "When you're done, you get a score and XP. Your progress tracks across sessions." |
+| 2:00–2:20 | Complete session → Rehearsal Insights | "When you're done, you receive constructive, multi-dimensional coaching across Clarity, Tone, Responsiveness, and Composure, plus targeted practice guidance." |
 | 2:20–2:50 | Architecture slide or code | "Built on AWS: Cognito for auth, API Gateway + Lambda for the backend, DynamoDB for data, and Bedrock Nova 2 Lite for AI — all serverless, all pay-per-use." |
 | 2:50–3:00 | Wrap | "NeuroBridge: practice hard conversations so the real one goes better." |
 

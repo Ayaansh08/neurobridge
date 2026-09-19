@@ -53,6 +53,24 @@ Send a user message, get AI reply. **This calls Bedrock.**
 // Response 503 — AI service temporarily unavailable
 ```
 
+### POST /sessions/{sessionId}/feedback
+Generate multi-dimensional qualitative coaching reflection for a practice session. **This calls Bedrock.**
+```json
+// Request body: none required
+// Response 200:
+{
+  "dimensions": {
+    "clarity": { "rating": "strong", "note": "Clear and direct articulation." },
+    "tone": { "rating": "developing", "note": "Grounded and polite cadence." },
+    "responsiveness": { "rating": "strong", "note": "Directly engaged with questions." },
+    "composure": { "rating": "developing", "note": "Maintained focus under pushback." }
+  },
+  "whatWentWell": "You communicated with clear intent and kept the conversation constructive.",
+  "tryImproving": "Practice pausing before replying to pushback to formulate composed responses.",
+  "encouragement": "Every practice session strengthens your real-world communication reflexes."
+}
+```
+
 ## ScenarioType Enum
 `job-interview` | `talk-to-professor` | `meet-someone-new` | `phone-call` | `group-conversation` | `handle-conflict` | `ask-for-help` | `talk-to-manager` | `set-boundary`
 

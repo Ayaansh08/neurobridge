@@ -6,12 +6,14 @@ import {
   PlayIcon,
   ArrowRightIcon,
   CheckCircleIcon,
+  SparklesIcon,
   MicIcon,
   MicOffIcon,
   VolumeIcon,
   VolumeOffIcon,
   StopCircleIcon,
 } from './Icons';
+import type { FeedbackEvaluation } from './types';
 
 // Web Speech API interface declarations for TypeScript
 interface IWindow extends Window {
@@ -60,9 +62,7 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
   const [apiError, setApiError] = useState<string | null>(null);
 
   const [isCompleted, setIsCompleted] = useState(false);
-  const [feedbackSummary, setFeedbackSummary] = useState<{ score: number; text: string } | null>(
-    null
-  );
+  const [feedbackEvaluation, setFeedbackEvaluation] = useState<FeedbackEvaluation | null>(null);
 
   // Voice Mode state (Browser-native Web Speech API)
   const [isListening, setIsListening] = useState(false);
@@ -340,18 +340,27 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
       if (!res.ok) throw new Error('Failed to generate feedback');
 
       const data = await res.json();
-      const calculatedScore = typeof data.score === 'number' ? data.score : 8.0;
-      const feedbackText = data.feedback || 'Good effort.';
+      const evaluation: FeedbackEvaluation = {
+        dimensions: {
+          clarity: data.dimensions?.clarity || { rating: 'strong', note: 'Clear and easy to follow.' },
+          tone: data.dimensions?.tone || { rating: 'developing', note: 'Polite and focused.' },
+          responsiveness: data.dimensions?.responsiveness || { rating: 'strong', note: 'Engaged with the discussion.' },
+          composure: data.dimensions?.composure || { rating: 'developing', note: 'Stayed engaged throughout.' },
+        },
+        whatWentWell: data.whatWentWell || 'You stepped into the scenario with clear intent and kept the conversation moving forward constructively.',
+        tryImproving: data.tryImproving || 'Experiment with pausing before answering difficult pushback to give yourself space to formulate composed answers.',
+        encouragement: data.encouragement || 'Every practice session strengthens your real-world communication reflexes—great job showing up.',
+      };
 
       userProgressService.recordCompletedSession(
         activeScenario.scenarioType,
         activeScenario.title,
-        calculatedScore,
-        feedbackText,
+        evaluation.whatWentWell,
+        evaluation,
         user?.email
       );
 
-      setFeedbackSummary({ score: calculatedScore, text: feedbackText });
+      setFeedbackEvaluation(evaluation);
       setIsCompleted(true);
       onSessionComplete?.();
     } catch (err: any) {
@@ -363,21 +372,27 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
   };
 
   const fallbackFinish = () => {
-    const calculatedScore = Math.min(10, +(7.8 + Math.random() * 2.0).toFixed(1));
-    const feedbackText =
-      calculatedScore >= 9.0
-        ? 'Superb clarity, assertive tone, and natural pacing.'
-        : 'Solid communication, clear boundaries, and grounded cadence.';
+    const evaluation: FeedbackEvaluation = {
+      dimensions: {
+        clarity: { rating: 'strong', note: 'Your points were stated clearly throughout the dialogue.' },
+        tone: { rating: 'developing', note: 'Maintained a grounded and constructive conversational cadence.' },
+        responsiveness: { rating: 'strong', note: 'Directly addressed the comments from your partner.' },
+        composure: { rating: 'developing', note: 'Handled the back-and-forth scenario without breaking flow.' },
+      },
+      whatWentWell: 'You stepped into the scenario with clear intent and kept the conversation moving forward constructively.',
+      tryImproving: 'Experiment with pausing before answering difficult pushback to give yourself space to formulate composed answers.',
+      encouragement: 'Every practice session builds communication reflexes—great job showing up today.',
+    };
 
     userProgressService.recordCompletedSession(
       activeScenario.scenarioType,
       activeScenario.title,
-      calculatedScore,
-      feedbackText,
+      evaluation.whatWentWell,
+      evaluation,
       user?.email
     );
 
-    setFeedbackSummary({ score: calculatedScore, text: feedbackText });
+    setFeedbackEvaluation(evaluation);
     setIsCompleted(true);
     onSessionComplete?.();
   };
@@ -401,7 +416,7 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
                 const diff = next.difficulty === 'Advanced' ? 3 : next.difficulty === 'Intermediate' ? 2 : 1;
                 setSelectedDifficulty(diff);
                 setIsCompleted(false);
-                setFeedbackSummary(null);
+                setFeedbackEvaluation(null);
               }
             }}
           >
@@ -564,20 +579,67 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
         </div>
       ) : (
         <div className="practice-completed-card">
-          <div className="practice-completed-icon">
-            <CheckCircleIcon size={32} />
+          <div className="practice-completed-header">
+            <div className="practice-completed-icon">
+              <CheckCircleIcon size={24} />
+            </div>
+            <div className="practice-completed-header-text">
+              <h3 className="practice-completed-title">Rehearsal Insights</h3>
+              <p className="practice-completed-subtitle">
+                Constructive reflection on your practice with {characterName}
+              </p>
+            </div>
           </div>
-          <h3 className="practice-completed-title">Session Completed</h3>
-          <p className="practice-completed-score">
-            Score: <strong>{feedbackSummary?.score} / 10</strong>
-          </p>
-          <p className="practice-completed-feedback">{feedbackSummary?.text}</p>
+
+          {feedbackEvaluation && (
+            <>
+              {/* 4 Dimension Cards */}
+              <div className="practice-dimensions-grid">
+                {([
+                  { key: 'clarity', label: 'Clarity', data: feedbackEvaluation.dimensions.clarity },
+                  { key: 'tone', label: 'Tone', data: feedbackEvaluation.dimensions.tone },
+                  { key: 'responsiveness', label: 'Responsiveness', data: feedbackEvaluation.dimensions.responsiveness },
+                  { key: 'composure', label: 'Composure', data: feedbackEvaluation.dimensions.composure },
+                ] as const).map(({ key, label, data }) => (
+                  <div key={key} className="practice-dimension-card">
+                    <div className="practice-dimension-top">
+                      <span className="practice-dimension-name">{label}</span>
+                      <span className={`practice-rating-badge practice-rating-badge--${data.rating.replace(/\s+/g, '-')}`}>
+                        {data.rating}
+                      </span>
+                    </div>
+                    <p className="practice-dimension-note">{data.note}</p>
+                  </div>
+                ))}
+              </div>
+
+              {/* Narrative Sections */}
+              <div className="practice-narrative-sections">
+                <div className="practice-narrative-block">
+                  <span className="practice-narrative-eyebrow">What Went Well</span>
+                  <p className="practice-narrative-text">{feedbackEvaluation.whatWentWell}</p>
+                </div>
+
+                <div className="practice-narrative-block">
+                  <span className="practice-narrative-eyebrow">Practice Focus</span>
+                  <p className="practice-narrative-text">{feedbackEvaluation.tryImproving}</p>
+                </div>
+
+                <div className="practice-encouragement-box">
+                  <SparklesIcon size={18} className="practice-encouragement-icon" />
+                  <p className="practice-encouragement-text">{feedbackEvaluation.encouragement}</p>
+                </div>
+              </div>
+            </>
+          )}
+
           <div className="practice-completed-actions">
             <button
               type="button"
               className="dashboard-cta-btn"
               onClick={() => {
                 setIsCompleted(false);
+                setFeedbackEvaluation(null);
                 initSession(activeScenario, selectedDifficulty);
               }}
             >

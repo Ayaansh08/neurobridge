@@ -26,6 +26,25 @@ export interface ScenarioItem {
   tagline?: string;
 }
 
+export type DimensionRating = 'strong' | 'developing' | 'needs practice';
+
+export interface FeedbackDimension {
+  rating: DimensionRating;
+  note: string;
+}
+
+export interface FeedbackEvaluation {
+  dimensions: {
+    clarity: FeedbackDimension;
+    tone: FeedbackDimension;
+    responsiveness: FeedbackDimension;
+    composure: FeedbackDimension;
+  };
+  whatWentWell: string;
+  tryImproving: string;
+  encouragement: string;
+}
+
 /**
  * Matches DynamoDB SessionRecord structure from backend/lambdas/shared/types.ts
  * with additional evaluation/feedback fields for UI display.
@@ -37,9 +56,8 @@ export interface SessionSummary {
   scenarioTitle: string;
   difficultyLevel: number;
   formattedDate: string;
-  score: number;
-  maxScore: number;
   feedback: string;
+  evaluation?: FeedbackEvaluation;
   status: 'active' | 'completed';
   createdAt: string;
 }
