@@ -2,8 +2,9 @@ import { useEffect, useRef, type CSSProperties, type ReactNode, type MouseEventH
 import { Renderer, Program, Mesh, Triangle, Color } from 'ogl';
 import gsap from 'gsap';
 import Aurora from './Aurora';
+import { Logo } from './dashboard/Icons';
 import './HomePage.css';
-import './SpecularButton.css';
+
 
 function navigate(path: string) {
   window.history.pushState({}, '', path);
@@ -384,76 +385,77 @@ export const HomePage: React.FC = () => {
           <a className="home-nav__link home-nav__link--ghost" href="/login" onClick={(e) => { e.preventDefault(); navigate('/login'); }}>
             Sign in
           </a>
-          <SpecularButton
-            size="sm"
-            tint="#3b82f6"
-            tintOpacity={0.2}
-            blur={8}
-            lineColor="#60a5fa"
-            baseColor="#1e3a8a"
-            radius={20}
-            onClick={() => navigate('/signup')}
-          >
-            Get Started
-          </SpecularButton>
+          <button className="dashboard-cta-btn" onClick={() => navigate('/signup')}>Get Started</button>
         </div>
       </nav>
 
       {/* ── Hero ── */}
       <section className="home-hero" ref={heroRef}>
         <Aurora
-          colorStops={['#1D4ED8', '#38BDF8', '#93C5FD']}
+          colorStops={['#18121D', '#3D1C34', '#7A3D63']}
           amplitude={0.85}
           blend={0.42}
           speed={0.55}
         />
-        <div className="home-hero__content">
-          <span className="home-hero__badge" style={{ opacity: 0 }}>
-            <span className="home-hero__badge-dot" />
-            AI-Powered Conversation Practice
-          </span>
+        <div className="home-hero__grid">
+            <div className="home-hero__text-col">
+              <span className="home-hero__badge" style={{ opacity: 0 }}>
+                <span className="home-hero__badge-dot" />
+                AI-Powered Conversation Practice
+              </span>
+    
+              <h1 className="home-hero__title" style={{ opacity: 0 }}>
+                Practice difficult moments{' '}
+                <span className="home-hero__title-accent">before they happen</span>
+              </h1>
+    
+              <p className="home-hero__subtitle" style={{ opacity: 0 }}>
+                NeuroBridge gives you a low-pressure, AI-powered space to rehearse tough
+                conversations ?" interviews, conflicts, boundaries ?" so the first
+                attempt doesn't have to be the real one.
+              </p>
+    
+              <div className="home-hero__actions" style={{ opacity: 0 }}>
+                <button className="dashboard-cta-btn" style={{ fontSize: "16px", padding: "14px 28px", borderRadius: "100px" }} onClick={() => navigate('/signup')}>Start practicing &rarr;</button>
+                <button className="home-hero__cta home-hero__cta--outline" onClick={(e) => { e.preventDefault(); navigate('/login'); }}>
+                  Sign In
+                </button>
+              </div>
+            </div>
 
-          <h1 className="home-hero__title" style={{ opacity: 0 }}>
-            Practice difficult moments{' '}
-            <span className="home-hero__title-accent">before they happen</span>
-          </h1>
-
-          <p className="home-hero__subtitle" style={{ opacity: 0 }}>
-            NeuroBridge gives you a private, AI-powered space to rehearse tough
-            conversations — interviews, conflicts, boundaries — so the first
-            attempt doesn't have to be the real one.
-          </p>
-
-          <div className="home-hero__actions" style={{ opacity: 0 }}>
-            <SpecularButton
-              size="lg"
-              tint="#2563eb"
-              tintOpacity={0.25}
-              blur={12}
-              lineColor="#93c5fd"
-              baseColor="#1d4ed8"
-              radius={24}
-              onClick={() => navigate('/signup')}
-            >
-              Start Practicing →
-            </SpecularButton>
-            <a className="home-hero__cta home-hero__cta--outline" href="/login" onClick={(e) => { e.preventDefault(); navigate('/login'); }}>
-              Sign In
-            </a>
+            <div className="home-hero__preview-col" style={{ opacity: 0 }}>
+              <div className="home-preview-card">
+                <div className="home-preview-header">
+                  <span className="home-preview-eyebrow">Example conversation</span>
+                  <div className="home-preview-chips">
+                    <span className="home-preview-chip home-preview-chip--developing">Clarity: Developing</span>
+                    <span className="home-preview-chip home-preview-chip--strong">Empathy: Strong</span>
+                  </div>
+                </div>
+                <div className="home-preview-chat">
+                  <div className="home-preview-msg home-preview-msg--ai">
+                    <div className="home-preview-avatar">T</div>
+                    <div className="home-preview-bubble">Thanks for coming in. Could you tell me a little bit about yourself?</div>
+                  </div>
+                  <div className="home-preview-msg home-preview-msg--user">
+                    <div className="home-preview-bubble">Sure. I'm a software engineer with 5 years of experience...</div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
       {/* ── Features ── */}
       <section className="home-section home-section--bordered">
         <div className="home-section__inner">
           <span className="home-section__label home-reveal">Features</span>
           <h2 className="home-section__heading home-reveal">
-            Everything you need to prepare with confidence
+            Everything you need to prepare for the real moment
           </h2>
           <p className="home-section__desc home-reveal">
             A safe, structured environment to rehearse conversations that matter —
-            powered by AI, designed around how people actually learn.
+            powered by AI, .
           </p>
 
           <div className="home-features">
@@ -461,8 +463,8 @@ export const HomePage: React.FC = () => {
               <div className="home-feature-card__icon"><IconShield /></div>
               <h3 className="home-feature-card__title">Safe Practice Space</h3>
               <p className="home-feature-card__body">
-                Rehearse conversations privately — no pressure, no judgment.
-                Build confidence before the real moment arrives.
+                Rehearse conversations with an AI partner: no pressure, no audience.
+                Each attempt gives you feedback to try again.
               </p>
             </article>
 
@@ -480,7 +482,7 @@ export const HomePage: React.FC = () => {
               <h3 className="home-feature-card__title">Track Your Progress</h3>
               <p className="home-feature-card__body">
                 Get structured feedback after each session. Retry, improve, and
-                watch your confidence grow over time with insights and XP.
+                See your scores and XP over time. over time with insights and XP.
               </p>
             </article>
           </div>
@@ -504,7 +506,7 @@ export const HomePage: React.FC = () => {
               <h3 className="home-step__title">Choose a scenario</h3>
               <p className="home-step__body">
                 Pick from interviews, workplace conflicts, setting boundaries, asking
-                for a raise, or describe your own situation.
+                for a raise, and more.
               </p>
             </div>
             <div className="home-step home-reveal">
@@ -520,7 +522,7 @@ export const HomePage: React.FC = () => {
               <h3 className="home-step__title">Get feedback & retry</h3>
               <p className="home-step__body">
                 Review what went well, where you can improve, and try again. Each
-                attempt strengthens your readiness and builds lasting confidence.
+                attempt strengthens your readiness and Each attempt gives you feedback to try again..
               </p>
             </div>
           </div>
@@ -562,8 +564,7 @@ export const HomePage: React.FC = () => {
               <div className="home-case__icon"><IconHeart /></div>
               <h3 className="home-case__title">Setting Boundaries</h3>
               <p className="home-case__body">
-                Rehearse saying no, pushing back, or asking for what you need — in
-                relationships, at work, or in everyday life.
+                Rehearse saying no, pushing back, or asking for what you need — with coworkers, managers, classmates and new people.
               </p>
             </article>
           </div>
@@ -580,18 +581,7 @@ export const HomePage: React.FC = () => {
             Create a free account and start rehearsing in minutes.
             No credit card, no commitment — just a safer way to prepare.
           </p>
-          <SpecularButton
-            size="lg"
-            tint="#3b82f6"
-            tintOpacity={0.3}
-            blur={10}
-            lineColor="#93c5fd"
-            baseColor="#1d4ed8"
-            radius={24}
-            onClick={() => navigate('/signup')}
-          >
-            Get Started Free →
-          </SpecularButton>
+          <button className="dashboard-cta-btn" style={{ fontSize: "16px", padding: "14px 28px", borderRadius: "100px" }} onClick={() => navigate('/signup')}>Get Started Free &rarr;</button>
         </div>
       </section>
 

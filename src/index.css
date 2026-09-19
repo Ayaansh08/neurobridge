@@ -147,3 +147,35 @@ html[data-motion="reduced"] *::after {
     scroll-behavior: auto !important;
   }
 }
+
+/* Primary Jewel-Tone CTA Button */
+.dashboard-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 20px;
+  border-radius: var(--nb-radius-card);
+  background: var(--nb-accent);
+  color: #EDEAE4;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.dashboard-cta-btn:hover {
+  background: var(--nb-accent-hover);
+  transform: translateY(-1px);
+}
+
+.dashboard-cta-btn:active {
+  transform: translateY(0);
+}
+
+.dashboard-cta-icon {
+  display: inline-block;
+  flex-shrink: 0;
+}
