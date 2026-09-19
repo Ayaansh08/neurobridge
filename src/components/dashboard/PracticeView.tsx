@@ -341,6 +341,7 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
 
       const data = await res.json();
       const evaluation: FeedbackEvaluation = {
+        summary: data.summary || 'You handled the interaction well, but consider practicing pauses to gather your thoughts when faced with unexpected scenarios.',
         dimensions: {
           clarity: data.dimensions?.clarity || { rating: 'strong', note: 'Clear and easy to follow.' },
           tone: data.dimensions?.tone || { rating: 'developing', note: 'Polite and focused.' },
@@ -373,6 +374,7 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
 
   const fallbackFinish = () => {
     const evaluation: FeedbackEvaluation = {
+      summary: 'You completed this practice scenario with clear communication and a professional demeanor, but could benefit from pausing to gather your thoughts when faced with unexpected pushback.',
       dimensions: {
         clarity: { rating: 'strong', note: 'Your points were stated clearly throughout the dialogue.' },
         tone: { rating: 'developing', note: 'Maintained a grounded and constructive conversational cadence.' },
@@ -593,6 +595,15 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
 
           {feedbackEvaluation && (
             <>
+              <div className="practice-narrative-sections" style={{ marginBottom: '24px' }}>
+                <div className="practice-narrative-block">
+                  <span className="practice-narrative-eyebrow">Executive Summary</span>
+                  <p className="practice-narrative-text" style={{ fontSize: '1.05rem', fontWeight: 500 }}>
+                    {feedbackEvaluation.summary || `${feedbackEvaluation.whatWentWell} ${feedbackEvaluation.tryImproving}`}
+                  </p>
+                </div>
+              </div>
+
               {/* 4 Dimension Cards */}
               <div className="practice-dimensions-grid">
                 {([

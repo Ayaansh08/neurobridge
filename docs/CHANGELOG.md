@@ -1,5 +1,10 @@
 ﻿# Changelog
 
+## 2026-09-19 - Add Executive Summary to feedback
+- Added a summary field (max 50 words) to FeedbackEvaluation to provide a concise, high-level overview of the user's practice session.
+- Updated Bedrock prompt to generate the summary, enforcing non-medical and judgment-free constraints.
+- Updated PracticeView.tsx to display the 'Executive Summary' at the top of the insights screen.
+- Added graceful fallbacks for legacy sessions missing the summary field.
 ## 2026-09-19 - Merged origin/main and fixed frontend TS errors
 - Merged latest updates from origin/main.
 - Fixed TypeScript build errors in `ProgressView.tsx` and `userProgressService.ts` caused by the transition from numeric scores to qualitative feedback evaluations.
@@ -44,4 +49,5 @@ _Newest first. What changed and why._
 - Voice input/output via browser Web Speech API.
 - Scenario seed data for 7 of 9 scenario types.
 - XP/progress tracking in localStorage.
+
 

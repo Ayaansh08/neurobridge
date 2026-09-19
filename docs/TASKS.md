@@ -1,19 +1,19 @@
-# Tasks
+﻿# Tasks
 
 _Single source of truth for work. Now / Next / Later / Done._
 
-## 🔴 Now (before Sept 20 deadline)
+## ðŸ”´ Now (before Sept 20 deadline)
 - [ ] Record 3-minute demo video
-- [ ] Test full flow end-to-end: sign up → pick scenario → practice → complete
+- [ ] Test full flow end-to-end: sign up â†’ pick scenario â†’ practice â†’ complete
 
-## 🟡 Next
+## ðŸŸ¡ Next
 _No critical tasks pending._
 
-## 🔵 Later
+## ðŸ”µ Later
 - [ ] Production error handling and loading states
 - [ ] Tune AI Partner prompts based on real test sessions (Phase 4)
 
-## ✂️ Cut / post-hackathon
+## âœ‚ï¸ Cut / post-hackathon
 - `group-conversation` scenario: Focus purely on 1-on-1 conversations for the demo.
 - Cognito authorizer + token sending: Not critical for the demo flow since the backend only runs practice data.
 - Connect DynamoDB `Progress` table to replace localStorage: LocalStorage is sufficient for the short demo.
@@ -22,7 +22,7 @@ _No critical tasks pending._
 - Persist auth tokens (refresh token flow): Hard reload drops state but isn't required for the golden path.
 - Personalized practice recommendations: Out of scope for a 3-minute demo timeline.
 
-## ✅ Done
+## âœ… Done
 - [x] Multi-dimension qualitative coaching feedback (Clarity, Tone, Responsiveness, Composure) & UI redesign
 - [x] Fix generate-feedback Bedrock IAM permissions and Converse API upgrade
 - [x] Strengthen scenario system prompts (anti-genericization, hostile handling, few-shot examples) & reduce Bedrock temperature to 0.4
@@ -45,3 +45,6 @@ _No critical tasks pending._
 - [x] XP/progress tracking (localStorage)
 - [x] Cost guardrails (30 msg cap, 300 token output, 10 msg history window)
 - [x] Documentation setup
+
+## dY" Done
+- [x] Added summary field to end-of-session qualitative feedback

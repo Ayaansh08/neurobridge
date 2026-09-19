@@ -34,6 +34,7 @@ export interface FeedbackDimension {
 }
 
 export interface FeedbackEvaluation {
+  summary: string;
   dimensions: {
     clarity: FeedbackDimension;
     tone: FeedbackDimension;
