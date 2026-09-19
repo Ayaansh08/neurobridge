@@ -1,4 +1,4 @@
-/* ─── NeuroBridge Deep Charcoal & Jewel-Tone Plum Color System Tokens ───────── */
+﻿/* â”€â”€â”€ NeuroBridge Deep Charcoal & Jewel-Tone Plum Color System Tokens â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 :root {
   /* Exact hex palette requirements */
   --nb-bg-paper: #16151A;               /* near-black charcoal, not pure #000 */
@@ -42,7 +42,7 @@
   --font-body: 'Public Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
-/* ─── Dashboard Overall Layout ────────────────────────────────── */
+/* â”€â”€â”€ Dashboard Overall Layout â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 .dashboard-layout {
   position: relative;
@@ -56,7 +56,7 @@
   -webkit-font-smoothing: antialiased;
 }
 
-/* ─── Subtle Charcoal Micro-Grain Texture ────────────────────── */
+/* â”€â”€â”€ Subtle Charcoal Micro-Grain Texture â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 .dashboard-paper-grain {
   position: fixed;
@@ -70,7 +70,7 @@
   background-size: 14px 14px;
 }
 
-/* ─── Quiet Elevated Sidebar ─────────────────────────────────── */
+/* â”€â”€â”€ Quiet Elevated Sidebar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 .dashboard-sidebar {
   position: fixed;
@@ -319,7 +319,7 @@
   background: var(--nb-accent-surface);
 }
 
-/* ─── Main Content Area ───────────────────────────────────────── */
+/* â”€â”€â”€ Main Content Area â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 .dashboard-main {
   margin-left: 250px;
@@ -339,7 +339,7 @@
   gap: 40px;
 }
 
-/* ─── Notification Toast ─────────────────────────────────────── */
+/* â”€â”€â”€ Notification Toast â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 .dashboard-toast {
   position: fixed;
@@ -378,7 +378,7 @@
   }
 }
 
-/* ─── Eyebrow Labels ─────────────────────────────────────────── */
+/* â”€â”€â”€ Eyebrow Labels â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 .dashboard-eyebrow,
 .dashboard-section-eyebrow,
@@ -400,7 +400,7 @@
   margin-bottom: 4px;
 }
 
-/* ─── Dashboard Header ───────────────────────────────────────── */
+/* â”€â”€â”€ Dashboard Header â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 .dashboard-header {
   display: flex;
@@ -554,7 +554,7 @@
   flex-shrink: 0;
 }
 
-/* ─── Asymmetric Stats Section ────────────────────────────────── */
+/* â”€â”€â”€ Asymmetric Stats Section â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 .dashboard-stats-asymmetric {
   display: grid;
@@ -731,7 +731,7 @@
   border: 1px solid var(--nb-emerald-border);
 }
 
-/* ─── Dashboard Sections (Scenarios, Sessions) ────────────────── */
+/* â”€â”€â”€ Dashboard Sections (Scenarios, Sessions) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 .dashboard-section {
   display: flex;
@@ -797,7 +797,7 @@
   transform: translateX(2px);
 }
 
-/* ─── Scenario Section: Asymmetric 2-Column Layout ────────────── */
+/* â”€â”€â”€ Scenario Section: Asymmetric 2-Column Layout â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 .dashboard-scenarios-asymmetric {
   display: grid;
@@ -1019,7 +1019,7 @@
   transform: translateX(3px);
 }
 
-/* ─── Difficulty Pills (Tonal backgrounds) ───────────────────── */
+/* â”€â”€â”€ Difficulty Pills (Tonal backgrounds) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 /* Beginner #6E9B7D on #1F2E27, Intermediate #C9A15C on #2E271A, Advanced #A85C8C on #2E2029 */
 
 .difficulty-pill {
@@ -1050,7 +1050,7 @@
   border: 1px solid var(--nb-plum-border);
 }
 
-/* ─── Recent Sessions List (Soft-bordered Table) ──────────────── */
+/* â”€â”€â”€ Recent Sessions List (Soft-bordered Table) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 .dashboard-table-card {
   background: var(--nb-surface-card);
@@ -1211,7 +1211,7 @@
   color: var(--nb-accent);
 }
 
-/* ─── Empty State Design ─────────────────────────────────────── */
+/* â”€â”€â”€ Empty State Design â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 .dashboard-empty-state {
   padding: 48px 24px;
@@ -1248,7 +1248,7 @@
   line-height: 1.5;
 }
 
-/* ─── Interactive Practice View ───────────────────────────────── */
+/* â”€â”€â”€ Interactive Practice View â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 .practice-view-container {
   display: flex;
@@ -1744,7 +1744,7 @@
   padding-top: 4px;
 }
 
-/* ─── Settings View & Progress View ──────────────────────────── */
+/* â”€â”€â”€ Settings View & Progress View â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 .settings-card {
   background: var(--nb-surface-card);
@@ -1839,7 +1839,7 @@
   margin-bottom: 12px;
 }
 
-/* ─── Responsive Adjustments ──────────────────────────────────── */
+/* â”€â”€â”€ Responsive Adjustments â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 @media (max-width: 1080px) {
   .dashboard-scenarios-asymmetric {
@@ -1852,13 +1852,32 @@
     grid-template-columns: 1fr;
   }
 }
-
 @media (max-width: 768px) {
   .dashboard-sidebar {
-    position: static;
+    position: sticky;
+    top: 0;
     width: 100%;
-    height: auto;
+    height: 60px;
+    flex-direction: row;
+    align-items: center;
+    border-right: none;
+    border-bottom: 1px solid var(--nb-border-subtle);
+    z-index: 100;
+    padding: 0;
   }
+  .sidebar-brand { padding: 0 12px; border-bottom: none; }
+  .sidebar-brand-text { display: none; }
+  .sidebar-companion-note { display: none; }
+  .sidebar-user { display: none; }
+  .sidebar-footer { padding: 0 12px; border-top: none; align-items: center; justify-content: center; flex-direction: row; }
+  .sidebar-nav-section { padding: 0; flex: 1; overflow-x: auto; display: flex; align-items: center; }
+  .sidebar-nav-heading { display: none; }
+  .sidebar-nav { flex-direction: row; gap: 4px; padding: 0; margin: 0; }
+  .sidebar-nav-item { width: auto; height: 40px; padding: 0 12px; }
+  .sidebar-nav-label { display: none; }
+  .sidebar-signout-btn { width: auto; padding: 0 12px; }
+  .sidebar-signout-btn span { display: none; }
+
   .dashboard-layout {
     flex-direction: column;
   }
