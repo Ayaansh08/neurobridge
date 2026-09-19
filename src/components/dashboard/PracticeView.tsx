@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { defaultScenarios, userProgressService } from '../../services/userProgressService';
+import { settingsService } from '../../services/settingsService';
 import { useAuth } from '../../context/AuthContext';
 import { authConfig } from '../../config/auth';
 import {
@@ -12,8 +13,11 @@ import {
   VolumeIcon,
   VolumeOffIcon,
   StopCircleIcon,
+  ChevronDownIcon,
+  CloseIcon,
+  BookOpenIcon,
 } from './Icons';
-import type { FeedbackEvaluation } from './types';
+import type { FeedbackEvaluation, ScenarioItem } from './types';
 
 // Web Speech API interface declarations for TypeScript
 interface IWindow extends Window {
@@ -27,15 +31,103 @@ interface PracticeViewProps {
   onNavigate?: (path: string) => void;
 }
 
-// Map scenario types to character persona names for realistic conversational immersion
-const PERSONA_NAMES: Record<string, string> = {
-  'job-interview': 'Taylor (Interviewer)',
-  'talk-to-manager': 'Marcus (Director)',
-  'talk-to-professor': 'Prof. Vance',
-  'set-boundary': 'Sam (Coworker)',
-  'ask-for-help': 'Jordan (Sr. Engineer)',
-  'phone-call': 'Morgan (Receptionist)',
-  'meet-someone-new': 'Alex (Peer)',
+interface PersonaInfo {
+  name: string;
+  role: string;
+  initials: string;
+  goal: string;
+  tips: string[];
+}
+
+const PERSONA_DETAILS: Record<string, PersonaInfo> = {
+  'job-interview': {
+    name: 'Taylor',
+    role: 'Engineering Hiring Manager',
+    initials: 'T',
+    goal: 'Demonstrate technical problem solving and answer behavioral questions with calm clarity.',
+    tips: [
+      'Take a breath before answering complex questions.',
+      'Use the STAR method (Situation, Task, Action, Result) if helpful.',
+      'It is completely okay to pause for 2–3 seconds to collect your thoughts.',
+    ],
+  },
+  'talk-to-manager': {
+    name: 'Marcus',
+    role: 'Engineering Director',
+    initials: 'M',
+    goal: 'Discuss your performance, advocate for compensation adjustment, and align on next career steps.',
+    tips: [
+      'Focus on tangible achievements and business impact.',
+      'Use clear, non-confrontational phrasing ("I would like to discuss adjusting my compensation based on...").',
+      'Ask collaborative questions about timing and budget.',
+    ],
+  },
+  'talk-to-professor': {
+    name: 'Prof. Vance',
+    role: 'Academic Advisor & Professor',
+    initials: 'P',
+    goal: 'Request a deadline extension or clarify complex coursework concepts during office hours.',
+    tips: [
+      'State your situation concisely up front.',
+      'Propose a realistic timeline for completion.',
+      'Show that you have started the work and identified specific roadblocks.',
+    ],
+  },
+  'set-boundary': {
+    name: 'Sam',
+    role: 'Coworker & Teammate',
+    initials: 'S',
+    goal: 'Politely and firmly decline an unreasonable workload request while preserving a constructive working relationship.',
+    tips: [
+      'Keep your decline clear without over-apologizing.',
+      'Offer an alternative if appropriate ("I cannot take this on today, but I can review on Thursday").',
+      'Remember that setting boundaries is a healthy, professional practice.',
+    ],
+  },
+  'ask-for-help': {
+    name: 'Jordan',
+    role: 'Senior Staff Engineer',
+    initials: 'J',
+    goal: 'Explain a technical roadblock clearly and request guidance without anxiety.',
+    tips: [
+      'Summarize what you tried and where you are blocked.',
+      'Be specific about the question or decision needed.',
+      'Respect their time by being prepared with error logs or repro steps.',
+    ],
+  },
+  'phone-call': {
+    name: 'Morgan',
+    role: 'Clinic Front-Desk Receptionist',
+    initials: 'M',
+    goal: 'Navigate real-time scheduling constraints and confirm appointments over the phone.',
+    tips: [
+      'Have your calendar and insurance information ready in front of you.',
+      'Ask the receptionist to repeat dates or details if needed.',
+      'Take notes as you speak to reduce working-memory strain.',
+    ],
+  },
+  'meet-someone-new': {
+    name: 'Alex',
+    role: 'Meetup Attendee & Developer',
+    initials: 'A',
+    goal: 'Initiate a casual, low-pressure conversation and find common technical interests.',
+    tips: [
+      'Start with an open-ended observation ("Have you been to this meetup before?").',
+      'Listen actively and ask follow-ups about their projects.',
+      'You can wrap up the conversation anytime with a polite exit.',
+    ],
+  },
+  'handle-conflict': {
+    name: 'Riley',
+    role: 'Startup Co-Founder',
+    initials: 'R',
+    goal: 'De-escalate a heated product priority disagreement and find a principled path forward.',
+    tips: [
+      'Acknowledge their perspective before presenting your counterpoint.',
+      'Focus on shared project goals rather than personal differences.',
+      'Maintain an even, measured tone.',
+    ],
+  },
 };
 
 export const PracticeView: React.FC<PracticeViewProps> = ({
@@ -47,7 +139,7 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
   const selectedScenario =
     defaultScenarios.find((s) => s.id === initialScenarioId) || defaultScenarios[0];
 
-  const [activeScenario, setActiveScenario] = useState(selectedScenario);
+  const [activeScenario, setActiveScenario] = useState<ScenarioItem>(selectedScenario);
   const [selectedDifficulty, setSelectedDifficulty] = useState<number>(() => {
     if (selectedScenario.difficulty === 'Advanced') return 3;
     if (selectedScenario.difficulty === 'Intermediate') return 2;
@@ -64,6 +156,11 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
   const [isCompleted, setIsCompleted] = useState(false);
   const [feedbackEvaluation, setFeedbackEvaluation] = useState<FeedbackEvaluation | null>(null);
 
+  // Scenario Switcher Drawer & Tips Drawer
+  const [isScenarioPickerOpen, setIsScenarioPickerOpen] = useState(false);
+  const [isTipsOpen, setIsTipsOpen] = useState(false);
+  const [isConfirmFinishOpen, setIsConfirmFinishOpen] = useState(false);
+
   // Voice Mode state (Browser-native Web Speech API)
   const [isListening, setIsListening] = useState(false);
   const [isVoiceSupported, setIsVoiceSupported] = useState(true);
@@ -73,8 +170,17 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
 
   const recognitionRef = useRef<any>(null);
   const transcriptPrefixRef = useRef<string>('');
+  const chatBottomRef = useRef<HTMLDivElement | null>(null);
 
-  const characterName = PERSONA_NAMES[activeScenario.scenarioType] || 'Practice Partner';
+  const persona = PERSONA_DETAILS[activeScenario.scenarioType] || {
+    name: 'Practice Partner',
+    role: 'Conversational Coach',
+    initials: 'NB',
+    goal: 'Practice clear, composed dialogue in a low-pressure setting.',
+    tips: ['Take your time.', 'Focus on expressing your thoughts clearly.'],
+  };
+
+  const userTurnCount = messages.filter((m) => m.role === 'user').length;
 
   // Speak text aloud using SpeechSynthesis
   const speakText = useCallback(
@@ -102,6 +208,13 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
     }
   };
 
+  // Auto scroll chat to bottom when messages change or loading
+  useEffect(() => {
+    if (chatBottomRef.current) {
+      chatBottomRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages, isLoading, isInitializing]);
+
   // Initialize a real session via backend POST /sessions
   const initSession = useCallback(
     async (scenario = activeScenario, difficulty = selectedDifficulty) => {
@@ -114,7 +227,6 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
       const endpoint = authConfig.apiEndpoint.replace(/\/+$/, '');
 
       if (!endpoint) {
-        // Fallback notice if env variable is missing
         setApiError('API endpoint not configured. Please set VITE_API_GATEWAY_URL in your .env file.');
         setIsInitializing(false);
         return;
@@ -144,9 +256,10 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
 
         // Populate with real opening line from DynamoDB RulesTable
         if (data.messages && Array.isArray(data.messages)) {
-          setMessages(data.messages.map((m: any) => ({ role: m.role, content: m.content })));
-          if (speakAloud && data.messages[0]?.content) {
-            speakText(data.messages[0].content);
+          const initialMsgs = data.messages.map((m: any) => ({ role: m.role, content: m.content }));
+          setMessages(initialMsgs);
+          if (speakAloud && initialMsgs[0]?.content) {
+            speakText(initialMsgs[0].content);
           }
         }
       } catch (err: any) {
@@ -159,7 +272,7 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
     [activeScenario, selectedDifficulty, user?.email, speakAloud, speakText]
   );
 
-  // Initialize session whenever the scenario changes
+  // Initialize session whenever scenario changes
   useEffect(() => {
     initSession(activeScenario, selectedDifficulty);
   }, [activeScenario, selectedDifficulty, initSession]);
@@ -182,7 +295,7 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
 
       recognition.onstart = () => {
         setIsListening(true);
-        setVoiceNotice('Listening... speak clearly into your mic.');
+        setVoiceNotice('Listening... speak clearly into your microphone.');
       };
 
       recognition.onresult = (event: any) => {
@@ -206,9 +319,9 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
       recognition.onerror = (event: any) => {
         setIsListening(false);
         if (event.error === 'not-allowed' || event.error === 'permission-denied') {
-          setVoiceNotice('Microphone permission was denied. Please allow mic access in your browser settings.');
+          setVoiceNotice('Microphone permission was denied. Please allow microphone access in your browser.');
         } else if (event.error === 'no-speech') {
-          setVoiceNotice('No speech was detected. Click mic to try again.');
+          setVoiceNotice('No speech detected. Click the mic to try again.');
         } else {
           setVoiceNotice(`Voice input error: ${event.error}`);
         }
@@ -249,7 +362,7 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
       try {
         recognitionRef.current.start();
       } catch {
-        setVoiceNotice('Could not start voice recognition. Please try again.');
+        setVoiceNotice('Could not start microphone recognition. Please try again.');
       }
     }
   };
@@ -292,9 +405,9 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
       if (!res.ok) {
         const errData = await res.json().catch(() => ({}));
         if (res.status === 400 && errData.error === 'session limit reached') {
-          throw new Error('Session message limit reached (30 turns). Please finish and complete this practice.');
+          throw new Error('Session turn limit reached (30 turns). Please finish and view feedback.');
         } else if (res.status === 503) {
-          throw new Error('AI service is temporarily busy or unavailable. Please try again in a moment.');
+          throw new Error('AI service is temporarily busy. Please try again in a moment.');
         } else {
           throw new Error(errData.message || errData.error || `Server error (${res.status})`);
         }
@@ -302,8 +415,16 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
 
       const data = await res.json();
       if (data.messages && Array.isArray(data.messages)) {
-        setMessages(data.messages.map((m: any) => ({ role: m.role, content: m.content })));
-        const lastMsg = data.messages[data.messages.length - 1];
+        const nextMsgs = data.messages.map((m: any) => ({ role: m.role, content: m.content }));
+        const lastMsg = nextMsgs[nextMsgs.length - 1];
+
+        // Apply pacing delay for realistic sensory rhythm
+        const pacingDelay = settingsService.getPacingDelayMs();
+        if (pacingDelay > 0) {
+          await new Promise((resolve) => setTimeout(resolve, pacingDelay));
+        }
+
+        setMessages(nextMsgs);
         if (lastMsg && lastMsg.role === 'ai' && speakAloud) {
           speakText(lastMsg.content);
         }
@@ -317,6 +438,7 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
   };
 
   const handleFinishPractice = async () => {
+    setIsConfirmFinishOpen(false);
     stopSpeaking();
     if (isListening && recognitionRef.current) {
       recognitionRef.current.stop();
@@ -344,12 +466,12 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
 
       const data = await res.json();
       const evaluation: FeedbackEvaluation = {
-        summary: data.summary || 'You handled the interaction well, but consider practicing pauses to gather your thoughts when faced with unexpected scenarios.',
+        summary: data.summary || 'You handled the conversation with composure and clarity.',
         dimensions: {
-          clarity: data.dimensions?.clarity || { rating: 'strong', note: 'Clear and easy to follow.' },
-          tone: data.dimensions?.tone || { rating: 'developing', note: 'Polite and focused.' },
-          responsiveness: data.dimensions?.responsiveness || { rating: 'strong', note: 'Engaged with the discussion.' },
-          composure: data.dimensions?.composure || { rating: 'developing', note: 'Stayed engaged throughout.' },
+          clarity: data.dimensions?.clarity || { rating: 'strong', note: 'Clear points and well-structured responses.' },
+          tone: data.dimensions?.tone || { rating: 'developing', note: 'Constructive, respectful, and grounded.' },
+          responsiveness: data.dimensions?.responsiveness || { rating: 'strong', note: 'Directly addressed pushback and questions.' },
+          composure: data.dimensions?.composure || { rating: 'developing', note: 'Maintained conversational flow under pressure.' },
         },
         whatWentWell: data.whatWentWell || 'You stepped into the scenario with clear intent and kept the conversation moving forward constructively.',
         tryImproving: data.tryImproving || 'Experiment with pausing before answering difficult pushback to give yourself space to formulate composed answers.',
@@ -377,11 +499,11 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
 
   const fallbackFinish = () => {
     const evaluation: FeedbackEvaluation = {
-      summary: 'You completed this practice scenario with clear communication and a professional demeanor, but could benefit from pausing to gather your thoughts when faced with unexpected pushback.',
+      summary: 'You completed this practice scenario with clear communication and a grounded demeanor.',
       dimensions: {
         clarity: { rating: 'strong', note: 'Your points were stated clearly throughout the dialogue.' },
-        tone: { rating: 'developing', note: 'Maintained a grounded and constructive conversational cadence.' },
-        responsiveness: { rating: 'strong', note: 'Directly addressed the comments from your partner.' },
+        tone: { rating: 'developing', note: 'Maintained a calm, respectful, and constructive conversational cadence.' },
+        responsiveness: { rating: 'strong', note: 'Directly addressed the points raised by your partner.' },
         composure: { rating: 'developing', note: 'Handled the back-and-forth scenario without breaking flow.' },
       },
       whatWentWell: 'You stepped into the scenario with clear intent and kept the conversation moving forward constructively.',
@@ -402,40 +524,189 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
     onSessionComplete?.();
   };
 
+  const handleSwitchScenario = (scenario: ScenarioItem) => {
+    setActiveScenario(scenario);
+    const diff = scenario.difficulty === 'Advanced' ? 3 : scenario.difficulty === 'Intermediate' ? 2 : 1;
+    setSelectedDifficulty(diff);
+    setIsCompleted(false);
+    setFeedbackEvaluation(null);
+    setIsScenarioPickerOpen(false);
+  };
+
   return (
     <div className="practice-view-container">
-      <div className="practice-header">
-        <div className="practice-header-meta">
-          <span className="dashboard-section-eyebrow">ACTIVE REHEARSAL SESSION</span>
-          <h2 className="dashboard-section-title">{activeScenario.title}</h2>
-          <p className="dashboard-section-subtitle">{activeScenario.description}</p>
+      {/* Rehearsal Header Card */}
+      <div className="practice-header-card">
+        <div className="practice-header-persona-row">
+          <div className="practice-persona-avatar-badge" aria-hidden="true">
+            {persona.initials}
+          </div>
+
+          <div className="practice-persona-meta">
+            <div className="practice-persona-title-row">
+              <h2 className="practice-persona-name">{persona.name}</h2>
+              <span className="practice-persona-role">· {persona.role}</span>
+              <span className={`difficulty-pill difficulty-pill--${activeScenario.difficulty.toLowerCase()}`}>
+                {activeScenario.difficulty}
+              </span>
+            </div>
+            <p className="practice-scenario-title-label">
+              Scenario: <strong>{activeScenario.title}</strong>
+            </p>
+          </div>
+
+          <div className="practice-header-actions">
+            {/* Scenario Switcher Button */}
+            <button
+              type="button"
+              className="practice-scenario-switch-btn"
+              onClick={() => setIsScenarioPickerOpen(true)}
+              title="Change active practice scenario"
+            >
+              <span>Change Scenario</span>
+              <ChevronDownIcon size={13} />
+            </button>
+          </div>
         </div>
-        <div className="practice-header-controls">
-          <select
-            className="practice-scenario-select"
-            value={activeScenario.id}
-            onChange={(e) => {
-              const next = defaultScenarios.find((s) => s.id === e.target.value);
-              if (next) {
-                setActiveScenario(next);
-                const diff = next.difficulty === 'Advanced' ? 3 : next.difficulty === 'Intermediate' ? 2 : 1;
-                setSelectedDifficulty(diff);
-                setIsCompleted(false);
-                setFeedbackEvaluation(null);
-              }
-            }}
+
+        {/* Goal Banner */}
+        <div className="practice-goal-banner">
+          <span className="practice-goal-label">Your Goal:</span>
+          <span className="practice-goal-text">{persona.goal}</span>
+        </div>
+
+        {/* Collapsible Tips Drawer */}
+        <div className="practice-tips-accordion">
+          <button
+            type="button"
+            className="practice-tips-toggle"
+            onClick={() => setIsTipsOpen(!isTipsOpen)}
+            aria-expanded={isTipsOpen}
           >
-            {defaultScenarios.map((s) => (
-              <option key={s.id} value={s.id}>
-                {s.title} ({s.difficulty})
-              </option>
-            ))}
-          </select>
+            <div className="practice-tips-toggle-left">
+              <BookOpenIcon size={14} className="practice-tips-icon" />
+              <span>Scenario Tips & Guidance ({persona.tips.length})</span>
+            </div>
+            <ChevronDownIcon
+              size={13}
+              className={`practice-tips-chevron ${isTipsOpen ? 'practice-tips-chevron--open' : ''}`}
+            />
+          </button>
+
+          {isTipsOpen && (
+            <div className="practice-tips-body">
+              <ul className="practice-tips-list">
+                {persona.tips.map((tip, idx) => (
+                  <li key={idx} className="practice-tips-item">
+                    {tip}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       </div>
 
+      {/* Scenario Switcher Modal */}
+      {isScenarioPickerOpen && (
+        <div
+          className="comfort-modal-overlay"
+          onClick={() => setIsScenarioPickerOpen(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="scenario-modal-title"
+        >
+          <div className="comfort-modal-card" onClick={(e) => e.stopPropagation()}>
+            <div className="comfort-modal-header">
+              <h3 id="scenario-modal-title" className="comfort-modal-title">
+                Select Practice Scenario
+              </h3>
+              <button
+                type="button"
+                className="comfort-modal-close-btn"
+                onClick={() => setIsScenarioPickerOpen(false)}
+                aria-label="Close scenario picker"
+              >
+                <CloseIcon size={16} />
+              </button>
+            </div>
+
+            <p className="comfort-modal-desc">
+              Choose a scenario to practice real-world conversations with your AI partner.
+            </p>
+
+            <div className="practice-scenario-picker-list">
+              {defaultScenarios.map((s) => (
+                <button
+                  key={s.id}
+                  type="button"
+                  className={`practice-scenario-picker-item ${activeScenario.id === s.id ? 'practice-scenario-picker-item--active' : ''}`}
+                  onClick={() => handleSwitchScenario(s)}
+                >
+                  <div className="practice-scenario-picker-item-top">
+                    <span className="practice-scenario-picker-title">{s.title}</span>
+                    <span className={`difficulty-pill difficulty-pill--${s.difficulty.toLowerCase()}`}>
+                      {s.difficulty}
+                    </span>
+                  </div>
+                  <p className="practice-scenario-picker-desc">{s.description}</p>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Confirmation Modal to Finish Practice */}
+      {isConfirmFinishOpen && (
+        <div
+          className="comfort-modal-overlay"
+          onClick={() => setIsConfirmFinishOpen(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="confirm-finish-title"
+        >
+          <div className="comfort-modal-card" onClick={(e) => e.stopPropagation()}>
+            <div className="comfort-modal-header">
+              <h3 id="confirm-finish-title" className="comfort-modal-title">
+                Complete Rehearsal & Get Feedback?
+              </h3>
+              <button
+                type="button"
+                className="comfort-modal-close-btn"
+                onClick={() => setIsConfirmFinishOpen(false)}
+                aria-label="Close confirmation"
+              >
+                <CloseIcon size={16} />
+              </button>
+            </div>
+
+            <p className="comfort-modal-desc">
+              Your AI coach will analyze this conversation across clarity, tone, responsiveness, and composure to provide constructive feedback.
+            </p>
+
+            <div className="comfort-modal-footer">
+              <button
+                type="button"
+                className="dashboard-view-all-btn"
+                onClick={() => setIsConfirmFinishOpen(false)}
+              >
+                <span>Continue Practicing</span>
+              </button>
+              <button
+                type="button"
+                className="dashboard-cta-btn"
+                onClick={handleFinishPractice}
+              >
+                <span>Finish & View Feedback</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {apiError && (
-        <div className="practice-error-banner">
+        <div className="practice-error-banner" role="alert">
           <span>{apiError}</span>
           <button
             type="button"
@@ -449,14 +720,19 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
 
       {!isCompleted ? (
         <div className="practice-workspace-card">
-          <div className="practice-chat-area">
+          {/* Chat message stream */}
+          <div className="practice-chat-area" aria-label="Conversation Rehearsal Thread">
             {isInitializing && (
               <div className="practice-message practice-message--ai">
-                <div className="practice-message-avatar">{characterName}</div>
-                <div className="practice-typing-indicator">
-                  <div className="practice-typing-dot" />
-                  <div className="practice-typing-dot" />
-                  <div className="practice-typing-dot" />
+                <div className="practice-message-avatar">{persona.initials}</div>
+                <div className="practice-message-body">
+                  <div className="practice-message-sender">{persona.name}</div>
+                  <div className="practice-typing-indicator" aria-label={`${persona.name} is connecting...`}>
+                    <div className="practice-typing-dot" />
+                    <div className="practice-typing-dot" />
+                    <div className="practice-typing-dot" />
+                    <span className="practice-typing-label">Connecting to rehearsal...</span>
+                  </div>
                 </div>
               </div>
             )}
@@ -467,25 +743,36 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
                 className={`practice-message practice-message--${m.role}`}
               >
                 <div className="practice-message-avatar">
-                  {m.role === 'ai' ? characterName : 'You'}
+                  {m.role === 'ai' ? persona.initials : 'You'}
                 </div>
-                <div className="practice-message-bubble">{m.content}</div>
+                <div className="practice-message-body">
+                  <div className="practice-message-sender">
+                    {m.role === 'ai' ? persona.name : 'You'}
+                  </div>
+                  <div className="practice-message-bubble">{m.content}</div>
+                </div>
               </div>
             ))}
 
             {isLoading && (
               <div className="practice-message practice-message--ai">
-                <div className="practice-message-avatar">{characterName}</div>
-                <div className="practice-typing-indicator">
-                  <div className="practice-typing-dot" />
-                  <div className="practice-typing-dot" />
-                  <div className="practice-typing-dot" />
+                <div className="practice-message-avatar">{persona.initials}</div>
+                <div className="practice-message-body">
+                  <div className="practice-message-sender">{persona.name}</div>
+                  <div className="practice-typing-indicator" aria-label={`${persona.name} is thinking...`}>
+                    <div className="practice-typing-dot" />
+                    <div className="practice-typing-dot" />
+                    <div className="practice-typing-dot" />
+                    <span className="practice-typing-label">{persona.name} is thinking...</span>
+                  </div>
                 </div>
               </div>
             )}
+
+            <div ref={chatBottomRef} />
           </div>
 
-          {/* Voice Toolbar */}
+          {/* Voice and Audio Toolbar */}
           <div className="practice-voice-toolbar">
             <div className="practice-voice-left">
               <button
@@ -500,7 +787,7 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
                 title="Toggle browser text-to-speech for AI responses"
               >
                 {speakAloud ? <VolumeIcon size={14} /> : <VolumeOffIcon size={14} />}
-                <span>{speakAloud ? 'Speak responses aloud' : 'Audio off'}</span>
+                <span>{speakAloud ? 'Read replies aloud' : 'Audio off'}</span>
               </button>
 
               {isSpeaking && (
@@ -514,6 +801,10 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
                   <span>Stop audio</span>
                 </button>
               )}
+
+              <span className="practice-turn-counter">
+                Turn {userTurnCount} of 30
+              </span>
             </div>
 
             <div className="practice-voice-right">
@@ -530,6 +821,7 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
             </div>
           </div>
 
+          {/* Input & Action Form */}
           <form className="practice-input-row" onSubmit={handleSendMessage}>
             <button
               type="button"
@@ -538,11 +830,12 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
               disabled={!isVoiceSupported || isLoading || isInitializing}
               title={
                 !isVoiceSupported
-                  ? 'Voice input not supported in this browser (Chrome/Edge recommended)'
+                  ? 'Voice input not supported in this browser (Chrome or Edge recommended)'
                   : isListening
-                  ? 'Stop voice input'
-                  : 'Speak your response'
+                  ? 'Stop recording voice'
+                  : 'Speak response via microphone'
               }
+              aria-label={isListening ? 'Stop recording' : 'Speak response'}
             >
               {isListening ? <MicIcon size={16} /> : !isVoiceSupported ? <MicOffIcon size={16} /> : <MicIcon size={16} />}
             </button>
@@ -554,20 +847,22 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
                 isInitializing
                   ? 'Connecting to rehearsal session...'
                   : isLoading
-                  ? 'Waiting for response...'
+                  ? `${persona.name} is thinking...`
                   : isListening
-                  ? 'Listening... speak your response'
+                  ? 'Listening... speak clearly into your mic'
                   : 'Type or speak what you would say in this scenario...'
               }
               value={inputText}
               disabled={isLoading || isInitializing}
               onChange={(e) => setInputText(e.target.value)}
+              aria-label="Your conversational response"
             />
 
             <button
               type="submit"
               className="practice-send-btn"
               disabled={isLoading || isInitializing || !inputText.trim()}
+              title="Send your response"
             >
               <span>Respond</span>
               <ArrowRightIcon size={13} />
@@ -577,29 +872,31 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
               type="button"
               className="practice-complete-btn"
               disabled={isLoading || isInitializing}
-              onClick={handleFinishPractice}
+              onClick={() => setIsConfirmFinishOpen(true)}
+              title="Finish session and get constructive feedback"
             >
-              Complete & Save
+              Finish & get feedback
             </button>
           </form>
         </div>
       ) : (
+        /* Completed Rehearsal Feedback View */
         <div className="practice-completed-card">
           <div className="practice-completed-header">
             <div className="practice-completed-icon">
-              <CheckCircleIcon size={24} />
+              <CheckCircleIcon size={26} />
             </div>
             <div className="practice-completed-header-text">
               <h3 className="practice-completed-title">Rehearsal Insights</h3>
               <p className="practice-completed-subtitle">
-                Constructive reflection on your practice with {characterName}
+                Constructive reflection on your practice with {persona.name} ({activeScenario.title})
               </p>
             </div>
           </div>
 
           {feedbackEvaluation && (
             <>
-              <div className="practice-narrative-sections" style={{ marginBottom: '24px' }}>
+              <div className="practice-narrative-sections">
                 <div className="practice-narrative-block">
                   <span className="practice-narrative-eyebrow">Executive Summary</span>
                   <p className="practice-narrative-text" style={{ fontSize: '1.05rem', fontWeight: 500 }}>
@@ -628,7 +925,7 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
                 ))}
               </div>
 
-              {/* Narrative Sections */}
+              {/* Narrative Breakdown */}
               <div className="practice-narrative-sections">
                 <div className="practice-narrative-block">
                   <span className="practice-narrative-eyebrow">What Went Well</span>
@@ -668,6 +965,10 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
             >
               <span>Back to Dashboard</span>
             </button>
+          </div>
+
+          <div className="practice-disclaimer-note">
+            NeuroBridge is a conversational practice tool, not a clinical therapy service.
           </div>
         </div>
       )}

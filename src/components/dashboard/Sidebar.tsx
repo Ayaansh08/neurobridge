@@ -7,6 +7,7 @@ import {
   ProgressIcon,
   SettingsIcon,
   LogOutIcon,
+  ComfortSlidersIcon,
 } from './Icons';
 import type { SidebarProps } from './types';
 
@@ -31,6 +32,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   userEmail,
   userName,
   onSignOut,
+  onOpenComfort,
 }) => {
   // Extract initials dynamically from user's email/name, or fallback to 'NB'
   const getInitials = () => {
@@ -104,6 +106,21 @@ export const Sidebar: React.FC<SidebarProps> = ({
           })}
         </nav>
       </div>
+
+      {/* Sensory Comfort Quick Control */}
+      {onOpenComfort && (
+        <div className="sidebar-comfort-trigger-wrap">
+          <button
+            type="button"
+            className="sidebar-comfort-trigger-btn"
+            onClick={onOpenComfort}
+            title="Open Sensory Comfort Controls"
+          >
+            <ComfortSlidersIcon size={16} />
+            <span>Comfort Modes</span>
+          </button>
+        </div>
+      )}
 
       {/* Quiet Physical Notebook style helper note */}
       <div className="sidebar-companion-note">

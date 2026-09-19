@@ -1,5 +1,5 @@
 import React from 'react';
-import { PlayIcon } from './Icons';
+import { PlayIcon, ComfortSlidersIcon } from './Icons';
 import type { DashboardHeaderProps } from './types';
 
 export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
@@ -8,6 +8,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   currentXp,
   nextLevelXp,
   onStartPracticing,
+  onOpenComfort,
 }) => {
   const fraction = Math.min(1, Math.max(0, currentXp / nextLevelXp));
   // Circumference for r=15 is 2 * PI * 15 ≈ 94.25
@@ -15,19 +16,35 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - fraction * circumference;
 
+  const greetingText =
+    userDisplayName && userDisplayName !== 'Guest'
+      ? `Welcome back, ${userDisplayName}`
+      : 'Welcome back';
+
   return (
     <header className="dashboard-header">
       <div className="dashboard-header-left">
         <span className="dashboard-eyebrow">YOUR WORKSPACE</span>
-        <h1 className="dashboard-greeting">
-          Welcome back, {userDisplayName}
-        </h1>
+        <h1 className="dashboard-greeting">{greetingText}</h1>
         <p className="dashboard-tagline">
           Calm, low-pressure rehearsal for real-life conversations.
         </p>
       </div>
 
       <div className="dashboard-header-right">
+        {/* Sensory Comfort Quick Button */}
+        {onOpenComfort && (
+          <button
+            type="button"
+            className="dashboard-header-comfort-btn"
+            onClick={onOpenComfort}
+            title="Adjust sensory comfort and low-stimulation settings"
+          >
+            <ComfortSlidersIcon size={14} />
+            <span>Comfort</span>
+          </button>
+        )}
+
         {/* Bespoke Dotted/Arc XP Component */}
         <div
           className="dashboard-level-widget"

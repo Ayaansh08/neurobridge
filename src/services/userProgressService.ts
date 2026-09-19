@@ -1,4 +1,4 @@
-﻿import type { ScenarioType } from '../../backend/lambdas/shared/types';
+import type { ScenarioType } from '../../backend/lambdas/shared/types';
 import type { UserStats, ScenarioItem, SessionSummary, FeedbackEvaluation } from '../components/dashboard/types';
 
 const STORAGE_KEYS = {
@@ -15,7 +15,7 @@ export const defaultScenarios: ScenarioItem[] = [
     difficulty: 'Beginner',
     icon: 'interview',
     isFeatured: true,
-    duration: '10â€“12 min',
+    duration: '10-12 min',
     tagline: 'Recommended for you today',
   },
   {
@@ -33,7 +33,7 @@ export const defaultScenarios: ScenarioItem[] = [
     title: 'Talk to Professor',
     description: 'Discuss coursework, extensions, and research during office hours with Professor Vance.',
     difficulty: 'Intermediate',
-    icon: 'custom',
+    icon: 'professor',
     duration: '8 min',
   },
   {
@@ -51,7 +51,7 @@ export const defaultScenarios: ScenarioItem[] = [
     title: 'Asking for Help',
     description: 'Reach out to senior engineer Jordan to unblock a complex technical issue respectfully.',
     difficulty: 'Beginner',
-    icon: 'conflict',
+    icon: 'help',
     duration: '10 min',
   },
   {
@@ -60,7 +60,7 @@ export const defaultScenarios: ScenarioItem[] = [
     title: 'Clinic Phone Call',
     description: 'Schedule appointments and navigate real-time calendar constraints with receptionist Morgan.',
     difficulty: 'Beginner',
-    icon: 'custom',
+    icon: 'phone',
     duration: '6 min',
   },
   {
@@ -69,7 +69,7 @@ export const defaultScenarios: ScenarioItem[] = [
     title: 'Meet Someone New',
     description: 'Start a casual, low-pressure conversation at a tech meetup with attendee Alex.',
     difficulty: 'Beginner',
-    icon: 'custom',
+    icon: 'meet',
     duration: '8 min',
   },
   {
@@ -159,7 +159,7 @@ export const userProgressService = {
     const keySessions = userEmail ? `${STORAGE_KEYS.SESSIONS}_${userEmail}` : STORAGE_KEYS.SESSIONS;
     localStorage.setItem(keySessions, JSON.stringify(updatedSessions));
 
-    // Fixed session completion reward (+100 XP) â€” non-judgmental progression
+    // Fixed session completion reward (+100 XP) — non-judgmental progression
     const xpGained = 100;
     const newTotalXp = currentStats.totalXp + xpGained;
     let newLevel = currentStats.currentLevel;
@@ -177,7 +177,7 @@ export const userProgressService = {
       sessionsCompleted: currentStats.sessionsCompleted + 1,
       weeklySessionsChange: `+${currentStats.sessionsCompleted + 1} total`,
       currentStreak: Math.max(1, currentStats.currentStreak + 1),
-      streakStatus: 'Momentum active Â· keep it going',
+      streakStatus: 'Momentum active · keep it going',
       totalXp: newTotalXp,
       weeklyXpChange: `+${xpGained} XP today`,
       currentLevel: newLevel,
