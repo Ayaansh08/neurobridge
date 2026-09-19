@@ -123,6 +123,7 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
       try {
         const res = await fetch(`${endpoint}/sessions`, {
           method: 'POST',
+          signal: AbortSignal.timeout(25000),
           headers: {
             'Content-Type': 'application/json',
           },
@@ -281,7 +282,8 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
     try {
       const res = await fetch(`${endpoint}/sessions/${sessionId}/messages`, {
         method: 'POST',
-        headers: {
+          signal: AbortSignal.timeout(25000),
+          headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ message: userMsg }),
@@ -308,7 +310,7 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
       }
     } catch (err: any) {
       console.error('Error sending message:', err);
-      setApiError(err.message);
+      setApiError(err.name === 'TimeoutError' ? 'The request timed out. The AI might be busy.' : err.message);
     } finally {
       setIsLoading(false);
     }
@@ -332,7 +334,8 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
     try {
       const res = await fetch(`${endpoint}/sessions/${sessionId}/feedback`, {
         method: 'POST',
-        headers: {
+          signal: AbortSignal.timeout(25000),
+          headers: {
           'Content-Type': 'application/json',
         },
       });
@@ -366,7 +369,7 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
       onSessionComplete?.();
     } catch (err: any) {
       console.error('Feedback error:', err);
-      setApiError(err.message || 'Failed to generate AI feedback. Please try again.');
+      setApiError(err.name === 'TimeoutError' ? 'Feedback generation timed out.' : (err.message || 'Failed to generate AI feedback. Please try again.'));
     } finally {
       setIsLoading(false);
     }
@@ -670,4 +673,6 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
     </div>
   );
 };
+
+
 
