@@ -7,7 +7,7 @@ _Single source of truth for work. Now / Next / Later / Done._
 
 ## Ã°Å¸â€Â´ Now (before Sept 20 deadline)
 - [ ] Record 3-minute demo video
-- [ ] Test full flow end-to-end: sign up Ã¢â€ â€™ pick scenario Ã¢â€ â€™ practice Ã¢â€ â€™ complete
+- [x] Test full flow end-to-end: sign up Ã¢â€ â€™ pick scenario Ã¢â€ â€™ practice Ã¢â€ â€™ complete
 
 ## Ã°Å¸Å¸Â¡ Next
 _No critical tasks pending._
@@ -58,6 +58,7 @@ _No critical tasks pending._
 
 ## dY" Done
 - [x] Added summary field to end-of-session qualitative feedback
+
 
 
 
