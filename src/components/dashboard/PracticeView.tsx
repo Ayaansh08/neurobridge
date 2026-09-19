@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+﻿import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { defaultScenarios, userProgressService } from '../../services/userProgressService';
 import { useAuth } from '../../context/AuthContext';
 import { authConfig } from '../../config/auth';
@@ -350,7 +350,7 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
         },
         whatWentWell: data.whatWentWell || 'You stepped into the scenario with clear intent and kept the conversation moving forward constructively.',
         tryImproving: data.tryImproving || 'Experiment with pausing before answering difficult pushback to give yourself space to formulate composed answers.',
-        encouragement: data.encouragement || 'Every practice session strengthens your real-world communication reflexes—great job showing up.',
+        encouragement: data.encouragement || 'Every practice session strengthens your real-world communication reflexesâ€”great job showing up.',
       };
 
       userProgressService.recordCompletedSession(
@@ -366,7 +366,7 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
       onSessionComplete?.();
     } catch (err: any) {
       console.error('Feedback error:', err);
-      fallbackFinish();
+      setApiError(err.message || 'Failed to generate AI feedback. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -383,7 +383,7 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
       },
       whatWentWell: 'You stepped into the scenario with clear intent and kept the conversation moving forward constructively.',
       tryImproving: 'Experiment with pausing before answering difficult pushback to give yourself space to formulate composed answers.',
-      encouragement: 'Every practice session builds communication reflexes—great job showing up today.',
+      encouragement: 'Every practice session builds communication reflexesâ€”great job showing up today.',
     };
 
     userProgressService.recordCompletedSession(
@@ -516,7 +516,7 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
             <div className="practice-voice-right">
               {isListening && (
                 <span className="practice-voice-notice practice-voice-notice--listening">
-                  ● Listening... review before sending
+                  â— Listening... review before sending
                 </span>
               )}
               {voiceNotice && !isListening && (
@@ -670,3 +670,4 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
     </div>
   );
 };
+
