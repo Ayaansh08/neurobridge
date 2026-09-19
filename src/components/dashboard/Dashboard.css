@@ -153,7 +153,7 @@
   width: 100%;
   height: 42px;
   padding: 0 14px;
-  border-radius: 8px;
+  border-radius: var(--nb-radius-card);
   background: transparent;
   border: none;
   color: var(--nb-ink-secondary);
@@ -217,7 +217,7 @@
 .sidebar-companion-note {
   margin: 0 16px 16px;
   padding: 14px 14px;
-  border-radius: 10px;
+  border-radius: var(--nb-radius-card);
   background: var(--nb-surface-card);
   border: 1px solid var(--nb-border-subtle);
 }
@@ -252,7 +252,7 @@
   align-items: center;
   gap: 10px;
   padding: 6px 8px;
-  border-radius: 8px;
+  border-radius: var(--nb-radius-card);
   background: transparent;
   cursor: default;
 }
@@ -260,7 +260,7 @@
 .sidebar-user-avatar {
   width: 32px;
   height: 32px;
-  border-radius: 8px;
+  border-radius: var(--nb-radius-card);
   background: var(--nb-surface-subtle);
   border: 1px solid var(--nb-border-subtle);
   color: var(--nb-ink-primary);
@@ -304,7 +304,7 @@
   gap: 8px;
   width: 100%;
   padding: 7px 10px;
-  border-radius: 8px;
+  border-radius: var(--nb-radius-card);
   background: transparent;
   border: none;
   color: var(--nb-ink-secondary);
@@ -352,7 +352,7 @@
   box-shadow: 0 4px 18px rgba(0, 0, 0, 0.45);
   color: var(--nb-ink-primary);
   padding: 12px 18px;
-  border-radius: 10px;
+  border-radius: var(--nb-radius-card);
   font-size: 13px;
   font-weight: 500;
   display: flex;
@@ -410,8 +410,21 @@
   justify-content: space-between;
   gap: 24px;
   flex-wrap: wrap;
-  padding-bottom: 14px;
-  border-bottom: 1px solid var(--nb-border-subtle);
+  padding: 32px 40px;
+  margin-bottom: 32px;
+  border: 1px solid var(--nb-border-subtle);
+  border-radius: var(--nb-radius-card);
+  background: var(--nb-gradient-hero);
+  box-shadow: 0 20px 40px -12px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+  /* CSS 3D Tilted Hero Card */
+  transform: perspective(1200px) rotateX(4deg) rotateY(-2deg) scale(0.99);
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+  transform-style: preserve-3d;
+}
+
+.dashboard-header:hover {
+  transform: perspective(1200px) rotateX(0deg) rotateY(0deg) scale(1);
+  box-shadow: 0 24px 48px -12px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.15);
 }
 
 .dashboard-header-left {
@@ -470,7 +483,7 @@
   align-items: center;
   gap: 12px;
   padding: 6px 14px 6px 8px;
-  border-radius: 10px;
+  border-radius: var(--nb-radius-card);
   background: var(--nb-surface-card);
   border: 1px solid var(--nb-border-subtle);
   user-select: none;
@@ -551,7 +564,7 @@
   align-items: center;
   gap: 8px;
   padding: 11px 20px;
-  border-radius: 8px;
+  border-radius: var(--nb-radius-card);
   background: var(--nb-accent);
   color: #EDEAE4;
   font-size: 14px;
@@ -595,7 +608,7 @@
 .stat-card {
   background: var(--nb-surface-card);
   border: 1px solid var(--nb-border-subtle);
-  border-radius: 12px;
+  border-radius: var(--nb-radius-card);
   padding: 22px 24px;
   position: relative;
   display: flex;
@@ -793,7 +806,7 @@
 
 .dashboard-view-all-btn {
   border: 1px solid var(--nb-border-subtle);
-  border-radius: 8px;
+  border-radius: var(--nb-radius-card);
   color: var(--nb-ink-secondary);
   font-size: 13px;
   font-weight: 500;
@@ -843,7 +856,7 @@
 .scenario-card {
   outline: none;
   cursor: pointer;
-  border-radius: 12px;
+  border-radius: var(--nb-radius-card);
   background: var(--nb-surface-card);
   border: 1px solid var(--nb-border-subtle);
   transition: border-color 0.2s ease, transform 0.2s ease;
@@ -901,7 +914,7 @@
 .scenario-featured-icon-box {
   width: 44px;
   height: 44px;
-  border-radius: 10px;
+  border-radius: var(--nb-radius-card);
   background: var(--nb-accent-surface);
   border: 1px solid var(--nb-accent-border);
   color: var(--nb-accent);
@@ -973,7 +986,7 @@
 .scenario-compact-icon-box {
   width: 36px;
   height: 36px;
-  border-radius: 8px;
+  border-radius: var(--nb-radius-card);
   background: var(--nb-surface-subtle);
   border: 1px solid var(--nb-border-subtle);
   color: var(--nb-ink-secondary);
@@ -1083,7 +1096,7 @@
 .dashboard-table-card {
   background: var(--nb-surface-card);
   border: 1px solid var(--nb-border-subtle);
-  border-radius: 12px;
+  border-radius: var(--nb-radius-card);
   overflow: hidden;
 }
 
@@ -1292,7 +1305,7 @@
 .practice-header-card {
   background: var(--nb-surface-card);
   border: 1px solid var(--nb-border-subtle);
-  border-radius: 14px;
+  border-radius: var(--nb-radius-card);
   padding: 22px 24px;
   display: flex;
   flex-direction: column;
@@ -1309,7 +1322,7 @@
 .practice-persona-avatar-badge {
   width: 44px;
   height: 44px;
-  border-radius: 12px;
+  border-radius: var(--nb-radius-card);
   background: var(--nb-accent-surface);
   border: 1px solid var(--nb-accent-border);
   color: var(--nb-accent);
@@ -1378,7 +1391,7 @@
   border: 1px solid var(--nb-border-subtle);
   color: var(--nb-ink-secondary);
   padding: 7px 12px;
-  border-radius: 8px;
+  border-radius: var(--nb-radius-card);
   font-size: 12.5px;
   font-weight: 500;
   cursor: pointer;
@@ -1465,7 +1478,7 @@
   padding: 12px 16px;
   background: var(--nb-surface-elevated);
   border: 1px solid var(--nb-border-subtle);
-  border-radius: 8px;
+  border-radius: var(--nb-radius-card);
 }
 
 .practice-tips-list {
@@ -1487,7 +1500,7 @@
 .practice-workspace-card {
   background: var(--nb-surface-card);
   border: 1px solid var(--nb-border-subtle);
-  border-radius: 14px;
+  border-radius: var(--nb-radius-card);
   display: flex;
   flex-direction: column;
   min-height: 480px;
@@ -1523,7 +1536,7 @@
 .practice-message-avatar {
   width: 32px;
   height: 32px;
-  border-radius: 8px;
+  border-radius: var(--nb-radius-card);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1563,7 +1576,7 @@
 
 .practice-message-bubble {
   padding: 13px 18px;
-  border-radius: 12px;
+  border-radius: var(--nb-radius-card);
   font-size: 14px;
   line-height: 1.55;
 }
@@ -1589,7 +1602,7 @@
   padding: 12px 16px;
   background: var(--nb-surface-elevated);
   border: 1px solid var(--nb-border-subtle);
-  border-radius: 10px;
+  border-radius: var(--nb-radius-card);
   width: fit-content;
 }
 
@@ -1708,7 +1721,7 @@
   justify-content: center;
   width: 40px;
   height: 40px;
-  border-radius: 8px;
+  border-radius: var(--nb-radius-card);
   background: var(--nb-surface-card);
   border: 1px solid var(--nb-border-subtle);
   color: var(--nb-ink-secondary);
@@ -1733,7 +1746,7 @@
   flex: 1;
   background: var(--nb-surface-card);
   border: 1px solid var(--nb-border-subtle);
-  border-radius: 8px;
+  border-radius: var(--nb-radius-card);
   padding: 11px 16px;
   color: var(--nb-ink-primary);
   font-size: 14px;
@@ -1750,7 +1763,7 @@
   align-items: center;
   gap: 6px;
   padding: 11px 18px;
-  border-radius: 8px;
+  border-radius: var(--nb-radius-card);
   background: var(--nb-accent);
   color: #EDEAE4;
   font-size: 13px;
@@ -1772,7 +1785,7 @@
 
 .practice-complete-btn {
   padding: 10px 16px;
-  border-radius: 8px;
+  border-radius: var(--nb-radius-card);
   background: transparent;
   border: 1px solid var(--nb-border-subtle);
   color: var(--nb-ink-secondary);
@@ -1794,7 +1807,7 @@
   padding: 12px 16px;
   background: rgba(248, 113, 113, 0.1);
   border: 1px solid rgba(248, 113, 113, 0.3);
-  border-radius: 8px;
+  border-radius: var(--nb-radius-card);
   color: #F87171;
   font-size: 13px;
   display: flex;
@@ -1809,7 +1822,7 @@
   padding: 36px 32px;
   background: var(--nb-surface-card);
   border: 1px solid var(--nb-border-subtle);
-  border-radius: 14px;
+  border-radius: var(--nb-radius-card);
   display: flex;
   flex-direction: column;
   gap: 26px;
@@ -1833,7 +1846,7 @@
   border: 1px solid var(--nb-emerald-border);
   width: 48px;
   height: 48px;
-  border-radius: 12px;
+  border-radius: var(--nb-radius-card);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1869,7 +1882,7 @@
 .practice-dimension-card {
   background: var(--nb-surface-elevated);
   border: 1px solid var(--nb-border-subtle);
-  border-radius: 10px;
+  border-radius: var(--nb-radius-card);
   padding: 16px 18px;
   display: flex;
   flex-direction: column;
@@ -1933,7 +1946,7 @@
 .practice-narrative-block {
   background: var(--nb-surface-elevated);
   border: 1px solid var(--nb-border-subtle);
-  border-radius: 10px;
+  border-radius: var(--nb-radius-card);
   padding: 18px 20px;
   display: flex;
   flex-direction: column;
@@ -1958,7 +1971,7 @@
 .practice-encouragement-box {
   background: linear-gradient(135deg, var(--nb-surface-card) 0%, var(--nb-accent-surface) 100%);
   border: 1px solid var(--nb-accent-border);
-  border-radius: 10px;
+  border-radius: var(--nb-radius-card);
   padding: 16px 20px;
   display: flex;
   align-items: center;
@@ -2011,7 +2024,7 @@
 .settings-card {
   background: var(--nb-surface-card);
   border: 1px solid var(--nb-border-subtle);
-  border-radius: 14px;
+  border-radius: var(--nb-radius-card);
   padding: 24px 26px;
   display: flex;
   flex-direction: column;
@@ -2064,7 +2077,7 @@
 .settings-input {
   background: var(--nb-surface-subtle);
   border: 1px solid var(--nb-border-subtle);
-  border-radius: 8px;
+  border-radius: var(--nb-radius-card);
   padding: 10px 14px;
   color: var(--nb-ink-primary);
   font-size: 14px;
@@ -2092,7 +2105,7 @@
 .settings-option-tile {
   background: var(--nb-surface-elevated);
   border: 1px solid var(--nb-border-subtle);
-  border-radius: 10px;
+  border-radius: var(--nb-radius-card);
   padding: 16px 14px;
   text-align: left;
   cursor: pointer;
@@ -2153,7 +2166,7 @@
 
 .settings-option-btn {
   padding: 9px 16px;
-  border-radius: 8px;
+  border-radius: var(--nb-radius-card);
   background: var(--nb-surface-subtle);
   border: 1px solid var(--nb-border-subtle);
   color: var(--nb-ink-secondary);
@@ -2189,7 +2202,7 @@
   padding: 14px 16px;
   background: var(--nb-surface-elevated);
   border: 1px solid var(--nb-border-subtle);
-  border-radius: 10px;
+  border-radius: var(--nb-radius-card);
   gap: 16px;
   flex-wrap: wrap;
 }
@@ -2216,7 +2229,7 @@
   display: inline-flex;
   background: var(--nb-surface-subtle);
   border: 1px solid var(--nb-border-subtle);
-  border-radius: 8px;
+  border-radius: var(--nb-radius-card);
   padding: 3px;
   gap: 2px;
 }
@@ -2259,7 +2272,7 @@
   gap: 6px;
   background: transparent;
   border: 1px solid var(--nb-border-subtle);
-  border-radius: 8px;
+  border-radius: var(--nb-radius-card);
   padding: 8px 16px;
   color: var(--nb-ink-secondary);
   font-size: 13px;
@@ -2299,7 +2312,7 @@
   gap: 10px;
   width: 100%;
   padding: 8px 12px;
-  border-radius: 8px;
+  border-radius: var(--nb-radius-card);
   background: var(--nb-surface-card);
   border: 1px solid var(--nb-border-subtle);
   color: var(--nb-ink-secondary);
@@ -2420,7 +2433,7 @@
   padding: 12px 14px;
   background: var(--nb-surface-elevated);
   border: 1px solid var(--nb-border-subtle);
-  border-radius: 10px;
+  border-radius: var(--nb-radius-card);
   gap: 12px;
 }
 
@@ -2461,7 +2474,7 @@
 .practice-scenario-picker-item {
   background: var(--nb-surface-elevated);
   border: 1px solid var(--nb-border-subtle);
-  border-radius: 10px;
+  border-radius: var(--nb-radius-card);
   padding: 14px 16px;
   text-align: left;
   cursor: pointer;
@@ -2607,7 +2620,7 @@
   align-items: center;
   background: var(--nb-charcoal-subtle);
   border: 1px solid var(--nb-charcoal-border);
-  border-radius: 12px;
+  border-radius: var(--nb-radius-card);
   padding: 20px 24px;
   margin-bottom: 24px;
   gap: 20px;
@@ -2625,7 +2638,7 @@
 .scenario-banner-icon {
   width: 40px;
   height: 40px;
-  border-radius: 8px;
+  border-radius: var(--nb-radius-card);
   background: var(--nb-charcoal-base);
   border: 1px solid var(--nb-charcoal-border);
   display: flex;
