@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import type { UserStats, SessionSummary } from './types';
 import { StatCard } from './StatCard';
 import { SessionRow } from './SessionRow';
@@ -16,18 +16,13 @@ export const ProgressView: React.FC<ProgressViewProps> = ({
   onNavigate,
   onRetrySession,
 }) => {
-  const avgScore =
-    sessions.length > 0
-      ? (sessions.reduce((acc, s) => acc + s.score, 0) / sessions.length).toFixed(1)
-      : '0.0';
-
   return (
     <div className="progress-view-container">
       <div className="dashboard-section-header">
         <span className="dashboard-section-eyebrow">YOUR JOURNEY</span>
         <h2 className="dashboard-section-title">Progress & Momentum</h2>
         <p className="dashboard-section-subtitle">
-          Track your confidence build-up, historical scores (average: {avgScore}/10), and steady consistency.
+          Track your confidence build-up, session evaluations, and steady consistency.
         </p>
       </div>
 
@@ -102,3 +97,4 @@ export const ProgressView: React.FC<ProgressViewProps> = ({
     </div>
   );
 };
+
