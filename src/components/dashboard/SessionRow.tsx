@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import {
   BriefcaseIcon,
   UsersIcon,
@@ -59,7 +59,7 @@ export const SessionRow: React.FC<SessionRowProps> = ({ session, onRetry }) => {
       <td className="session-col-feedback">
         <div className="session-feedback-cell">
           <span className="session-score-pill session-score--sage" style={score ? { background: 'var(--nb-emerald-surface)', color: 'var(--nb-emerald)', border: '1px solid var(--nb-emerald-border)' } : {}}>
-            {score ? ${score} / 12 : 'Completed'}
+            {score ? ` ${score} / 12 ` : 'Completed'}
           </span>
           <span className="session-feedback-text">{session.feedback}</span>
         </div>
@@ -80,4 +80,5 @@ export const SessionRow: React.FC<SessionRowProps> = ({ session, onRetry }) => {
     </tr>
   );
 };
+
 
