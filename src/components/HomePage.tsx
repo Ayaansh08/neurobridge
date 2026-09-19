@@ -2,7 +2,6 @@ import { useEffect, useRef, type CSSProperties, type ReactNode, type MouseEventH
 import { Renderer, Program, Mesh, Triangle, Color } from 'ogl';
 import gsap from 'gsap';
 import Aurora from './Aurora';
-import { Logo } from './dashboard/Icons';
 import './HomePage.css';
 
 

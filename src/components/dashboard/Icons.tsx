@@ -9,6 +9,11 @@ interface IconProps extends React.SVGProps<SVGSVGElement> {
 /**
  * NeuroBridge signature warm logo: warm terracotta/sage synaptic nodes
  */
+
+export const Logo: React.FC<IconProps> = ({ size = 28, className }) => (
+  <img src="/logo.png" alt="NeuroBridge Logo" width={size} height={size} className={className} style={{ display: 'block', objectFit: 'contain' }} />
+);
+
 export const BrainLogo: React.FC<IconProps> = ({ size = 28, className, ...props }) => (
   <svg
     width={size}

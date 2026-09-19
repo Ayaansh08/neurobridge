@@ -1,3 +1,4 @@
+import { Logo } from './dashboard/Icons';
 import React, { useState } from 'react';
 import Aurora from './Aurora';
 import { useAuth } from '../context/AuthContext';
@@ -18,8 +19,7 @@ export const LoginPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<FieldErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showForgotNotice, setShowForgotNotice] = useState(false);
-
+  
   const validate = () => {
     const nextErrors: FieldErrors = {};
 

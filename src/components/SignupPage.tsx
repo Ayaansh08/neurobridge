@@ -1,3 +1,4 @@
+import { Logo } from './dashboard/Icons';
 import React, { useState } from 'react';
 import Aurora from './Aurora';
 import { cognitoAuth } from '../services/authService';

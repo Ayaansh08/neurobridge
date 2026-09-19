@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  BrainLogo,
+  Logo,
   DashboardIcon,
   PracticeIcon,
   ScenariosIcon,
@@ -66,7 +66,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           onTabChange('dashboard');
         }}
       >
-        <BrainLogo size={28} className="sidebar-brand-icon" />
+        <Logo size={28} className="sidebar-brand-icon" />
         <div className="sidebar-brand-text">
           <span className="sidebar-brand-title">NeuroBridge</span>
           <span className="sidebar-brand-sub">AI Conversation Coach</span>
