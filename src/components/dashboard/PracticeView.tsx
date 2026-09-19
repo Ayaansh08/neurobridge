@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { defaultScenarios, userProgressService } from '../../services/userProgressService';
 import { useAuth } from '../../context/AuthContext';
 import { authConfig } from '../../config/auth';
@@ -576,6 +576,7 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
             <button
               type="button"
               className="practice-complete-btn"
+              disabled={isLoading || isInitializing}
               onClick={handleFinishPractice}
             >
               Complete & Save
@@ -673,6 +674,7 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
     </div>
   );
 };
+
 
 
 
