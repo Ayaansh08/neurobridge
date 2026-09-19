@@ -29,6 +29,7 @@ interface PracticeViewProps {
   initialScenarioId?: string;
   onSessionComplete?: () => void;
   onNavigate?: (path: string) => void;
+  restoredSessionData?: any;
 }
 
 interface PersonaInfo {
@@ -134,6 +135,7 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
   initialScenarioId,
   onSessionComplete,
   onNavigate,
+  restoredSessionData,
 }) => {
   const { user } = useAuth();
   const selectedScenario =
@@ -146,14 +148,19 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
     return 1;
   });
 
-  const [sessionId, setSessionId] = useState<string | null>(null);
-  const [messages, setMessages] = useState<Array<{ role: 'ai' | 'user'; content: string }>>([]);
+  const [sessionId, setSessionId] = useState<string | null>(() => restoredSessionData?.sessionRecord?.sessionId || null);
+  const [messages, setMessages] = useState<Array<{ role: 'ai' | 'user'; content: string }>>(() => {
+    if (restoredSessionData?.sessionRecord?.messages) {
+      return restoredSessionData.sessionRecord.messages.map((m: any) => ({ role: m.role, content: m.content }));
+    }
+    return [];
+  });
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isInitializing, setIsInitializing] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
 
-  const [isCompleted, setIsCompleted] = useState(false);
+  const [isCompleted, setIsCompleted] = useState(() => restoredSessionData?.sessionRecord?.status === 'completed');
   const [completionStep, setCompletionStep] = useState<'summary' | 'insights'>('summary');
   const [feedbackEvaluation, setFeedbackEvaluation] = useState<FeedbackEvaluation | null>(null);
 
@@ -254,6 +261,10 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
 
         const data = await res.json();
         setSessionId(data.sessionId);
+        localStorage.setItem(`nb_active_session_${user?.email || 'guest'}`, JSON.stringify({
+          sessionId: data.sessionId,
+          scenarioId: scenario.id
+        }));
 
         // Populate with real opening line from DynamoDB RulesTable
         if (data.messages && Array.isArray(data.messages)) {
@@ -273,8 +284,13 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
     [activeScenario, selectedDifficulty, user?.email, speakAloud, speakText]
   );
 
-  // Initialize session whenever scenario changes
+  // Initialize session whenever scenario changes, UNLESS we just restored one
+  const [initialRestoreDone, setInitialRestoreDone] = useState(!!restoredSessionData);
   useEffect(() => {
+    if (initialRestoreDone) {
+      setInitialRestoreDone(false);
+      return;
+    }
     initSession(activeScenario, selectedDifficulty);
   }, [activeScenario, selectedDifficulty, initSession]);
 
@@ -486,6 +502,8 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
         evaluation,
         user?.email
       );
+      
+      localStorage.removeItem(`nb_active_session_${user?.email || 'guest'}`);
 
       setFeedbackEvaluation(evaluation);
       setIsCompleted(true);
@@ -519,6 +537,8 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
       evaluation,
       user?.email
     );
+    
+    localStorage.removeItem(`nb_active_session_${user?.email || 'guest'}`);
 
     setFeedbackEvaluation(evaluation);
     setIsCompleted(true);
@@ -784,7 +804,18 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
             <div ref={chatBottomRef} />
           </div>
 
+          {isCompleted && (
+            <div style={{ padding: '16px', background: 'var(--nb-charcoal-border)', borderTop: '1px solid var(--nb-charcoal-subtle)', textAlign: 'center', color: 'var(--nb-gray-400)' }}>
+              This practice session has been completed.
+            </div>
+          )}
+          {!isCompleted && (
+          <div style={{ padding: '8px 16px', fontSize: '0.85rem', color: 'var(--nb-gray-400)', textAlign: 'center', borderTop: '1px solid var(--nb-charcoal-border)' }}>
+            Turn {userTurnCount} of 30
+          </div>
+          )}
           {/* Voice and Audio Toolbar */}
+          {!isCompleted && (
           <div className="practice-voice-toolbar">
             <div className="practice-voice-left">
               <button
@@ -833,6 +864,7 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
             </div>
           </div>
 
+            )}
           {/* Input & Action Form */}
           {!isCompleted && (
           <form className="practice-input-row" onSubmit={handleSendMessage}>

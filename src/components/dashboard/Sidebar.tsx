@@ -33,6 +33,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   userName,
   onSignOut,
   onOpenComfort,
+  hasActiveSession,
 }) => {
   // Extract initials dynamically from user's email/name, or fallback to 'NB'
   const getInitials = () => {
@@ -77,6 +78,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <span className="sidebar-nav-heading">MENU</span>
         <nav className="sidebar-nav" aria-label="Main Navigation">
           {navItems.map((item) => {
+            if (item.id === 'practice' && !hasActiveSession) return null;
             const Icon = item.icon;
             const isActive =
               currentTab === item.id ||

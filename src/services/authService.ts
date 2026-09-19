@@ -1,10 +1,9 @@
-import {
+﻿import {
   AuthenticationDetails,
   CognitoUser,
   CognitoUserAttribute,
   CognitoUserPool,
   CognitoUserSession,
-  type ICognitoStorage,
 } from 'amazon-cognito-identity-js';
 import { authConfig } from '../config/auth';
 import type { CognitoTokens } from '../types/auth';
@@ -27,22 +26,7 @@ type PasswordAuthUser = CognitoUser & {
   ) => void;
 };
 
-const memoryStorage = (): ICognitoStorage => {
-  const store = new Map<string, string>();
-
-  return {
-    setItem: (key, value) => store.set(key, value),
-    getItem: (key) => store.get(key) ?? null,
-    removeItem: (key) => {
-      store.delete(key);
-    },
-    clear: () => store.clear(),
-  };
-};
-
 class CognitoAuthService {
-  private storage = memoryStorage();
-
   private getPool(): CognitoUserPool {
     if (!authConfig.userPoolId || !authConfig.userPoolClientId) {
       throw new Error('Cognito is not configured. Set VITE_COGNITO_USER_POOL_ID and VITE_COGNITO_APP_CLIENT_ID.');
@@ -51,7 +35,6 @@ class CognitoAuthService {
     return new CognitoUserPool({
       UserPoolId: authConfig.userPoolId,
       ClientId: authConfig.userPoolClientId,
-      Storage: this.storage,
     });
   }
 
@@ -59,7 +42,6 @@ class CognitoAuthService {
     return new CognitoUser({
       Username: email,
       Pool: this.getPool(),
-      Storage: this.storage,
     });
   }
 
@@ -146,9 +128,40 @@ class CognitoAuthService {
     if (email) {
       this.getUser(email).signOut();
     }
-    this.storage.clear();
   }
 
+
+  restoreSession(): Promise<AuthResult<SignInSession> | null> {
+    return new Promise((resolve) => {
+      try {
+        const pool = this.getPool();
+        const user = pool.getCurrentUser();
+        if (!user) {
+          resolve(null);
+          return;
+        }
+        user.getSession((err: any, session: any) => {
+          if (err || !session.isValid()) {
+            resolve(null);
+            return;
+          }
+          resolve({
+            success: true,
+            data: {
+              email: user.getUsername(),
+              tokens: {
+                idToken: session.getIdToken().getJwtToken(),
+                accessToken: session.getAccessToken().getJwtToken(),
+                refreshToken: session.getRefreshToken().getToken(),
+              },
+            },
+          });
+        });
+      } catch (e) {
+        resolve(null);
+      }
+    });
+  }
   private formatErrorMessage(err: unknown): string {
     const message = err instanceof Error ? err.message : String(err);
 
@@ -185,3 +198,4 @@ class CognitoAuthService {
 }
 
 export const cognitoAuth = new CognitoAuthService();
+
