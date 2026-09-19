@@ -16,6 +16,7 @@ interface SignupErrors {
 export const SignupPage: React.FC = () => {
   const [step, setStep] = useState<'details' | 'confirm'>('details');
   const [email, setEmail] = useState('');
+  const [displayName, setDisplayName] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -102,12 +103,7 @@ export const SignupPage: React.FC = () => {
       />
       <section className="auth-column">
         <header className="auth-header">
-          <div className="auth-logo-mark" aria-hidden="true">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7z" />
-              <path d="M9 21h6" />
-            </svg>
-          </div>
+          <div className="auth-logo-mark" aria-hidden="true"><Logo size={28} /></div>
           <h1 id="signup-heading" className="auth-wordmark">
             NeuroBridge
           </h1>
@@ -127,7 +123,22 @@ export const SignupPage: React.FC = () => {
                 </div>
               )}
 
-              <div className="auth-field">
+                            <div className="auth-field">
+                <label className="auth-label" htmlFor="signup-name">
+                  Display name (optional)
+                </label>
+                <input
+                  id="signup-name"
+                  className="auth-input"
+                  type="text"
+                  placeholder="How should we call you?"
+                  value={displayName}
+                  onChange={(e) => setDisplayName(e.target.value)}
+                  disabled={isSubmitting}
+                />
+              </div>
+
+<div className="auth-field">
                 <label className="auth-label" htmlFor="signup-email">
                   Email
                 </label>
@@ -178,6 +189,7 @@ export const SignupPage: React.FC = () => {
                     className="auth-password-toggle"
                     onClick={() => setShowPassword(!showPassword)}
                     aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    aria-pressed={showPassword}
                     tabIndex={-1}
                   >
                     {showPassword ? (
