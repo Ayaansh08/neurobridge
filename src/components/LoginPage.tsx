@@ -183,9 +183,7 @@ export const LoginPage: React.FC = () => {
             </a>
           </div>
 
-          <div className="auth-google-row">
-            <span className="auth-google-note">Google sign-in: coming soon</span>
-          </div>
+          
         </div>
 
         <footer className="auth-disclaimer">
