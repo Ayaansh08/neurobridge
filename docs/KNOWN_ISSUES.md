@@ -1,20 +1,14 @@
-# Known Issues & Tech Debt
+﻿# Known Issues
 
-_Bugs, shortcuts, and things to fix._
+These are P2 issues triaged from the Phase 1 Bug Hunt, logged here to keep the demo path prioritized.
 
-## Security / Auth
-- **No API auth:** API Gateway has no Cognito authorizer. Anyone with the URL can create sessions. Frontend doesn't send auth tokens. Fix before production.
-- **In-memory tokens:** Refreshing the page logs you out. Acceptable for hackathon.
-- **CORS open to `*`:** Fine for dev, restrict to actual domain before production.
+## Architecture & Safety
+- **No React Error Boundary**: Unhandled render errors will crash to a white screen instead of a safe fallback UI.
+- **LocalStorage Corruption**: If the progress JSON in localStorage gets corrupted, it silently drops all progress on parse.
+- **PII in Console Logs**: Some console.error calls log raw error objects that might contain user emails or message content. Should move to a scrubbed structured logger.
+- **Large JS Bundle**: Main chunk exceeds 500kB. Need to implement React.lazy + Suspense for code-splitting (e.g. PracticeView).
 
-## Data
-- **Progress is client-only:** XP, streaks, levels live in localStorage. The DynamoDB `Progress` table exists but nothing reads/writes it.
-
-## Scenarios
-- All current scenarios have seed data and frontend cards.
-
-## Frontend
-- **`VITE_API_GATEWAY_URL` must be set:** Practice view shows an error banner if missing. No graceful offline/demo mode.
-
-## Infrastructure
-- All CDK resources are fully configured for `RemovalPolicy.DESTROY`.
+## User Experience (Edge Cases)
+- **503 Retry UI**: If Bedrock hits a 503 capacity limit, the frontend shows an error but lacks an automatic exponential backoff retry flow.
+- **Web Speech API Transcripts**: Interim vs Final voice transcripts are visually identical in the input field, which can confuse users watching it transcribe in real time.
+- **Accessibility**: Animations (like the Aurora background) do not respect the @media (prefers-reduced-motion) OS preference.
