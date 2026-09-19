@@ -4,6 +4,7 @@ import type { UserStats, ScenarioItem, SessionSummary, FeedbackEvaluation } from
 const STORAGE_KEYS = {
   STATS: 'neurobridge_user_stats',
   SESSIONS: 'neurobridge_user_sessions',
+  DISPLAY_NAME: 'neurobridge_display_name',
 };
 
 export const defaultScenarios: ScenarioItem[] = [
@@ -84,6 +85,16 @@ export const defaultScenarios: ScenarioItem[] = [
 ];
 
 export const userProgressService = {
+  getDisplayName(userEmail?: string): string {
+    const key = userEmail ? `${STORAGE_KEYS.DISPLAY_NAME}_${userEmail}` : STORAGE_KEYS.DISPLAY_NAME;
+    return localStorage.getItem(key) || '';
+  },
+
+  saveDisplayName(name: string, userEmail?: string): void {
+    const key = userEmail ? `${STORAGE_KEYS.DISPLAY_NAME}_${userEmail}` : STORAGE_KEYS.DISPLAY_NAME;
+    localStorage.setItem(key, name);
+  },
+
   getUserStats(userEmail?: string): UserStats {
     const key = userEmail ? `${STORAGE_KEYS.STATS}_${userEmail}` : STORAGE_KEYS.STATS;
     const raw = localStorage.getItem(key);

@@ -42,12 +42,23 @@ export const Dashboard: React.FC<DashboardProps> = ({
   }, [initialScenarioId]);
 
   // Derive display name dynamically from user's email or account object
+
+  const [customDisplayName, setCustomDisplayName] = useState(() => userProgressService.getDisplayName(user?.email));
+
+  useEffect(() => {
+    const handleNameChange = () => setCustomDisplayName(userProgressService.getDisplayName(user?.email));
+    window.addEventListener('nb_displayname_changed', handleNameChange);
+    return () => window.removeEventListener('nb_displayname_changed', handleNameChange);
+  }, [user?.email]);
+
   const getDisplayName = (email?: string): string => {
+    if (customDisplayName) return customDisplayName;
     if (!email) return 'Guest';
     const localPart = email.split('@')[0];
     const nameOnly = localPart.split(/[._-]/)[0];
     return nameOnly.charAt(0).toUpperCase() + nameOnly.slice(1);
   };
+
 
   const displayName = getDisplayName(user?.email);
   const userEmail = user?.email;

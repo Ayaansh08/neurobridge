@@ -1,10 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { userProgressService } from '../../services/userProgressService';
 import { settingsService, type UserSettings, DEFAULT_SETTINGS } from '../../services/settingsService';
 import { CheckCircleIcon, RefreshIcon, ComfortSlidersIcon } from './Icons';
 
 export const SettingsView: React.FC = () => {
   const { user } = useAuth();
+  const [displayName, setDisplayName] = useState(() => userProgressService.getDisplayName(user?.email));
+
+  const handleDisplayNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value.substring(0, 30);
+    setDisplayName(val);
+    userProgressService.saveDisplayName(val, user?.email);
+    window.dispatchEvent(new Event('nb_displayname_changed'));
+  };
   const [settings, setSettings] = useState<UserSettings>(() => settingsService.getSettings());
   const [saveStatus, setSaveStatus] = useState<string | null>(null);
 
@@ -52,8 +61,19 @@ export const SettingsView: React.FC = () => {
             <h3 className="settings-card-title">Account & Profile</h3>
             <p className="settings-card-desc">Your rehearsal identity and practice storage.</p>
           </div>
-          <div className="settings-form-group">
-            <label className="settings-label">Account Email</label>
+            <div className="settings-form-group">
+              <label className="settings-label">Display Name</label>
+              <input
+                type="text"
+                className="settings-input"
+                value={displayName}
+                onChange={handleDisplayNameChange}
+                placeholder="How should we greet you?"
+                maxLength={30}
+              />
+            </div>
+            <div className="settings-form-group">
+              <label className="settings-label">Account Email</label>
             <input
               type="text"
               className="settings-input settings-input--readonly"
