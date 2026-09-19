@@ -10,6 +10,19 @@ import {
 import type { SessionRowProps } from './types';
 
 export const SessionRow: React.FC<SessionRowProps> = ({ session, onRetry }) => {
+
+  const computeScore = (dimensions: any) => {
+    if (!dimensions) return 0;
+    const map: Record<string, number> = { strong: 3, developing: 2, 'needs practice': 1 };
+    return (
+      (map[dimensions.clarity?.rating] || 0) +
+      (map[dimensions.tone?.rating] || 0) +
+      (map[dimensions.responsiveness?.rating] || 0) +
+      (map[dimensions.composure?.rating] || 0)
+    );
+  };
+  const score = session.evaluation?.dimensions ? computeScore(session.evaluation.dimensions) : null;
+
   const getScenarioIcon = () => {
     switch (session.scenarioType) {
       case 'job-interview':
@@ -45,8 +58,8 @@ export const SessionRow: React.FC<SessionRowProps> = ({ session, onRetry }) => {
       {/* Feedback Column */}
       <td className="session-col-feedback">
         <div className="session-feedback-cell">
-          <span className="session-score-pill session-score--sage">
-            Completed
+          <span className="session-score-pill session-score--sage" style={score ? { background: 'var(--nb-emerald-surface)', color: 'var(--nb-emerald)', border: '1px solid var(--nb-emerald-border)' } : {}}>
+            {score ? ${score} / 12 : 'Completed'}
           </span>
           <span className="session-feedback-text">{session.feedback}</span>
         </div>

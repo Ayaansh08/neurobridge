@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+﻿import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { defaultScenarios, userProgressService } from '../../services/userProgressService';
 import { settingsService } from '../../services/settingsService';
 import { useAuth } from '../../context/AuthContext';
@@ -48,7 +48,7 @@ const PERSONA_DETAILS: Record<string, PersonaInfo> = {
     tips: [
       'Take a breath before answering complex questions.',
       'Use the STAR method (Situation, Task, Action, Result) if helpful.',
-      'It is completely okay to pause for 2–3 seconds to collect your thoughts.',
+      'It is completely okay to pause for 2â€“3 seconds to collect your thoughts.',
     ],
   },
   'talk-to-manager': {
@@ -154,6 +154,7 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
   const [apiError, setApiError] = useState<string | null>(null);
 
   const [isCompleted, setIsCompleted] = useState(false);
+  const [completionStep, setCompletionStep] = useState<'summary' | 'insights'>('summary');
   const [feedbackEvaluation, setFeedbackEvaluation] = useState<FeedbackEvaluation | null>(null);
 
   // Scenario Switcher Drawer & Tips Drawer
@@ -475,7 +476,7 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
         },
         whatWentWell: data.whatWentWell || 'You stepped into the scenario with clear intent and kept the conversation moving forward constructively.',
         tryImproving: data.tryImproving || 'Experiment with pausing before answering difficult pushback to give yourself space to formulate composed answers.',
-        encouragement: data.encouragement || 'Every practice session strengthens your real-world communication reflexesâ€”great job showing up.',
+        encouragement: data.encouragement || 'Every practice session strengthens your real-world communication reflexesÃ¢â‚¬â€great job showing up.',
       };
 
       userProgressService.recordCompletedSession(
@@ -508,7 +509,7 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
       },
       whatWentWell: 'You stepped into the scenario with clear intent and kept the conversation moving forward constructively.',
       tryImproving: 'Experiment with pausing before answering difficult pushback to give yourself space to formulate composed answers.',
-      encouragement: 'Every practice session builds communication reflexesâ€”great job showing up today.',
+      encouragement: 'Every practice session builds communication reflexesÃ¢â‚¬â€great job showing up today.',
     };
 
     userProgressService.recordCompletedSession(
@@ -524,11 +525,23 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
     onSessionComplete?.();
   };
 
+  const computeScore = (dimensions: any) => {
+    if (!dimensions) return 0;
+    const map: Record<string, number> = { strong: 3, developing: 2, 'needs practice': 1 };
+    return (
+      (map[dimensions.clarity?.rating] || 0) +
+      (map[dimensions.tone?.rating] || 0) +
+      (map[dimensions.responsiveness?.rating] || 0) +
+      (map[dimensions.composure?.rating] || 0)
+    );
+  };
+
   const handleSwitchScenario = (scenario: ScenarioItem) => {
     setActiveScenario(scenario);
     const diff = scenario.difficulty === 'Advanced' ? 3 : scenario.difficulty === 'Intermediate' ? 2 : 1;
     setSelectedDifficulty(diff);
     setIsCompleted(false);
+    setCompletionStep('summary');
     setFeedbackEvaluation(null);
     setIsScenarioPickerOpen(false);
   };
@@ -545,7 +558,7 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
           <div className="practice-persona-meta">
             <div className="practice-persona-title-row">
               <h2 className="practice-persona-name">{persona.name}</h2>
-              <span className="practice-persona-role">· {persona.role}</span>
+              <span className="practice-persona-role">Â· {persona.role}</span>
               <span className={`difficulty-pill difficulty-pill--${activeScenario.difficulty.toLowerCase()}`}>
                 {activeScenario.difficulty}
               </span>
@@ -718,7 +731,6 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
         </div>
       )}
 
-      {!isCompleted ? (
         <div className="practice-workspace-card">
           {/* Chat message stream */}
           <div className="practice-chat-area" aria-label="Conversation Rehearsal Thread">
@@ -810,7 +822,7 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
             <div className="practice-voice-right">
               {isListening && (
                 <span className="practice-voice-notice practice-voice-notice--listening">
-                  â— Listening... review before sending
+                  Ã¢â€”Â Listening... review before sending
                 </span>
               )}
               {voiceNotice && !isListening && (
@@ -822,6 +834,7 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
           </div>
 
           {/* Input & Action Form */}
+          {!isCompleted && (
           <form className="practice-input-row" onSubmit={handleSendMessage}>
             <button
               type="button"
@@ -868,20 +881,90 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
               <ArrowRightIcon size={13} />
             </button>
 
-            <button
-              type="button"
-              className="practice-complete-btn"
-              disabled={isLoading || isInitializing}
-              onClick={() => setIsConfirmFinishOpen(true)}
-              title="Finish session and get constructive feedback"
-            >
-              Finish & get feedback
-            </button>
+            <div className="practice-finish-wrapper" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
+              <button
+                type="button"
+                className={"practice-complete-btn " + (userTurnCount >= 3 ? "practice-complete-btn--ready" : "")}
+                disabled={isLoading || isInitializing || userTurnCount < 3}
+                onClick={() => setIsConfirmFinishOpen(true)}
+                title="Finish session and get constructive feedback"
+                style={userTurnCount >= 3 ? { boxShadow: '0 0 12px rgba(183,165,152,0.4)', borderColor: 'var(--nb-terracotta)' } : {}}
+              >
+                Finish & get feedback
+              </button>
+              {userTurnCount < 3 && (
+                <span className="practice-finish-hint" style={{ fontSize: '10px', color: 'var(--nb-ink-muted)' }}>
+                  Send {3 - userTurnCount} more message{3 - userTurnCount !== 1 ? 's' : ''} to finish
+                </span>
+              )}
+            </div>
           </form>
+          )}
         </div>
-      ) : (
-        /* Completed Rehearsal Feedback View */
-        <div className="practice-completed-card">
+
+        {isCompleted && feedbackEvaluation && (
+          <div className="practice-completed-card">
+            {completionStep === 'summary' ? (
+              <div className="practice-summary-screen">
+                <div className="practice-completed-header">
+                  <div className="practice-completed-icon">
+                    <CheckCircleIcon size={26} />
+                  </div>
+                  <div className="practice-completed-header-text">
+                    <h3 className="practice-completed-title">Session Summary</h3>
+                    <p className="practice-completed-subtitle">
+                      You completed {activeScenario.title} with {persona.name}
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="practice-score-ring-container" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '30px 0' }}>
+                  <div className="score-ring" style={{ width: '80px', height: '80px', borderRadius: '50%', border: '4px solid var(--nb-emerald)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', fontWeight: 'bold', color: 'var(--nb-emerald)', marginBottom: '12px' }}>
+                    {computeScore(feedbackEvaluation.dimensions)}<span style={{ fontSize: '14px', color: 'var(--nb-ink-muted)' }}>/12</span>
+                  </div>
+                  <div style={{ fontSize: '12px', color: 'var(--nb-ink-muted)' }}>Based on the four ratings below</div>
+                </div>
+
+                <div className="practice-narrative-sections">
+                  <div className="practice-narrative-block" style={{ textAlign: 'center' }}>
+                    <p className="practice-narrative-text" style={{ fontSize: '1.1rem', fontWeight: 500, margin: '0 auto', maxWidth: '600px' }}>
+                      {feedbackEvaluation.summary || `${feedbackEvaluation.whatWentWell} ${feedbackEvaluation.tryImproving}`}
+                    </p>
+                    <p style={{ marginTop: '16px', color: 'var(--nb-terracotta)', fontWeight: 'bold' }}>+100 XP earned</p>
+                  </div>
+                </div>
+                
+                <div className="practice-completed-actions" style={{ marginTop: '30px', justifyContent: 'center' }}>
+                  <button type="button" className="dashboard-cta-btn" onClick={() => setCompletionStep('insights')}>
+                    <span>See insights</span>
+                  </button>
+                  <button
+                    type="button"
+                    className="dashboard-view-all-btn"
+                    onClick={() => {
+                      setIsCompleted(false);
+                      setCompletionStep('summary');
+                      setFeedbackEvaluation(null);
+                      initSession(activeScenario, selectedDifficulty);
+                    }}
+                  >
+                    <span>Practice again</span>
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="practice-insights-screen">
+                <div className="practice-completed-header">
+                  <div className="practice-completed-icon">
+                    <CheckCircleIcon size={26} />
+                  </div>
+                  <div className="practice-completed-header-text">
+                    <h3 className="practice-completed-title">Rehearsal Insights</h3>
+                    <p className="practice-completed-subtitle">
+                      Constructive reflection on your practice with {persona.name} ({activeScenario.title})
+                    </p>
+                  </div>
+                </div>
           <div className="practice-completed-header">
             <div className="practice-completed-icon">
               <CheckCircleIcon size={26} />
@@ -949,8 +1032,16 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
             <button
               type="button"
               className="dashboard-cta-btn"
+              onClick={() => setCompletionStep('summary')}
+            >
+              <span>Back to summary</span>
+            </button>
+            <button
+              type="button"
+              className="dashboard-view-all-btn"
               onClick={() => {
                 setIsCompleted(false);
+                setCompletionStep('summary');
                 setFeedbackEvaluation(null);
                 initSession(activeScenario, selectedDifficulty);
               }}
@@ -970,11 +1061,15 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
           <div className="practice-disclaimer-note">
             NeuroBridge is a conversational practice tool, not a clinical therapy service.
           </div>
+              </div>
+            )}
         </div>
-      )}
+        )}
     </div>
   );
 };
+
+
 
 
 
