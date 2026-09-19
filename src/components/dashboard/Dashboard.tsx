@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Sidebar } from './Sidebar';
+import { BriefcaseIcon } from './Icons';
 import { DashboardHeader } from './DashboardHeader';
 import { StatCard } from './StatCard';
 import { ScenarioCard } from './ScenarioCard';
@@ -17,18 +18,21 @@ interface DashboardProps {
   initialTab?: string;
   initialScenarioId?: string;
   onNavigate?: (path: string) => void;
+  restoredSessionData?: any;
 }
 
 export const Dashboard: React.FC<DashboardProps> = ({
   initialTab = 'dashboard',
   initialScenarioId,
   onNavigate,
+  restoredSessionData,
 }) => {
   const { user, logout } = useAuth();
   const [currentTab, setCurrentTab] = useState(initialTab);
   const [activeScenarioId, setActiveScenarioId] = useState<string | undefined>(initialScenarioId);
   const [activeMessage, setActiveMessage] = useState<string | null>(null);
   const [isComfortOpen, setIsComfortOpen] = useState(false);
+  const hasActiveSession = !!restoredSessionData || !!localStorage.getItem(`nb_active_session_${user?.email || 'guest'}`);
 
   // Sync tab if initialTab prop changes via browser popstate
   useEffect(() => {
@@ -86,6 +90,16 @@ export const Dashboard: React.FC<DashboardProps> = ({
   useEffect(() => {
     refreshUserData();
   }, [refreshUserData]);
+
+  const [scenariosNotice, setScenariosNotice] = useState<string | null>(null);
+
+  useEffect(() => {
+    const handleFailed = () => {
+      setScenariosNotice("We couldn't restore your last practice session. Choose a scenario to start a new one.");
+    };
+    window.addEventListener('nb_session_restore_failed', handleFailed);
+    return () => window.removeEventListener('nb_session_restore_failed', handleFailed);
+  }, []);
 
   const handleTabNavigate = (tab: string) => {
     setCurrentTab(tab);
@@ -196,17 +210,49 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 </h2>
                 <p className="dashboard-section-subtitle">
                   Choose any scenario to practice low-stimulation rehearsals with your AI coach.
-                </p>
+                  </p>
+                  {scenariosNotice && (
+                    <div style={{ marginTop: '16px', padding: '12px 16px', background: 'var(--nb-rose-subtle)', color: 'var(--nb-rose)', borderRadius: '8px', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span style={{ fontSize: '1.2rem' }}>&#9888;</span>
+                      <span>{scenariosNotice}</span>
+                    </div>
+                  )}
+                  {!scenariosNotice && !restoredSessionData && !hasActiveSession && (
+                    <div style={{ marginTop: '16px', padding: '12px 16px', background: 'var(--nb-charcoal-subtle)', color: 'var(--nb-gray-400)', borderRadius: '8px', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span style={{ fontSize: '1.2rem' }}>&#128161;</span>
+                      <span>Choose a scenario to start practicing.</span>
+                    </div>
+                  )}
               </div>
 
-              <div className="dashboard-scenarios-asymmetric">
-                <div className="scenarios-featured-col">
-                  <ScenarioCard
-                    scenario={featuredScenario}
-                    onSelect={handleSelectScenario}
-                  />
+                              <div className="scenario-banner-card">
+                  <div className="scenario-banner-left">
+                    <div className="scenario-banner-header">
+                      <div className="scenario-banner-icon">
+                        <BriefcaseIcon size={20} />
+                      </div>
+                      <div>
+                        <div style={{ fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.05em', color: 'var(--nb-gray-400)', textTransform: 'uppercase', marginBottom: '4px' }}>
+                          Good place to start
+                        </div>
+                        <h3 className="scenario-banner-title">{featuredScenario.title}</h3>
+                      </div>
+                    </div>
+                    <p className="scenario-banner-desc">
+                      {featuredScenario.description}
+                    </p>
+                  </div>
+                  <button 
+                    type="button" 
+                    className="dashboard-cta-btn" 
+                    style={{ whiteSpace: 'nowrap' }}
+                    onClick={() => handleSelectScenario(featuredScenario)}
+                  >
+                    <span>Start this scenario</span>
+                  </button>
                 </div>
-                <div className="scenarios-compact-col">
+
+                <div className="dashboard-scenarios-grid">
                   {secondaryScenarios.map((scenario) => (
                     <ScenarioCard
                       key={scenario.id}
@@ -215,7 +261,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
                     />
                   ))}
                 </div>
-              </div>
             </section>
           )}
 
