@@ -1,4 +1,4 @@
-﻿import type { ScenarioType } from '../../backend/lambdas/shared/types';
+import type { ScenarioType } from '../../backend/lambdas/shared/types';
 import type { UserStats, ScenarioItem, SessionSummary, FeedbackEvaluation } from '../components/dashboard/types';
 
 const STORAGE_KEYS = {
@@ -15,7 +15,7 @@ export const defaultScenarios: ScenarioItem[] = [
     difficulty: 'Beginner',
     icon: 'interview',
     isFeatured: true,
-    duration: '10â€“12 min',
+    duration: '10-12 min',
     tagline: 'Recommended for you today',
   },
   {
@@ -159,7 +159,7 @@ export const userProgressService = {
     const keySessions = userEmail ? `${STORAGE_KEYS.SESSIONS}_${userEmail}` : STORAGE_KEYS.SESSIONS;
     localStorage.setItem(keySessions, JSON.stringify(updatedSessions));
 
-    // Fixed session completion reward (+100 XP) â€” non-judgmental progression
+    // Fixed session completion reward (+100 XP) — non-judgmental progression
     const xpGained = 100;
     const newTotalXp = currentStats.totalXp + xpGained;
     let newLevel = currentStats.currentLevel;
@@ -177,7 +177,7 @@ export const userProgressService = {
       sessionsCompleted: currentStats.sessionsCompleted + 1,
       weeklySessionsChange: `+${currentStats.sessionsCompleted + 1} total`,
       currentStreak: Math.max(1, currentStats.currentStreak + 1),
-      streakStatus: 'Momentum active Â· keep it going',
+      streakStatus: 'Momentum active · keep it going',
       totalXp: newTotalXp,
       weeklyXpChange: `+${xpGained} XP today`,
       currentLevel: newLevel,
