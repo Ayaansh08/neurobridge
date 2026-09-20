@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Sidebar } from './Sidebar';
-import { BriefcaseIcon } from './Icons';
+import { BriefcaseIcon, SparklesIcon } from './Icons';
 import { DashboardHeader } from './DashboardHeader';
 import { StatCard } from './StatCard';
 import { ScenarioCard } from './ScenarioCard';
@@ -31,13 +31,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
   const [currentTab, setCurrentTab] = useState(initialTab);
   const [activeScenarioId, setActiveScenarioId] = useState<string | undefined>(initialScenarioId);
   const [activeMessage, setActiveMessage] = useState<string | null>(null);
-    const [hasActiveSession, setHasActiveSession] = useState(!!restoredSessionData || !!localStorage.getItem(`nb_active_session_${user?.email || 'guest'}`));
-  useEffect(() => {
-    const checkSession = () => setHasActiveSession(!!restoredSessionData || !!localStorage.getItem(`nb_active_session_${user?.email || 'guest'}`));
-    window.addEventListener('storage', checkSession);
-    const interval = setInterval(checkSession, 1000);
-    return () => { window.removeEventListener('storage', checkSession); clearInterval(interval); };
-  }, [user?.email, restoredSessionData]);
+
 
   // Sync tab if initialTab prop changes via browser popstate
   useEffect(() => {
@@ -187,6 +181,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
           {currentTab === 'practice' && (
             <PracticeView
               initialScenarioId={activeScenarioId}
+              restoredSessionData={restoredSessionData}
               onSessionComplete={() => {
                 refreshUserData();
                 setActiveMessage('Session completed! XP and stats updated.');
@@ -205,57 +200,49 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 </h2>
                 <p className="dashboard-section-subtitle">
                   Choose any scenario to practice low-stimulation rehearsals with your AI coach.
-                  </p>
-                  {scenariosNotice && (
-                    <div style={{ marginTop: '16px', padding: '12px 16px', background: 'var(--nb-rose-subtle)', color: 'var(--nb-rose)', borderRadius: '8px', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span style={{ fontSize: '1.2rem' }}>&#9888;</span>
-                      <span>{scenariosNotice}</span>
-                    </div>
-                  )}
-                  {!scenariosNotice && !restoredSessionData && !hasActiveSession && (
-                    <div style={{ marginTop: '16px', padding: '12px 16px', background: 'var(--nb-charcoal-subtle)', color: 'var(--nb-gray-400)', borderRadius: '8px', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span style={{ fontSize: '1.2rem' }}>&#128161;</span>
-                      <span>Choose a scenario to start practicing.</span>
-                    </div>
-                  )}
+                </p>
+                {(scenariosNotice || (typeof window !== 'undefined' && window.location.search.includes('redirect=no_session'))) && (
+                  <div className="dashboard-notice" style={{ marginTop: '16px', padding: '12px 16px', background: 'var(--nb-surface-card)', border: '1px solid var(--nb-border-subtle)', borderRadius: 'var(--nb-radius-card)', color: 'var(--nb-ink-secondary)', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <SparklesIcon size={16} style={{ color: 'var(--nb-accent)', flexShrink: 0 }} />
+                    <span>{scenariosNotice || 'Choose a scenario to start practicing.'}</span>
+                  </div>
+                )}
               </div>
 
-                              <div className="scenario-banner-card">
-                  <div className="scenario-banner-left">
-                    <div className="scenario-banner-header">
-                      <div className="scenario-banner-icon">
-                        <BriefcaseIcon size={20} />
-                      </div>
-                      <div>
-                        <div style={{ fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.05em', color: 'var(--nb-gray-400)', textTransform: 'uppercase', marginBottom: '4px' }}>
-                          Good place to start
-                        </div>
-                        <h3 className="scenario-banner-title">{featuredScenario.title}</h3>
-                      </div>
-                    </div>
-                    <p className="scenario-banner-desc">
-                      {featuredScenario.description}
-                    </p>
+              <div className="scenario-banner-card">
+                <div className="scenario-banner-left">
+                  <div className="scenario-banner-medallion">
+                    <BriefcaseIcon size={22} />
                   </div>
-                  <button 
-                    type="button" 
-                    className="dashboard-cta-btn" 
-                    style={{ whiteSpace: 'nowrap' }}
-                    onClick={() => handleSelectScenario(featuredScenario)}
-                  >
-                    <span>Start this scenario</span>
-                  </button>
+                  <div className="scenario-banner-content">
+                    <span className="scenario-banner-eyebrow">Good place to start</span>
+                    <div className="scenario-banner-title-row">
+                      <h3 className="scenario-banner-title">{featuredScenario.title}</h3>
+                      {featuredScenario.duration && (
+                        <span className="scenario-banner-duration">{featuredScenario.duration}</span>
+                      )}
+                    </div>
+                    <p className="scenario-banner-desc">{featuredScenario.description}</p>
+                  </div>
                 </div>
+                <button
+                  type="button"
+                  className="dashboard-cta-btn"
+                  onClick={() => handleSelectScenario(featuredScenario)}
+                >
+                  <span>Start this scenario</span>
+                </button>
+              </div>
 
-                <div className="dashboard-scenarios-grid">
-                  {secondaryScenarios.map((scenario) => (
-                    <ScenarioCard
-                      key={scenario.id}
-                      scenario={scenario}
-                      onSelect={handleSelectScenario}
-                    />
-                  ))}
-                </div>
+              <div className="dashboard-scenarios-grid">
+                {secondaryScenarios.map((scenario) => (
+                  <ScenarioCard
+                    key={scenario.id}
+                    scenario={scenario}
+                    onSelect={handleSelectScenario}
+                  />
+                ))}
+              </div>
             </section>
           )}
 
