@@ -46,25 +46,25 @@ const FALLBACK_EVALUATION: FeedbackEvaluation = {
   summary: 'We could not generate personalized feedback this time. You can try finishing the session again.',
   dimensions: {
     clarity: {
-      rating: 'developing',
+      rating: 'Not rated' as any,
       note: 'Not enough information to rate this yet.',
     },
     tone: {
-      rating: 'developing',
+      rating: 'Not rated' as any,
       note: 'Not enough information to rate this yet.',
     },
     responsiveness: {
-      rating: 'developing',
+      rating: 'Not rated' as any,
       note: 'Not enough information to rate this yet.',
     },
     composure: {
-      rating: 'developing',
+      rating: 'Not rated' as any,
       note: 'Not enough information to rate this yet.',
     },
   },
-  whatWentWell: 'N/A',
-  tryImproving: 'N/A',
-  encouragement: 'N/A',
+  whatWentWell: '',
+  tryImproving: '',
+  encouragement: '',
   fallback: true,
 };
 
@@ -184,15 +184,17 @@ Output exactly and only a valid JSON object matching this schema, with no markdo
 
 
     // 5. Update Session Status
-    session.status = 'completed';
-    session.updatedAt = new Date().toISOString();
-    
-    await docClient.send(
-      new PutCommand({
-        TableName: SESSIONS_TABLE,
-        Item: session,
-      })
-    );
+    if (!evaluation.fallback) {
+      session.status = 'completed';
+      session.updatedAt = new Date().toISOString();
+      
+      await docClient.send(
+        new PutCommand({
+          TableName: SESSIONS_TABLE,
+          Item: session,
+        })
+      );
+    }
 
     // 6. Return Evaluation
     return {
