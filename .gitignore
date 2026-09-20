@@ -23,7 +23,19 @@ dist-ssr
 *.sln
 *.sw?
 
+# Secrets and environment
 .env
+.env.*
+!.env.example
+.aws
+*.pem
+*.key
+
+# Build output
+cdk.out
+
+# Archives
+*.zip
 # Agent Harness Runtime Files
 hive/
 palace/
