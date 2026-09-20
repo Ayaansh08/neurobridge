@@ -3,10 +3,10 @@
 _What's in the stack, what it costs, and how to clean up._
 
 ## Account & Region
-- **AWS Account:** 993191529588 (new AWS experience, social provider signup)
+- **AWS Account:** <AWS_ACCOUNT_ID> (new AWS experience, social provider signup)
 - **Region:** `ap-south-1` (Mumbai)
 - **Stack name:** `NeuroBridgeStack`
-- **Profile:** `vermagaurav23`
+- **Profile:** `<CLI_PROFILE>`
 
 ## Resources Created by CDK
 
