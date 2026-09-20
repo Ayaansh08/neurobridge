@@ -54,6 +54,9 @@ function AppRoutes() {
           scenarioId: savedSession.scenarioId,
           sessionRecord: data
         });
+        if (window.location.pathname === '/app' || window.location.pathname === '/' || window.location.pathname === '/app/practice') {
+          navigate(`/app/practice/${savedSession.scenarioId}`);
+        }
       } catch (err) {
         console.warn('Could not restore session:', err);
         localStorage.removeItem(activeSessionKey);
@@ -110,29 +113,20 @@ function AppRoutes() {
     let tab = 'dashboard';
     let scenarioId: string | undefined = undefined;
 
-    // Determine initial route based on restored session
-    if (restoredSessionData) {
+    if (path.startsWith('/app/practice/')) {
       tab = 'practice';
-      scenarioId = restoredSessionData.scenarioId;
-      // If we're restoring, we silently push the correct practice path if we aren't already there
-      const targetPath = `/app/practice/${scenarioId}`;
-      if (path !== targetPath && !path.includes('summary') && !path.includes('insights')) {
-        setTimeout(() => navigate(targetPath), 0);
-      }
-    } else {
-      if (path.startsWith('/app/practice/')) {
-        tab = 'practice';
-        scenarioId = path.replace('/app/practice/', '');
-      } else if (path === '/app/practice') {
-        tab = 'scenarios';
-        setTimeout(() => navigate('/app/scenarios?redirect=no_session'), 0);
-      } else if (path === '/app/scenarios') {
-        tab = 'scenarios';
-      } else if (path === '/app/progress') {
-        tab = 'progress';
-      } else if (path === '/app/settings') {
-        tab = 'settings';
-      }
+      scenarioId = path.replace('/app/practice/', '');
+    } else if (path === '/app/practice') {
+      tab = 'scenarios';
+      setTimeout(() => navigate('/app/scenarios?redirect=no_session'), 0);
+    } else if (path === '/app/scenarios') {
+      tab = 'scenarios';
+    } else if (path === '/app/progress') {
+      tab = 'progress';
+    } else if (path === '/app/settings') {
+      tab = 'settings';
+    } else if (path === '/app' || path === '/app/') {
+      tab = 'dashboard';
     }
 
     return (

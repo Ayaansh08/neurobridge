@@ -1024,6 +1024,20 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
                   >
                     <span>Practice again</span>
                   </button>
+                  <button
+                    type="button"
+                    className="dashboard-view-all-btn"
+                    onClick={() => {
+                      if (onNavigate) {
+                        onNavigate('/app');
+                      } else {
+                        window.history.pushState({}, '', '/app');
+                        window.dispatchEvent(new PopStateEvent('popstate'));
+                      }
+                    }}
+                  >
+                    <span>Back to Dashboard</span>
+                  </button>
                 </div>
               </div>
             ) : (
@@ -1123,7 +1137,14 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
             <button
               type="button"
               className="dashboard-view-all-btn"
-              onClick={() => onNavigate?.('/app')}
+              onClick={() => {
+                if (onNavigate) {
+                  onNavigate('/app');
+                } else {
+                  window.history.pushState({}, '', '/app');
+                  window.dispatchEvent(new PopStateEvent('popstate'));
+                }
+              }}
             >
               <span>Back to Dashboard</span>
             </button>
