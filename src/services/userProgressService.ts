@@ -1,5 +1,5 @@
 import type { ScenarioType } from '../../backend/lambdas/shared/types';
-import type { UserStats, ScenarioItem, SessionSummary, FeedbackEvaluation } from '../components/dashboard/types';
+import type { UserStats, ScenarioItem, SessionSummary, FeedbackEvaluation, UnfinishedSession } from '../components/dashboard/types';
 
 const STORAGE_KEYS = {
   STATS: 'neurobridge_user_stats',
@@ -296,6 +296,85 @@ export const userProgressService = {
     this.saveUserStats(updatedStats, userEmail);
 
     return { updatedStats, newSession };
+  },
+
+  getUnfinishedSessions(userEmail?: string): UnfinishedSession[] {
+    const key = `nb_unfinished_sessions_${userEmail || 'guest'}`;
+    try {
+      const raw = localStorage.getItem(key);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) {
+          return parsed.slice(0, 3);
+        }
+      }
+    } catch {
+      // ignore
+    }
+    return [];
+  },
+
+  saveUnfinishedSession(session: UnfinishedSession, userEmail?: string): { success: boolean; error?: string } {
+    const key = `nb_unfinished_sessions_${userEmail || 'guest'}`;
+    const list = this.getUnfinishedSessions(userEmail);
+    const existingIndex = list.findIndex((s) => s.sessionId === session.sessionId);
+
+    if (existingIndex >= 0) {
+      list[existingIndex] = { ...list[existingIndex], ...session };
+      localStorage.setItem(key, JSON.stringify(list));
+      window.dispatchEvent(new CustomEvent('nb_unfinished_sessions_changed'));
+      return { success: true };
+    }
+
+    if (list.length >= 3) {
+      return {
+        success: false,
+        error: 'You have 3 unfinished sessions. Finish or discard one to start another.',
+      };
+    }
+
+    const updated = [session, ...list];
+    localStorage.setItem(key, JSON.stringify(updated));
+    window.dispatchEvent(new CustomEvent('nb_unfinished_sessions_changed'));
+    return { success: true };
+  },
+
+  updateSessionTurns(sessionId: string, userTurns: number, userEmail?: string): void {
+    const key = `nb_unfinished_sessions_${userEmail || 'guest'}`;
+    const list = this.getUnfinishedSessions(userEmail);
+    const item = list.find((s) => s.sessionId === sessionId);
+    if (item) {
+      item.userTurns = userTurns;
+      localStorage.setItem(key, JSON.stringify(list));
+      window.dispatchEvent(new CustomEvent('nb_unfinished_sessions_changed'));
+    }
+  },
+
+  removeUnfinishedSession(sessionId: string, userEmail?: string): void {
+    const key = `nb_unfinished_sessions_${userEmail || 'guest'}`;
+    const list = this.getUnfinishedSessions(userEmail);
+    const filtered = list.filter((s) => s.sessionId !== sessionId);
+    localStorage.setItem(key, JSON.stringify(filtered));
+
+    // Also remove single active session key if matching
+    const activeKey = `nb_active_session_${userEmail || 'guest'}`;
+    try {
+      const activeRaw = localStorage.getItem(activeKey);
+      if (activeRaw && JSON.parse(activeRaw).sessionId === sessionId) {
+        localStorage.removeItem(activeKey);
+      }
+    } catch {
+      // ignore
+    }
+
+    window.dispatchEvent(new CustomEvent('nb_unfinished_sessions_changed'));
+  },
+
+  clearUnfinishedSessions(userEmail?: string): void {
+    const key = `nb_unfinished_sessions_${userEmail || 'guest'}`;
+    localStorage.removeItem(key);
+    localStorage.removeItem(`nb_active_session_${userEmail || 'guest'}`);
+    window.dispatchEvent(new CustomEvent('nb_unfinished_sessions_changed'));
   },
 };
 

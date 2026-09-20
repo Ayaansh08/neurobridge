@@ -9,9 +9,10 @@ import { SessionRow } from './SessionRow';
 import { PracticeView } from './PracticeView';
 import { ProgressView } from './ProgressView';
 import { SettingsView } from './SettingsView';
+import { authConfig } from '../../config/auth';
 
 import { defaultScenarios, userProgressService } from '../../services/userProgressService';
-import type { ScenarioItem, SessionSummary, UserStats } from './types';
+import type { ScenarioItem, SessionSummary, UserStats, UnfinishedSession } from './types';
 import './Dashboard.css';
 
 interface DashboardProps {
@@ -32,7 +33,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
   const [activeScenarioId, setActiveScenarioId] = useState<string | undefined>(initialScenarioId);
   const [activeMessage, setActiveMessage] = useState<string | null>(null);
 
-
   // Sync tab if initialTab prop changes via browser popstate
   useEffect(() => {
     setCurrentTab(initialTab);
@@ -44,8 +44,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
     }
   }, [initialScenarioId]);
 
-  // Derive display name dynamically from user's email or account object
-
+  // Custom display name derived dynamically from service
   const [customDisplayName, setCustomDisplayName] = useState(() => userProgressService.getDisplayName(user?.email));
 
   useEffect(() => {
@@ -65,11 +64,10 @@ export const Dashboard: React.FC<DashboardProps> = ({
     return nameOnly.charAt(0).toUpperCase() + nameOnly.slice(1);
   };
 
-
   const displayName = getDisplayName(user?.email);
   const userEmail = user?.email;
 
-  // Real, persistent user progress and session history state
+  // Real persistent user stats and session history
   const [userStats, setUserStats] = useState<UserStats>(() =>
     userProgressService.getUserStats(userEmail)
   );
@@ -77,14 +75,34 @@ export const Dashboard: React.FC<DashboardProps> = ({
     userProgressService.getUserSessions(userEmail)
   );
 
+  // Unfinished sessions management
+  const [unfinishedSessions, setUnfinishedSessions] = useState<UnfinishedSession[]>(() =>
+    userProgressService.getUnfinishedSessions(userEmail)
+  );
+  const [discardModalSession, setDiscardModalSession] = useState<UnfinishedSession | null>(null);
+  const [restoreErrorNotice, setRestoreErrorNotice] = useState<{ message: string; sessionId: string } | null>(null);
+  const [currentRestoredData, setCurrentRestoredData] = useState<any>(restoredSessionData);
+
+  useEffect(() => {
+    if (restoredSessionData) {
+      setCurrentRestoredData(restoredSessionData);
+    }
+  }, [restoredSessionData]);
+
   const refreshUserData = useCallback(() => {
     setUserStats(userProgressService.getUserStats(userEmail));
     setRecentSessions(userProgressService.getUserSessions(userEmail));
+    setUnfinishedSessions(userProgressService.getUnfinishedSessions(userEmail));
   }, [userEmail]);
 
   useEffect(() => {
     refreshUserData();
-  }, [refreshUserData]);
+    const handleUnfinishedChanged = () => {
+      setUnfinishedSessions(userProgressService.getUnfinishedSessions(userEmail));
+    };
+    window.addEventListener('nb_unfinished_sessions_changed', handleUnfinishedChanged);
+    return () => window.removeEventListener('nb_unfinished_sessions_changed', handleUnfinishedChanged);
+  }, [refreshUserData, userEmail]);
 
   const [scenariosNotice, setScenariosNotice] = useState<string | null>(null);
 
@@ -136,7 +154,59 @@ export const Dashboard: React.FC<DashboardProps> = ({
     }
   };
 
+  const handleResumeSession = async (session: UnfinishedSession) => {
+    setRestoreErrorNotice(null);
+    const endpoint = authConfig.apiEndpoint.replace(/\/+$/, '');
+    if (!endpoint) {
+      setRestoreErrorNotice({
+        message: 'We could not restore this session.',
+        sessionId: session.sessionId,
+      });
+      return;
+    }
+    try {
+      const res = await fetch(`${endpoint}/sessions/${session.sessionId}`, {
+        signal: AbortSignal.timeout(15000),
+      });
+      if (!res.ok) {
+        throw new Error('Session not found or expired');
+      }
+      const data = await res.json();
+      if (!data.messages || data.messages.length === 0) {
+        throw new Error('No conversation history available');
+      }
+      setCurrentRestoredData({
+        scenarioId: session.scenarioId,
+        sessionRecord: data,
+      });
+      setActiveScenarioId(session.scenarioId);
+      handleTabNavigate('practice');
+      const targetPath = `/app/practice/${session.scenarioId}`;
+      if (onNavigate) {
+        onNavigate(targetPath);
+      } else {
+        window.history.pushState({}, '', targetPath);
+        window.dispatchEvent(new PopStateEvent('popstate'));
+      }
+    } catch (err) {
+      console.warn('Could not restore session:', err);
+      setRestoreErrorNotice({
+        message: 'We could not restore this session.',
+        sessionId: session.sessionId,
+      });
+    }
+  };
+
+  const handleDiscardSession = (sessionId: string) => {
+    userProgressService.removeUnfinishedSession(sessionId, userEmail);
+    setDiscardModalSession(null);
+    if (restoreErrorNotice?.sessionId === sessionId) {
+      setRestoreErrorNotice(null);
+    }
+  };
+
   const handleSignOut = () => {
+    userProgressService.clearUnfinishedSessions(userEmail);
     logout();
     const targetPath = '/login';
     if (onNavigate) {
@@ -144,6 +214,19 @@ export const Dashboard: React.FC<DashboardProps> = ({
     } else {
       window.history.pushState({}, '', targetPath);
       window.dispatchEvent(new PopStateEvent('popstate'));
+    }
+  };
+
+  const formatStartedAt = (iso: string) => {
+    try {
+      const d = new Date(iso);
+      const month = d.toLocaleDateString('en-US', { month: 'short' });
+      const day = d.getDate();
+      const hours = d.getHours().toString().padStart(2, '0');
+      const mins = d.getMinutes().toString().padStart(2, '0');
+      return `Started ${month} ${day}, ${hours}:${mins}`;
+    } catch {
+      return 'Started recently';
     }
   };
 
@@ -165,7 +248,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
         onSignOut={handleSignOut}
       />
 
-      
       {/* Main Low-Stimulation Content Area */}
       <main className="dashboard-main">
         <div className="dashboard-container">
@@ -181,7 +263,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
           {currentTab === 'practice' && (
             <PracticeView
               initialScenarioId={activeScenarioId}
-              restoredSessionData={restoredSessionData}
+              restoredSessionData={currentRestoredData}
               onSessionComplete={() => {
                 refreshUserData();
                 setActiveMessage('Session completed! XP and stats updated.');
@@ -209,6 +291,70 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 )}
               </div>
 
+              {/* Slim Top Banner for Unfinished Practice if any exist */}
+              {unfinishedSessions.length > 0 && (
+                <div
+                  className="unfinished-top-banner"
+                  style={{
+                    padding: '14px 20px',
+                    background: 'var(--nb-surface-card)',
+                    border: '1px solid var(--nb-accent-border)',
+                    borderRadius: 'var(--nb-radius-card)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: '16px',
+                    marginBottom: '24px',
+                    flexWrap: 'wrap',
+                    boxShadow: '0 2px 8px rgba(168, 92, 140, 0.08)',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <SparklesIcon size={16} style={{ color: 'var(--nb-accent)', flexShrink: 0 }} />
+                    <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--nb-ink-primary)' }}>
+                      You have an unfinished practice: <strong>{unfinishedSessions[0].scenarioTitle}</strong>.
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    className="dashboard-btn dashboard-btn--primary"
+                    style={{ padding: '7px 16px', fontSize: '13px', whiteSpace: 'nowrap' }}
+                    onClick={() => handleResumeSession(unfinishedSessions[0])}
+                  >
+                    Resume
+                  </button>
+                </div>
+              )}
+
+              {/* Inline Restore Error Notice if restore fails */}
+              {restoreErrorNotice && (
+                <div
+                  style={{
+                    marginBottom: '20px',
+                    padding: '12px 18px',
+                    background: 'var(--nb-surface-card)',
+                    border: '1px solid var(--nb-rose, #D97070)',
+                    borderRadius: 'var(--nb-radius-card)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: '12px',
+                    flexWrap: 'wrap',
+                  }}
+                >
+                  <span style={{ color: 'var(--nb-ink-primary)', fontSize: '13.5px' }}>{restoreErrorNotice.message}</span>
+                  <button
+                    type="button"
+                    className="dashboard-btn dashboard-btn--secondary"
+                    style={{ padding: '6px 14px', fontSize: '12.5px' }}
+                    onClick={() => handleDiscardSession(restoreErrorNotice.sessionId)}
+                  >
+                    Remove it
+                  </button>
+                </div>
+              )}
+
+              {/* Good place to start banner card */}
               <div className="scenario-banner-card">
                 <div className="scenario-banner-left">
                   <div className="scenario-banner-medallion">
@@ -234,6 +380,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 </button>
               </div>
 
+              {/* 2-Column Responsive Scenario Grid */}
               <div className="dashboard-scenarios-grid">
                 {secondaryScenarios.map((scenario) => (
                   <ScenarioCard
@@ -243,6 +390,74 @@ export const Dashboard: React.FC<DashboardProps> = ({
                   />
                 ))}
               </div>
+
+              {/* Unfinished Sessions Logbook Section */}
+              {unfinishedSessions.length > 0 && (
+                <div className="unfinished-sessions-section" style={{ marginTop: '48px' }}>
+                  <div className="dashboard-section-header">
+                    <span className="dashboard-section-eyebrow">LOGBOOK</span>
+                    <h3 className="dashboard-section-title" style={{ fontSize: '20px' }}>
+                      Unfinished sessions
+                    </h3>
+                    <p className="dashboard-section-subtitle">
+                      Pick up right where you left off. Up to 3 recent practice sessions are saved here.
+                    </p>
+                  </div>
+
+                  <div className="unfinished-sessions-list" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    {unfinishedSessions.map((s) => (
+                      <div
+                        key={s.sessionId}
+                        className="unfinished-session-card"
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          background: 'var(--nb-surface-card)',
+                          border: '1px solid var(--nb-border-subtle)',
+                          borderRadius: 'var(--nb-radius-card)',
+                          padding: '16px 20px',
+                          gap: '16px',
+                          flexWrap: 'wrap',
+                        }}
+                      >
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flex: 1, minWidth: '220px' }}>
+                          <div className="scenario-banner-medallion" style={{ width: 40, height: 40 }}>
+                            <BriefcaseIcon size={18} />
+                          </div>
+                          <div>
+                            <h4 style={{ margin: '0 0 3px 0', fontSize: '14.5px', fontWeight: 600, color: 'var(--nb-ink-primary)' }}>
+                              {s.scenarioTitle}
+                            </h4>
+                            <div style={{ fontSize: '12px', color: 'var(--nb-ink-secondary)' }}>
+                              {formatStartedAt(s.startedAt)} · Turn {s.userTurns} of 30
+                            </div>
+                          </div>
+                        </div>
+
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <button
+                            type="button"
+                            className="dashboard-btn dashboard-btn--primary"
+                            style={{ padding: '7px 14px', fontSize: '12.5px' }}
+                            onClick={() => handleResumeSession(s)}
+                          >
+                            Resume
+                          </button>
+                          <button
+                            type="button"
+                            className="dashboard-btn dashboard-btn--secondary"
+                            style={{ padding: '7px 12px', fontSize: '12.5px' }}
+                            onClick={() => setDiscardModalSession(s)}
+                          >
+                            Discard
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </section>
           )}
 
@@ -267,7 +482,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 currentXp={userStats.currentLevelXp}
                 nextLevelXp={userStats.nextLevelXp}
                 onStartPracticing={handleStartPracticing}
-                
               />
 
               {/* Asymmetric Stats Section: 1 Bespoke Streak Card + 2 Compact Stat Chips */}
@@ -303,24 +517,54 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 </section>
               )}
 
-              {/* Choose a Scenario Section: Asymmetric 2-Column Editorial Layout */}
+              {/* Choose a Scenario / Continue Practice Section */}
               <section className="dashboard-section" aria-labelledby="scenarios-title">
                 <div className="dashboard-section-header">
-                  <span className="dashboard-section-eyebrow">REHEARSAL PROMPTS</span>
+                  <span className="dashboard-section-eyebrow">
+                    {unfinishedSessions.length > 0 ? 'CONTINUE PRACTICE' : 'REHEARSAL PROMPTS'}
+                  </span>
                   <h2 id="scenarios-title" className="dashboard-section-title">
-                    Choose a Scenario
+                    {unfinishedSessions.length > 0 ? 'Pick Up Where You Left Off' : 'Choose a Scenario'}
                   </h2>
                   <p className="dashboard-section-subtitle">
-                    Select a real-world scenario to practice with real-time, low-stimulation feedback.
+                    {unfinishedSessions.length > 0
+                      ? 'Resume your active rehearsal or explore new conversational situations.'
+                      : 'Select a real-world scenario to practice with real-time, low-stimulation feedback.'}
                   </p>
                 </div>
 
-                <div style={{ width: '100%', maxWidth: '100%' }}>
-                  <ScenarioCard
-                    scenario={featuredScenario}
-                    onSelect={handleSelectScenario}
-                  />
-                </div>
+                {unfinishedSessions.length > 0 ? (
+                  <div className="scenario-banner-card">
+                    <div className="scenario-banner-left">
+                      <div className="scenario-banner-medallion">
+                        <BriefcaseIcon size={22} />
+                      </div>
+                      <div className="scenario-banner-content">
+                        <span className="scenario-banner-eyebrow">Continue practice</span>
+                        <div className="scenario-banner-title-row">
+                          <h3 className="scenario-banner-title">{unfinishedSessions[0].scenarioTitle}</h3>
+                        </div>
+                        <p className="scenario-banner-desc">
+                          {formatStartedAt(unfinishedSessions[0].startedAt)} · Turn {unfinishedSessions[0].userTurns} of 30
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      className="dashboard-cta-btn"
+                      onClick={() => handleResumeSession(unfinishedSessions[0])}
+                    >
+                      <span>Resume</span>
+                    </button>
+                  </div>
+                ) : (
+                  <div style={{ width: '100%', maxWidth: '100%' }}>
+                    <ScenarioCard
+                      scenario={featuredScenario}
+                      onSelect={handleSelectScenario}
+                    />
+                  </div>
+                )}
               </section>
 
               {/* Recent Sessions List with Empty State Support */}
@@ -332,7 +576,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                       Recent Sessions
                     </h2>
                     <p className="dashboard-section-subtitle">
-                      Review your recent conversational pacing, assertions, and key takeaways.
+                      Your most recent practice sessions.
                     </p>
                   </div>
                   <button
@@ -374,13 +618,13 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         </thead>
                         <tbody>
                           {recentSessions.slice(0, 1).map((session) => (
-                          <SessionRow
-                            key={session.sessionId}
-                            session={session}
-                            onRetry={handleRetrySession}
-                            onRowClick={() => handleTabNavigate('progress')}
-                          />
-                        ))}
+                            <SessionRow
+                              key={session.sessionId}
+                              session={session}
+                              onRetry={handleRetrySession}
+                              onRowClick={() => handleTabNavigate('progress')}
+                            />
+                          ))}
                         </tbody>
                       </table>
                     </div>
@@ -391,10 +635,86 @@ export const Dashboard: React.FC<DashboardProps> = ({
           )}
         </div>
       </main>
+
+      {/* Discard Confirmation Dialog Modal */}
+      {discardModalSession && (
+        <div
+          className="comfort-modal-overlay"
+          onClick={() => setDiscardModalSession(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="discard-modal-title"
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0, 0, 0, 0.75)',
+            backdropFilter: 'blur(4px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1000,
+            padding: '20px',
+          }}
+        >
+          <div
+            className="comfort-modal-card"
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              maxWidth: '440px',
+              width: '100%',
+              padding: '28px',
+              background: 'var(--nb-surface-card)',
+              border: '1px solid var(--nb-border-subtle)',
+              borderRadius: 'var(--nb-radius-card)',
+              boxShadow: '0 20px 40px rgba(0,0,0,0.6)',
+            }}
+          >
+            <h3
+              id="discard-modal-title"
+              style={{
+                margin: '0 0 10px 0',
+                fontSize: '19px',
+                fontFamily: 'var(--font-serif-display)',
+                color: 'var(--nb-ink-primary)',
+              }}
+            >
+              Discard unfinished session?
+            </h3>
+            <p
+              style={{
+                margin: '0 0 24px 0',
+                fontSize: '14px',
+                color: 'var(--nb-ink-secondary)',
+                lineHeight: 1.5,
+              }}
+            >
+              Discard this unfinished session? This cannot be undone.
+            </p>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
+              <button
+                type="button"
+                className="dashboard-btn dashboard-btn--secondary"
+                onClick={() => setDiscardModalSession(null)}
+              >
+                Keep Session
+              </button>
+              <button
+                type="button"
+                className="dashboard-btn dashboard-btn--primary"
+                style={{
+                  background: 'var(--nb-accent)',
+                  borderColor: 'var(--nb-accent)',
+                }}
+                onClick={() => handleDiscardSession(discardModalSession.sessionId)}
+              >
+                Discard
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
 export default Dashboard;
-
-

@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { defaultScenarios, userProgressService } from '../../services/userProgressService';
 import { settingsService } from '../../services/settingsService';
 import { useAuth } from '../../context/AuthContext';
@@ -241,6 +241,14 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
       }
 
       try {
+        // Check 3 unfinished sessions cap
+        const unfinished = userProgressService.getUnfinishedSessions(user?.email);
+        if (unfinished.length >= 3 && !unfinished.some((s) => s.scenarioId === scenario.id)) {
+          setApiError('You have 3 unfinished sessions. Finish or discard one to start another.');
+          setIsInitializing(false);
+          return;
+        }
+
         const res = await fetch(`${endpoint}/sessions`, {
           method: 'POST',
           signal: AbortSignal.timeout(25000),
@@ -263,8 +271,18 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
         setSessionId(data.sessionId);
         localStorage.setItem(`nb_active_session_${user?.email || 'guest'}`, JSON.stringify({
           sessionId: data.sessionId,
-          scenarioId: scenario.id
+          scenarioId: scenario.id,
         }));
+
+        userProgressService.saveUnfinishedSession({
+          sessionId: data.sessionId,
+          scenarioId: scenario.id,
+          scenarioTitle: scenario.title,
+          scenarioIcon: scenario.icon,
+          difficulty: scenario.difficulty,
+          startedAt: new Date().toISOString(),
+          userTurns: 0,
+        }, user?.email);
 
         // Populate with real opening line from DynamoDB RulesTable
         if (data.messages && Array.isArray(data.messages)) {
@@ -401,6 +419,11 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
     setApiError(null);
     setIsLoading(true);
 
+    if (sessionId) {
+      const userTurns = newHistory.filter((m) => m.role === 'user').length;
+      userProgressService.updateSessionTurns(sessionId, userTurns, user?.email);
+    }
+
     const endpoint = authConfig.apiEndpoint.replace(/\/+$/, '');
 
     if (!sessionId || !endpoint) {
@@ -412,8 +435,8 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
     try {
       const res = await fetch(`${endpoint}/sessions/${sessionId}/messages`, {
         method: 'POST',
-          signal: AbortSignal.timeout(25000),
-          headers: {
+        signal: AbortSignal.timeout(25000),
+        headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ message: userMsg }),
@@ -473,8 +496,8 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
     try {
       const res = await fetch(`${endpoint}/sessions/${sessionId}/feedback`, {
         method: 'POST',
-          signal: AbortSignal.timeout(25000),
-          headers: {
+        signal: AbortSignal.timeout(25000),
+        headers: {
           'Content-Type': 'application/json',
         },
       });
@@ -492,7 +515,7 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
         },
         whatWentWell: data.whatWentWell || 'You stepped into the scenario with clear intent and kept the conversation moving forward constructively.',
         tryImproving: data.tryImproving || 'Experiment with pausing before answering difficult pushback to give yourself space to formulate composed answers.',
-        encouragement: data.encouragement || 'Every practice session strengthens your real-world communication reflexesÃ¢â‚¬â€great job showing up.',
+        encouragement: data.encouragement || 'Every practice session strengthens your real-world communication reflexes — great job showing up.',
       };
 
       userProgressService.recordCompletedSession(
@@ -502,7 +525,10 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
         evaluation,
         user?.email
       );
-      
+
+      if (sessionId) {
+        userProgressService.removeUnfinishedSession(sessionId, user?.email);
+      }
       localStorage.removeItem(`nb_active_session_${user?.email || 'guest'}`);
 
       setFeedbackEvaluation(evaluation);
@@ -527,7 +553,7 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
       },
       whatWentWell: 'You stepped into the scenario with clear intent and kept the conversation moving forward constructively.',
       tryImproving: 'Experiment with pausing before answering difficult pushback to give yourself space to formulate composed answers.',
-      encouragement: 'Every practice session builds communication reflexesÃ¢â‚¬â€great job showing up today.',
+      encouragement: 'Every practice session builds communication reflexes — great job showing up today.',
     };
 
     userProgressService.recordCompletedSession(
@@ -537,7 +563,10 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
       evaluation,
       user?.email
     );
-    
+
+    if (sessionId) {
+      userProgressService.removeUnfinishedSession(sessionId, user?.email);
+    }
     localStorage.removeItem(`nb_active_session_${user?.email || 'guest'}`);
 
     setFeedbackEvaluation(evaluation);
@@ -557,6 +586,12 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
   };
 
   const handleSwitchScenario = (scenario: ScenarioItem) => {
+    const unfinished = userProgressService.getUnfinishedSessions(user?.email);
+    if (unfinished.length >= 3 && !unfinished.some((s) => s.scenarioId === scenario.id)) {
+      setApiError('You have 3 unfinished sessions. Finish or discard one to start another.');
+      setIsScenarioPickerOpen(false);
+      return;
+    }
     setActiveScenario(scenario);
     const diff = scenario.difficulty === 'Advanced' ? 3 : scenario.difficulty === 'Intermediate' ? 2 : 1;
     setSelectedDifficulty(diff);
@@ -578,7 +613,7 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
           <div className="practice-persona-meta">
             <div className="practice-persona-title-row">
               <h2 className="practice-persona-name">{persona.name}</h2>
-              <span className="practice-persona-role">Â· {persona.role}</span>
+              <span className="practice-persona-role">&middot; {persona.role}</span>
               <span className={`difficulty-pill difficulty-pill--${activeScenario.difficulty.toLowerCase()}`}>
                 {activeScenario.difficulty}
               </span>

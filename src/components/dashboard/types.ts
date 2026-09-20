@@ -26,6 +26,16 @@ export interface ScenarioItem {
   tagline?: string;
 }
 
+export interface UnfinishedSession {
+  sessionId: string;
+  scenarioId: string;
+  scenarioTitle: string;
+  scenarioIcon?: string;
+  difficulty?: string;
+  startedAt: string;
+  userTurns: number;
+}
+
 export type DimensionRating = 'strong' | 'developing' | 'needs practice';
 
 export interface FeedbackDimension {
