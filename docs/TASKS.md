@@ -26,6 +26,9 @@ _Single source of truth for work. Now / Next / Later / Done._
 - Personalized practice recommendations: Out of scope for a 3-minute demo timeline.
 
 ## ✅ Done
+- [x] Minimal-Footprint App Upscale Pass (session summary slosh gauge, flat stat cards, underlined status labels)
+- [x] Warm-Noir Editorial Auth Screens (asymmetric sign-in/create-account canvas, printed panel, Practice Pass type-in strip, GlareButton CTAs, muted checklist states)
+- [x] Warm-Noir Literary Editorial Landing Page Redesign (Asymmetric 12-col hero, bespoke cream Rehearsal Ticket, marquee Clipping Strip, single-column Case Index, full-bleed pull-quote, printed Readiness Gauge, GlareButton, paper film grain texture)
 - [x] Fix Settings Tab Save and Reset to Defaults buttons to match global UI design tokens
 - [x] Round 4 UI Fixes (Comfort in Settings, 4 fixed nav items, Scenarios banner & 2-col layout, unfinished session recovery logbook, Progress rhythm & shared SessionRow, unified StatCard family & local XP calculation, bug fixes)
 - [x] Quiet Night UI redesign for First Commit "Best UI" prize track (charcoal foundation `#16151A`, muted plum `#A85C8C`, `Fraunces` serif headings)

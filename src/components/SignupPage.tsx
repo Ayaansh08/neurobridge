@@ -2,6 +2,9 @@ import { Logo } from './dashboard/Icons';
 import React, { useState } from 'react';
 import Aurora from './Aurora';
 import { cognitoAuth } from '../services/authService';
+import AuthPracticePass from './AuthPracticePass';
+import GlareButton from './landing/GlareButton';
+import LoginRehearsalTicket from './landing/LoginRehearsalTicket';
 import './LoginPage.css';
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -41,7 +44,7 @@ export const SignupPage: React.FC = () => {
 
     if (!password) {
       nextErrors.password = 'Password is required';
-    } else if (!hasMinLength || !hasNumber) {
+    } else if (!hasMinLength || !hasNumber || !hasUppercase) {
       nextErrors.password = 'Password must meet the required rules';
     }
 
@@ -104,15 +107,19 @@ export const SignupPage: React.FC = () => {
       />
       <section className="auth-column">
         <header className="auth-header">
-          <div className="auth-logo-mark" aria-hidden="true"><Logo size={28} /></div>
-          <h1 id="signup-heading" className="auth-wordmark">
-            NeuroBridge
+          <div className="auth-brand-row">
+            <div className="auth-logo-mark" aria-hidden="true"><Logo size={28} /></div>
+            <span className="auth-brand-name">NeuroBridge</span>
+          </div>
+          <h1 id="signup-heading" className="auth-wordmark auth-reveal auth-reveal--one">
+            Begin with a quieter first draft.
           </h1>
-          <p className="auth-tagline">
+          <p className="auth-tagline auth-reveal auth-reveal--two">
             {step === 'details'
               ? 'Create a private practice space in seconds.'
               : 'Confirm your email to finish setup.'}
           </p>
+          <AuthPracticePass />
         </header>
 
         <div className="auth-card">
@@ -124,7 +131,7 @@ export const SignupPage: React.FC = () => {
                 </div>
               )}
 
-                            <div className="auth-field">
+              <div className="auth-field">
                 <label className="auth-label" htmlFor="signup-name">
                   Display name (optional)
                 </label>
@@ -139,7 +146,7 @@ export const SignupPage: React.FC = () => {
                 />
               </div>
 
-<div className="auth-field">
+              <div className="auth-field">
                 <label className="auth-label" htmlFor="signup-email">
                   Email
                 </label>
@@ -212,16 +219,18 @@ export const SignupPage: React.FC = () => {
                   </p>
                 )}
 
-                {/* Live Password Rules Hint */}
                 <div className="auth-rules-list">
                   <span className={`auth-rule-item ${hasMinLength ? 'auth-rule-item--met' : ''}`}>
-                    {hasMinLength ? '✓' : '·'} 8+ characters
+                    <span className="auth-rule-dash" aria-hidden="true" />
+                    <span>8+ characters</span>
                   </span>
                   <span className={`auth-rule-item ${hasNumber ? 'auth-rule-item--met' : ''}`}>
-                    {hasNumber ? '✓' : '·'} At least 1 number
+                    <span className="auth-rule-dash" aria-hidden="true" />
+                    <span>At least 1 number</span>
                   </span>
                   <span className={`auth-rule-item ${hasUppercase ? 'auth-rule-item--met' : ''}`}>
-                    {hasUppercase ? '✓' : '·'} 1 uppercase
+                    <span className="auth-rule-dash" aria-hidden="true" />
+                    <span>1 uppercase</span>
                   </span>
                 </div>
               </div>
@@ -252,10 +261,10 @@ export const SignupPage: React.FC = () => {
                 )}
               </div>
 
-              <button className="auth-button auth-button--primary" type="submit" disabled={isSubmitting}>
+              <GlareButton className="auth-button auth-button--primary" type="submit" disabled={isSubmitting}>
                 {isSubmitting && <span className="auth-spinner" aria-hidden="true" />}
                 <span>{isSubmitting ? 'Creating account...' : 'Create account'}</span>
-              </button>
+              </GlareButton>
             </form>
           ) : (
             <form className="auth-form" onSubmit={handleConfirm} noValidate>
@@ -291,10 +300,10 @@ export const SignupPage: React.FC = () => {
                 )}
               </div>
 
-              <button className="auth-button auth-button--primary" type="submit" disabled={isSubmitting}>
+              <GlareButton className="auth-button auth-button--primary" type="submit" disabled={isSubmitting}>
                 {isSubmitting && <span className="auth-spinner" aria-hidden="true" />}
                 <span>{isSubmitting ? 'Confirming code...' : 'Confirm email & sign in'}</span>
-              </button>
+              </GlareButton>
             </form>
           )}
 
@@ -307,9 +316,13 @@ export const SignupPage: React.FC = () => {
         </div>
 
         <footer className="auth-disclaimer">
-          Practice tool only · Not therapy or medical advice
+          Practice tool only - Not therapy or medical advice
         </footer>
       </section>
+
+      <aside className="auth-ticket-column" aria-hidden="true">
+        <LoginRehearsalTicket />
+      </aside>
     </main>
   );
 };

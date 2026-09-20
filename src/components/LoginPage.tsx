@@ -3,6 +3,9 @@ import React, { useState } from 'react';
 import Aurora from './Aurora';
 import { useAuth } from '../context/AuthContext';
 import { cognitoAuth } from '../services/authService';
+import AuthPracticePass from './AuthPracticePass';
+import GlareButton from './landing/GlareButton';
+import LoginRehearsalTicket from './landing/LoginRehearsalTicket';
 import './LoginPage.css';
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -68,11 +71,15 @@ export const LoginPage: React.FC = () => {
       />
       <section className="auth-column">
         <header className="auth-header">
-          <div className="auth-logo-mark" aria-hidden="true"><Logo size={28} /></div>
-          <h1 id="login-heading" className="auth-wordmark">
-            NeuroBridge
+          <div className="auth-brand-row">
+            <div className="auth-logo-mark" aria-hidden="true"><Logo size={28} /></div>
+            <span className="auth-brand-name">NeuroBridge</span>
+          </div>
+          <h1 id="login-heading" className="auth-wordmark auth-reveal auth-reveal--one">
+            Return to your rehearsal room.
           </h1>
-          <p className="auth-tagline">Practice difficult moments before they happen.</p>
+          <p className="auth-tagline auth-reveal auth-reveal--two">Practice difficult moments before they <span>happen</span>.</p>
+          <AuthPracticePass />
         </header>
 
         <div className="auth-card">
@@ -156,10 +163,10 @@ export const LoginPage: React.FC = () => {
 
             
 
-            <button className="auth-button auth-button--primary" type="submit" disabled={isSubmitting}>
+            <GlareButton className="auth-button auth-button--primary" type="submit" disabled={isSubmitting}>
               {isSubmitting && <span className="auth-spinner" aria-hidden="true" />}
               <span>{isSubmitting ? 'Signing in...' : 'Sign in'}</span>
-            </button>
+            </GlareButton>
           </form>
 
           <div className="auth-bottom-row">
@@ -173,9 +180,13 @@ export const LoginPage: React.FC = () => {
         </div>
 
         <footer className="auth-disclaimer">
-          Practice tool only · Not therapy or medical advice
+          Practice tool only - Not therapy or medical advice
         </footer>
       </section>
+
+      <aside className="auth-ticket-column" aria-hidden="true">
+        <LoginRehearsalTicket />
+      </aside>
     </main>
   );
 };

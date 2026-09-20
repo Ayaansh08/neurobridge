@@ -1,0 +1,261 @@
+/* ─── Readiness Gauge (Instrument Dial Component) ─────────── */
+
+.readiness-gauge-module {
+  background-color: #1A1722;
+  border: 1px solid #2E2D34;
+  border-radius: 2px;
+  padding: 36px 32px;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.readiness-gauge-module__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 1px solid #2E2D34;
+  padding-bottom: 16px;
+  margin-bottom: 18px;
+}
+
+.readiness-gauge-module__label {
+  display: block;
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: #A85C8C;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.readiness-gauge-module__title {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: 26px;
+  font-weight: 500;
+  color: #EDEAE4;
+  letter-spacing: -0.5px;
+}
+
+.readiness-gauge-module__status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: ui-monospace, monospace;
+  font-size: 10px;
+  color: #8F8C94;
+  letter-spacing: 0.08em;
+}
+
+.readiness-gauge-module__indicator {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #6E9B7D;
+  box-shadow: 0 0 8px rgba(110, 155, 125, 0.6);
+}
+
+.readiness-gauge-module__caption {
+  font-size: 15px;
+  line-height: 1.65;
+  color: #8F8C94;
+  margin: 0 0 24px;
+}
+
+/* Stepper buttons */
+.readiness-gauge__stepper {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.readiness-gauge__step-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: #23202C;
+  border: 1px solid #2E2D34;
+  color: #8F8C94;
+  font-family: var(--font-body);
+  font-size: 13px;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: all 0.15s ease;
+}
+
+.readiness-gauge__step-btn:hover {
+  background: #2A2735;
+  color: #EDEAE4;
+  border-color: #3E3D46;
+}
+
+.readiness-gauge__step-btn.is-active {
+  background: #2E2029;
+  border-color: #A85C8C;
+  color: #EDEAE4;
+}
+
+.readiness-gauge__step-num {
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+  color: #A85C8C;
+  font-weight: 700;
+}
+
+/* The Dial Enclosure */
+.readiness-dial {
+  background: #14111C;
+  border: 1px solid #2E2D34;
+  padding: 24px;
+  border-radius: 2px;
+}
+
+.readiness-dial__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 14px;
+}
+
+.readiness-dial__verdict-tag {
+  font-family: ui-monospace, monospace;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #EDEAE4;
+  font-weight: 600;
+}
+
+.readiness-dial__numeric {
+  font-family: var(--font-serif);
+  font-size: 32px;
+  font-weight: 600;
+  color: #A85C8C;
+  line-height: 1;
+}
+
+/* Liquid Well Meter */
+.readiness-dial__meter-well {
+  position: relative;
+  height: 28px;
+  background: #221E2A;
+  border: 1px solid #3A3942;
+  border-radius: 2px;
+  overflow: visible;
+  margin-bottom: 32px;
+}
+
+.readiness-dial__fluid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, #6E4060 0%, #A85C8C 100%);
+  transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+  border-radius: 1px;
+}
+
+.readiness-dial__wave {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 20px;
+  background: rgba(255, 255, 255, 0.15);
+  filter: blur(2px);
+}
+
+.readiness-dial__ticks {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: 16px;
+  margin-top: 6px;
+}
+
+.readiness-dial__ticks span {
+  position: absolute;
+  transform: translateX(-50%);
+  font-family: ui-monospace, monospace;
+  font-size: 9.5px;
+  color: #737078;
+}
+
+/* Dimensions breakdown */
+.readiness-dial__dimensions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+  border-top: 1px solid #2E2D34;
+  padding-top: 18px;
+}
+
+.readiness-dial__dimension {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.readiness-dial__dim-name {
+  font-family: ui-monospace, monospace;
+  font-size: 10px;
+  color: #8F8C94;
+  letter-spacing: 0.05em;
+}
+
+.readiness-dial__dim-val {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  color: #EDEAE4;
+}
+
+.readiness-dial__dim-bar {
+  height: 3px;
+  background: #2E2D34;
+  border-radius: 1px;
+  overflow: hidden;
+  margin-top: 2px;
+}
+
+.readiness-dial__dim-bar div {
+  height: 100%;
+  background: #A85C8C;
+  transition: width 0.5s ease;
+}
+
+.readiness-dial__notes {
+  font-size: 13.5px;
+  color: #8F8C94;
+  background: #1B1824;
+  border-left: 2px solid #A85C8C;
+  padding: 10px 14px;
+  line-height: 1.5;
+}
+
+.readiness-dial__notes-lead {
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 700;
+  color: #EDEAE4;
+  margin-right: 6px;
+}
+
+@media (max-width: 640px) {
+  .readiness-gauge-module {
+    padding: 24px 18px;
+  }
+  .readiness-gauge__stepper {
+    flex-direction: column;
+  }
+  .readiness-dial__dimensions {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
