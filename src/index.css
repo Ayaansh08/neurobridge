@@ -1,63 +1,69 @@
 :root {
-  /* ─── Quiet Night Design System Tokens ───────────────────────── */
-  --nb-bg-paper: #16151A;               /* Warm near-black charcoal */
-  --nb-surface-card: #1F1E24;          /* Standard surface card */
-  --nb-surface-card-hover: #26252C;    /* Subtle card hover */
-  --nb-surface-elevated: #232228;      /* Elevated surface / sidebar */
-  --nb-surface-subtle: #2A2930;        /* Subtle input / button fill */
-  --nb-surface-sidebar: #232228;       /* Sidebar background */
+  /* ─── Warm-Noir Literary Editorial Design Tokens ─────────────── */
+  --nb-bg-paper: #14111C;               /* Deep warm-noir background */
+  --nb-surface-card: #1A1220;          /* Flat surface card */
+  --nb-surface-card-hover: #22172B;    /* Subtle restrained card hover */
+  --nb-surface-elevated: #1E1526;      /* Elevated surface / sidebar */
+  --nb-surface-subtle: #241730;        /* Subtle input / button fill */
+  --nb-surface-sidebar: #16111E;       /* Elevated sidebar background */
   
-  --nb-border-subtle: #2E2D34;         /* 1px subtle border */
-  --nb-border-hover: #3E3D46;          /* Hover border */
-  --nb-border-medium: #3A3942;         /* Medium card border */
-  --nb-border-active: #A85C8C;         /* Active state mauve border */
+  --nb-border-subtle: #3A2E42;         /* Hairline 1px border */
+  --nb-border-hover: #4D3D58;          /* Restrained hover border */
+  --nb-border-medium: #3A2E42;         /* Medium card border */
+  --nb-border-active: #BD5A82;         /* Active state rose border */
   
-  --nb-ink-primary: #EDEAE4;           /* Warm off-white */
-  --nb-ink-secondary: #8F8C94;         /* Desaturated secondary ink */
-  --nb-ink-muted: #737078;             /* Tertiary/timestamp ink */
-  --nb-ink-eyebrow: #9B98A1;           /* Eyebrow uppercase tracking */
-  --nb-ink-inverse: #16151A;           /* Dark text on light accent */
+  --nb-ink-primary: #F2EBDD;           /* Warm editorial headline ink */
+  --nb-ink-secondary: #B7AEC1;         /* Desaturated secondary body ink */
+  --nb-ink-muted: #8E8499;             /* Tertiary/timestamp ink */
+  --nb-ink-eyebrow: #B7AEC1;           /* Eyebrow uppercase tracking */
+  --nb-ink-inverse: #14111C;           /* Dark text on light accent */
 
-  /* ─── Single Accent: Muted Plum / Mauve ─────────────────────── */
-  --nb-accent: #A85C8C;
-  --nb-accent-hover: #984E7D;
-  --nb-accent-surface: #2E2029;
-  --nb-accent-border: #4A2E40;
+  /* ─── Accent Primary: Rose / Plum (#BD5A82) ─────────────────── */
+  --nb-accent: #BD5A82;
+  --nb-accent-hover: #A84E73;
+  --nb-accent-surface: #281624;
+  --nb-accent-border: #4D253A;
 
-  /* ─── Semantic Tones (Sage for Success, Sand for Caution, Coral for Error) ── */
-  --nb-emerald: #6E9B7D;
-  --nb-emerald-surface: #1F2E27;
-  --nb-emerald-border: #2D4439;
+  /* ─── Accent Secondary: Muted Soft Sky (#86BEEA) ────────────── */
+  --nb-accent-secondary: #86BEEA;
+  --nb-accent-secondary-surface: #172430;
+  --nb-accent-secondary-border: #2A4358;
 
-  --nb-sand-text: #C9A15C;
-  --nb-sand-surface: #2E271A;
-  --nb-sand-border: #443825;
+  /* ─── Semantic Status Mapping (Strictly Desaturated) ────────── */
+  --nb-emerald: #7FA88C;               /* Grounded / Strong (desaturated green-grey) */
+  --nb-emerald-surface: #19241E;
+  --nb-emerald-border: #2E4236;
 
-  --nb-plum-text: #A85C8C;
-  --nb-plum-surface: #2E2029;
-  --nb-plum-border: #4A2E40;
+  --nb-sand-text: #6E93A8;             /* Developing (muted blue-grey) */
+  --nb-sand-surface: #17222B;
+  --nb-sand-border: #293B47;
 
-  --nb-error: #D96B6B;
-  --nb-error-surface: #2E1F1F;
-  --nb-error-border: #4D2626;
+  --nb-plum-text: #BD5A82;             /* Needs Practice (rose) */
+  --nb-plum-surface: #281624;
+  --nb-plum-border: #4D253A;
+
+  --nb-error: #BD5A82;
+  --nb-error-surface: #281624;
+  --nb-error-border: #4D253A;
 
   /* ─── Typography ─── */
   --font-serif-display: 'Fraunces', 'Lora', Georgia, serif;
   --font-serif: var(--font-serif-display);
   --font-display: var(--font-serif-display);
-  --font-body: 'Public Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-body: 'Inter', 'Public Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-sans: var(--font-body);
 
-  /* ─── Scale, Radii & Shadows ─── */
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
-  --radius-xl: 18px;
+  /* ─── Scale, Radii & Shadows (Hard/Near-Hard 2px Corners, Hairline Borders) ─── */
+  --nb-radius-card: 2px;
+  --radius-sm: 2px;
+  --radius-md: 2px;
+  --radius-lg: 2px;
+  --radius-xl: 2px;
   --radius-full: 9999px;
 
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.35);
-  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.45);
-  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.6);
+  --shadow-sm: none;
+  --shadow-md: none;
+  --shadow-lg: none;
 
   --motion-fast: 120ms ease;
   --motion-base: 200ms ease;

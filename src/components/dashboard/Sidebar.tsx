@@ -60,6 +60,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
     return currentTab === itemId;
   };
 
+  const activeIndex = navItems.findIndex((item) => isTabActive(item.id));
+
   return (
     <aside className="dashboard-sidebar" aria-label="Main Navigation Sidebar">
       {/* Brand Header */}
@@ -75,7 +77,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <Logo size={28} className="sidebar-brand-icon" />
         <div className="sidebar-brand-text">
           <span className="sidebar-brand-title">NeuroBridge</span>
-          <span className="sidebar-brand-sub">AI Conversation Coach</span>
+          <span className="sidebar-brand-sub">AI CONVERSATION COACH</span>
         </div>
       </a>
 
@@ -83,6 +85,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
       <div className="sidebar-nav-section">
         <span className="sidebar-nav-heading">MENU</span>
         <nav className="sidebar-nav" aria-label="Main Navigation">
+          {/* Animated 2px sliding rose indicator bar */}
+          <div
+            className="sidebar-active-indicator"
+            style={{
+              transform: `translateY(${activeIndex >= 0 ? activeIndex * 46 : 0}px)`,
+              opacity: activeIndex >= 0 ? 1 : 0,
+            }}
+            aria-hidden="true"
+          />
+
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = isTabActive(item.id);
@@ -101,7 +113,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 aria-current={isActive ? 'page' : undefined}
               >
                 <span className="sidebar-nav-icon-wrap">
-                  <Icon size={18} strokeWidth={isActive ? 2 : 1.6} />
+                  <Icon size={18} strokeWidth={1.25} />
                 </span>
                 <span className="sidebar-nav-label">{item.label}</span>
               </a>
@@ -127,7 +139,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           title="Sign out"
           aria-label="Sign out"
         >
-          <LogOutIcon size={15} />
+          <LogOutIcon size={15} strokeWidth={1.25} />
           <span className="sidebar-signout-text">Sign out</span>
         </button>
       </div>

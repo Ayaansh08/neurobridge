@@ -4,6 +4,8 @@ import { settingsService } from '../../services/settingsService';
 import { useAuth } from '../../context/AuthContext';
 import { authConfig } from '../../config/auth';
 import SloshScoreGauge from './SloshScoreGauge';
+import { AnimatedContent } from '../animations/AnimatedContent';
+import { GlareButton } from '../landing/GlareButton';
 import {
   PlayIcon,
   ArrowRightIcon,
@@ -968,7 +970,7 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
               <div className="practice-summary-screen">
                 <div className="practice-completed-header">
                   <div className="practice-completed-icon">
-                    <CheckCircleIcon size={26} />
+                    <CheckCircleIcon size={24} strokeWidth={1.25} />
                   </div>
                   <div className="practice-completed-header-text">
                     <h3 className="practice-completed-title">Session Summary</h3>
@@ -986,26 +988,28 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
                 <div className="practice-narrative-sections">
                   <div className="practice-narrative-block" style={{ textAlign: 'center' }}>
                     {feedbackEvaluation.summary && (
-                      <p className="practice-narrative-text" style={{ fontSize: '1.1rem', fontWeight: 500, margin: '0 auto', maxWidth: '600px' }}>
+                      <p className="practice-narrative-text" style={{ fontSize: '1.05rem', fontWeight: 500, margin: '0 auto', maxWidth: '600px', lineHeight: 1.6 }}>
                         {feedbackEvaluation.summary}
                       </p>
                     )}
                     {!feedbackEvaluation.fallback && (
-                      <p style={{ marginTop: '16px', color: 'var(--nb-terracotta)', fontWeight: 'bold' }}>+100 XP earned</p>
+                      <p style={{ marginTop: '16px', color: 'var(--nb-accent)', fontWeight: 600, fontSize: '13px', letterSpacing: '0.06em' }}>
+                        +100 XP EARNED
+                      </p>
                     )}
                   </div>
                 </div>
                 
                 <div className="practice-completed-actions" style={{ marginTop: '30px', justifyContent: 'center' }}>
                   {feedbackEvaluation.fallback && (
-                    <button type="button" className="dashboard-cta-btn" onClick={handleFinishPractice} disabled={isLoading}>
-                      <span>{isLoading ? 'Retrying...' : 'Try again'}</span>
-                    </button>
+                    <GlareButton variant="primary" onClick={handleFinishPractice} disabled={isLoading}>
+                      {isLoading ? 'Retrying...' : 'Try again'}
+                    </GlareButton>
                   )}
                   {!feedbackEvaluation.fallback && (
-                    <button type="button" className="dashboard-cta-btn" onClick={() => setCompletionStep('insights')}>
-                      <span>See insights</span>
-                    </button>
+                    <GlareButton variant="primary" onClick={() => setCompletionStep('insights')}>
+                      See insights
+                    </GlareButton>
                   )}
                   <button
                     type="button"
@@ -1039,7 +1043,7 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
               <div className="practice-insights-screen">
                 <div className="practice-completed-header">
                   <div className="practice-completed-icon">
-                    <CheckCircleIcon size={26} />
+                    <CheckCircleIcon size={24} strokeWidth={1.25} />
                   </div>
                   <div className="practice-completed-header-text">
                     <h3 className="practice-completed-title">Rehearsal Insights</h3>
@@ -1054,16 +1058,16 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
               {feedbackEvaluation.summary && (
                 <div className="practice-narrative-sections">
                   <div className="practice-narrative-block">
-                    <span className="practice-narrative-eyebrow">Executive Summary</span>
-                    <p className="practice-narrative-text" style={{ fontSize: '1.05rem', fontWeight: 500 }}>
+                    <span className="practice-narrative-eyebrow">EXECUTIVE SUMMARY</span>
+                    <p className="practice-narrative-text" style={{ fontSize: '1.05rem', fontWeight: 500, lineHeight: 1.6 }}>
                       {feedbackEvaluation.summary}
                     </p>
                   </div>
                 </div>
               )}
 
-              {/* 4 Dimension Cards */}
-              <div className="practice-dimensions-grid">
+              {/* 4 Dimension Cards with Staggered Entrance */}
+              <AnimatedContent stagger={50} className="practice-dimensions-grid">
                 {([
                   { key: 'clarity', label: 'Clarity', data: feedbackEvaluation.dimensions.clarity },
                   { key: 'tone', label: 'Tone', data: feedbackEvaluation.dimensions.tone },
@@ -1073,26 +1077,26 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
                   <div key={key} className="practice-dimension-card">
                     <div className="practice-dimension-top">
                       <span className="practice-dimension-name">{label}</span>
-                      <span className={`practice-rating-badge practice-rating-badge--${data.rating.replace(/\s+/g, '-')}`}>
+                      <span className={`practice-rating-badge practice-rating-badge--${data.rating.toLowerCase().replace(/\s+/g, '-')}`}>
                         {data.rating}
                       </span>
                     </div>
                     <p className="practice-dimension-note">{data.note}</p>
                   </div>
                 ))}
-              </div>
+              </AnimatedContent>
 
               {/* Narrative Breakdown */}
               <div className="practice-narrative-sections">
                 {!feedbackEvaluation.fallback && (
                   <>
                     <div className="practice-narrative-block">
-                      <span className="practice-narrative-eyebrow">What Went Well</span>
+                      <span className="practice-narrative-eyebrow">WHAT WENT WELL</span>
                       <p className="practice-narrative-text">{feedbackEvaluation.whatWentWell}</p>
                     </div>
 
                     <div className="practice-narrative-block">
-                      <span className="practice-narrative-eyebrow">Practice Focus</span>
+                      <span className="practice-narrative-eyebrow">PRACTICE FOCUS</span>
                       <p className="practice-narrative-text">{feedbackEvaluation.tryImproving}</p>
                     </div>
                   </>
@@ -1100,7 +1104,7 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
 
               {feedbackEvaluation.encouragement && (
                 <div className="practice-encouragement-box">
-                  <SparklesIcon size={18} className="practice-encouragement-icon" />
+                  <SparklesIcon size={18} strokeWidth={1.25} className="practice-encouragement-icon" />
                   <p className="practice-encouragement-text">{feedbackEvaluation.encouragement}</p>
                 </div>
               )}
@@ -1109,13 +1113,12 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
           )}
 
           <div className="practice-completed-actions">
-            <button
-              type="button"
-              className="dashboard-cta-btn"
+            <GlareButton
+              variant="primary"
               onClick={() => setCompletionStep('summary')}
             >
-              <span>Back to summary</span>
-            </button>
+              Back to summary
+            </GlareButton>
             <button
               type="button"
               className="dashboard-view-all-btn"

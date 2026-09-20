@@ -22,19 +22,23 @@ export const SessionRow: React.FC<SessionRowProps> = ({ session, onRetry, onRowC
   };
 
   const score = session.evaluation?.dimensions ? computeScore(session.evaluation.dimensions) : null;
+  const scoreVal = score !== null ? score : 0;
+  const ringRadius = 11;
+  const ringCircumference = 2 * Math.PI * ringRadius;
+  const ringOffset = ringCircumference - (Math.min(12, Math.max(0, scoreVal)) / 12) * ringCircumference;
 
   const getScenarioIcon = () => {
     switch (session.scenarioType) {
       case 'job-interview':
-        return <BriefcaseIcon size={16} />;
+        return <BriefcaseIcon size={15} strokeWidth={1.25} />;
       case 'handle-conflict':
-        return <UsersIcon size={16} />;
+        return <UsersIcon size={15} strokeWidth={1.25} />;
       case 'set-boundary':
-        return <ShieldIcon size={16} />;
+        return <ShieldIcon size={15} strokeWidth={1.25} />;
       case 'talk-to-manager':
-        return <TrendingUpIcon size={16} />;
+        return <TrendingUpIcon size={15} strokeWidth={1.25} />;
       default:
-        return <SparklesIcon size={16} />;
+        return <SparklesIcon size={15} strokeWidth={1.25} />;
     }
   };
 
@@ -60,9 +64,30 @@ export const SessionRow: React.FC<SessionRowProps> = ({ session, onRetry, onRowC
 
       {/* Feedback & Score Cell */}
       <div className="session-row-feedback">
-        <span className="session-score-pill session-score--sage">
-          {score ? `${score} / 12` : 'Completed'}
-        </span>
+        <div className="session-score-ring-badge" title={score ? `Score: ${score}/12` : 'Session Completed'}>
+          <svg width="26" height="26" viewBox="0 0 26 26" className="session-mini-ring-svg">
+            <circle
+              cx="13"
+              cy="13"
+              r={ringRadius}
+              className="session-mini-ring-track"
+              strokeWidth="1.5"
+            />
+            <circle
+              cx="13"
+              cy="13"
+              r={ringRadius}
+              className="session-mini-ring-fill"
+              strokeWidth="1.5"
+              strokeDasharray={ringCircumference}
+              strokeDashoffset={score !== null ? ringOffset : 0}
+              transform="rotate(-90 13 13)"
+            />
+          </svg>
+          <span className="session-score-ring-label">
+            {score !== null ? `${score}/12` : 'DONE'}
+          </span>
+        </div>
         <span className="session-feedback-text">{session.feedback}</span>
       </div>
 
@@ -77,7 +102,7 @@ export const SessionRow: React.FC<SessionRowProps> = ({ session, onRetry, onRowC
           }}
           title={`Revisit ${session.scenarioTitle}`}
         >
-          <RefreshIcon size={13} className="session-retry-icon" />
+          <RefreshIcon size={13} strokeWidth={1.25} className="session-retry-icon" />
           <span>Practice again</span>
         </button>
       </div>

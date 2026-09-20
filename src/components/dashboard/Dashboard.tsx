@@ -13,6 +13,9 @@ import { authConfig } from '../../config/auth';
 
 import { defaultScenarios, userProgressService } from '../../services/userProgressService';
 import type { ScenarioItem, SessionSummary, UserStats, UnfinishedSession } from './types';
+import { AnimatedContent } from '../animations/AnimatedContent';
+import { GlareButton } from '../landing/GlareButton';
+import { DashboardFolioTicket } from './DashboardFolioTicket';
 import './Dashboard.css';
 
 interface DashboardProps {
@@ -392,7 +395,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
               <div className="scenario-banner-card">
                 <div className="scenario-banner-left">
                   <div className="scenario-banner-medallion">
-                    <BriefcaseIcon size={22} />
+                    <BriefcaseIcon size={20} strokeWidth={1.25} />
                   </div>
                   <div className="scenario-banner-content">
                     <span className="scenario-banner-eyebrow">Good place to start</span>
@@ -405,17 +408,17 @@ export const Dashboard: React.FC<DashboardProps> = ({
                     <p className="scenario-banner-desc">{featuredScenario.description}</p>
                   </div>
                 </div>
-                <button
-                  type="button"
-                  className="dashboard-cta-btn"
+                <GlareButton
+                  variant="primary"
+                  className="dashboard-banner-cta"
                   onClick={() => handleSelectScenario(featuredScenario)}
                 >
-                  <span>Start this scenario</span>
-                </button>
+                  Start this scenario
+                </GlareButton>
               </div>
 
-              {/* 2-Column Responsive Scenario Grid */}
-              <div className="dashboard-scenarios-grid">
+              {/* 2-Column Responsive Scenario Grid with Staggered Fade-Up Entrance */}
+              <AnimatedContent stagger={40} className="dashboard-scenarios-grid">
                 {secondaryScenarios.map((scenario) => (
                   <ScenarioCard
                     key={scenario.id}
@@ -423,7 +426,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                     onSelect={handleSelectScenario}
                   />
                 ))}
-              </div>
+              </AnimatedContent>
 
               {/* Unfinished Sessions Logbook Section */}
               {unfinishedSessions.length > 0 && (
@@ -456,8 +459,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         }}
                       >
                         <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flex: 1, minWidth: '220px' }}>
-                          <div className="scenario-banner-medallion" style={{ width: 40, height: 40 }}>
-                            <BriefcaseIcon size={18} />
+                          <div className="scenario-banner-medallion" style={{ width: 36, height: 36 }}>
+                            <BriefcaseIcon size={16} strokeWidth={1.25} />
                           </div>
                           <div>
                             <h4 style={{ margin: '0 0 3px 0', fontSize: '14.5px', fontWeight: 600, color: 'var(--nb-ink-primary)' }}>
@@ -470,14 +473,13 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         </div>
 
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                          <button
-                            type="button"
-                            className="dashboard-btn dashboard-btn--primary"
-                            style={{ padding: '7px 14px', fontSize: '12.5px' }}
+                          <GlareButton
+                            variant="primary"
+                            style={{ padding: '7px 16px', fontSize: '12.5px' }}
                             onClick={() => handleResumeSession(s)}
                           >
                             Resume
-                          </button>
+                          </GlareButton>
                           <button
                             type="button"
                             className="dashboard-btn dashboard-btn--secondary"
@@ -508,8 +510,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
           {/* Main Dashboard Overview */}
           {(currentTab === 'dashboard' || currentTab === '') && (
-            <>
-              {/* Top Header without duplicate Start Practicing button */}
+            <div className="dashboard-editorial-flow">
+              {/* Top Header sitting directly on canvas (no box-in-a-box) */}
               <DashboardHeader
                 userDisplayName={displayName}
                 level={userStats.currentLevel}
@@ -517,7 +519,9 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 nextLevelXp={userStats.nextLevelXp}
               />
 
-              {/* Stats Strip: 3 Cards in a Row from 640px, or First-Run Welcome */}
+              <div className="dashboard-divider" aria-hidden="true" />
+
+              {/* Stats Strip if sessions completed; Folio Card Ticket if zero sessions logged */}
               {userStats.sessionsCompleted > 0 ? (
                 <section className="dashboard-stats-grid" aria-label="Personal Momentum and Stats">
                   <StatCard
@@ -540,15 +544,12 @@ export const Dashboard: React.FC<DashboardProps> = ({
                   />
                 </section>
               ) : (
-                <section className="dashboard-welcome-firstrun">
-                  <h3 className="welcome-firstrun-title">Ready when you are</h3>
-                  <p className="welcome-firstrun-desc">
-                    Your practice stats and momentum streak will appear here once you complete your first rehearsal. Pick a scenario below to start.
-                  </p>
-                </section>
+                <DashboardFolioTicket onStartPractice={handleStartPracticing} />
               )}
 
-              {/* Choose a Scenario / Continue Practice Section */}
+              <div className="dashboard-divider" aria-hidden="true" />
+
+              {/* Choose a Scenario / Continue Practice Section — Asymmetric 8 col / 4 col Layout */}
               <section className="dashboard-section" aria-labelledby="scenarios-title">
                 <div className="dashboard-section-header">
                   <span className="dashboard-section-eyebrow">
@@ -564,57 +565,87 @@ export const Dashboard: React.FC<DashboardProps> = ({
                   </p>
                 </div>
 
-                {unfinishedSessions.length > 0 ? (
-                  <div className="scenario-banner-card">
-                    <div className="scenario-banner-left">
-                      <div className="scenario-banner-medallion">
-                        <BriefcaseIcon size={22} />
-                      </div>
-                      <div className="scenario-banner-content">
-                        <span className="scenario-banner-eyebrow">Continue practice</span>
-                        <div className="scenario-banner-title-row">
-                          <h3 className="scenario-banner-title">{unfinishedSessions[0].scenarioTitle}</h3>
+                <div className="dashboard-rehearsal-split">
+                  {/* Left: Featured or Resume Scenario Card with AnimatedContent fade-up */}
+                  <AnimatedContent distance={16} delay={40} className="dashboard-rehearsal-card-col">
+                    {unfinishedSessions.length > 0 ? (
+                      <div className="scenario-banner-card">
+                        <div className="scenario-banner-left">
+                          <div className="scenario-banner-medallion">
+                            <BriefcaseIcon size={20} strokeWidth={1.25} />
+                          </div>
+                          <div className="scenario-banner-content">
+                            <span className="scenario-banner-eyebrow">Continue practice</span>
+                            <div className="scenario-banner-title-row">
+                              <h3 className="scenario-banner-title">{unfinishedSessions[0].scenarioTitle}</h3>
+                            </div>
+                            <p className="scenario-banner-desc">
+                              {formatStartedAt(unfinishedSessions[0].startedAt)} · Turn {unfinishedSessions[0].userTurns} of 30
+                            </p>
+                          </div>
                         </div>
-                        <p className="scenario-banner-desc">
-                          {formatStartedAt(unfinishedSessions[0].startedAt)} · Turn {unfinishedSessions[0].userTurns} of 30
-                        </p>
+                        <GlareButton
+                          variant="primary"
+                          className="dashboard-banner-cta"
+                          onClick={() => handleResumeSession(unfinishedSessions[0])}
+                        >
+                          Resume
+                        </GlareButton>
+                      </div>
+                    ) : (
+                      <div className="scenario-banner-card">
+                        <div className="scenario-banner-left">
+                          <div className="scenario-banner-medallion">
+                            <BriefcaseIcon size={20} strokeWidth={1.25} />
+                          </div>
+                          <div className="scenario-banner-content">
+                            <span className="scenario-banner-eyebrow">Good place to start</span>
+                            <div className="scenario-banner-title-row">
+                              <h3 className="scenario-banner-title">{featuredScenario.title}</h3>
+                              {featuredScenario.duration && (
+                                <span className="scenario-banner-duration">{featuredScenario.duration}</span>
+                              )}
+                            </div>
+                            <p className="scenario-banner-desc">{featuredScenario.description}</p>
+                          </div>
+                        </div>
+                        <GlareButton
+                          variant="primary"
+                          className="dashboard-banner-cta"
+                          onClick={() => handleSelectScenario(featuredScenario)}
+                        >
+                          Start this scenario
+                        </GlareButton>
+                      </div>
+                    )}
+                  </AnimatedContent>
+
+                  {/* Right: Asymmetric Focus / Practice Intention Strip (~4 cols) */}
+                  <aside className="dashboard-focus-strip" aria-label="Practice Intention">
+                    <div className="dashboard-focus-strip__inner">
+                      <div className="dashboard-focus-strip__eyebrow">TODAY’S INTENTION</div>
+                      <blockquote className="dashboard-focus-strip__quote">
+                        “Notice the instinct to rush — pause for two counts before answering.”
+                      </blockquote>
+                      <div className="dashboard-focus-strip__meta">
+                        <div className="focus-meta-row">
+                          <span className="focus-bullet">✦</span>
+                          <span className="focus-meta-text">Pace: <strong>Relaxed (1.2s delay)</strong></span>
+                        </div>
+                        <div className="focus-meta-row">
+                          <span className="focus-bullet">✦</span>
+                          <span className="focus-meta-text">Privacy: <strong>1-on-1 Rehearsal</strong></span>
+                        </div>
+                      </div>
+                      <div className="dashboard-focus-strip__calibration">
+                        CALIBRATION · ZERO LATENCY
                       </div>
                     </div>
-                    <button
-                      type="button"
-                      className="dashboard-cta-btn"
-                      onClick={() => handleResumeSession(unfinishedSessions[0])}
-                    >
-                      <span>Resume</span>
-                    </button>
-                  </div>
-                ) : (
-                  <div className="scenario-banner-card">
-                    <div className="scenario-banner-left">
-                      <div className="scenario-banner-medallion">
-                        <BriefcaseIcon size={22} />
-                      </div>
-                      <div className="scenario-banner-content">
-                        <span className="scenario-banner-eyebrow">Good place to start</span>
-                        <div className="scenario-banner-title-row">
-                          <h3 className="scenario-banner-title">{featuredScenario.title}</h3>
-                          {featuredScenario.duration && (
-                            <span className="scenario-banner-duration">{featuredScenario.duration}</span>
-                          )}
-                        </div>
-                        <p className="scenario-banner-desc">{featuredScenario.description}</p>
-                      </div>
-                    </div>
-                    <button
-                      type="button"
-                      className="dashboard-cta-btn"
-                      onClick={() => handleSelectScenario(featuredScenario)}
-                    >
-                      <span>Start this scenario</span>
-                    </button>
-                  </div>
-                )}
+                  </aside>
+                </div>
               </section>
+
+              <div className="dashboard-divider" aria-hidden="true" />
 
               {/* Recent Sessions List with Empty State Support */}
               <section className="dashboard-section" aria-labelledby="sessions-title">
@@ -646,13 +677,12 @@ export const Dashboard: React.FC<DashboardProps> = ({
                       <p className="empty-state-desc">
                         Your practice feedback and conversational scores will appear here after your first rehearsal.
                       </p>
-                      <button
-                        type="button"
-                        className="dashboard-cta-btn"
+                      <GlareButton
+                        variant="primary"
                         onClick={handleStartPracticing}
                       >
-                        <span>Start Your First Practice</span>
-                      </button>
+                        Start Your First Practice
+                      </GlareButton>
                     </div>
                   ) : (
                     <div className="sessions-list-container">
@@ -676,7 +706,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                   )}
                 </div>
               </section>
-            </>
+            </div>
           )}
         </div>
       </main>

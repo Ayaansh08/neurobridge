@@ -1,5 +1,25 @@
 # Changelog
 
+## 2026-09-20 - Therapeutic Editorial Application Interior Pass
+- **Design Tokens & Palette Alignment**:
+  - Enforced the exact Warm-Noir literary palette (`#14111C` background, `#F2EBDD` headline ink, `#B7AEC1` body/labels, `#BD5A82` rose accent primary, `#86BEEA` secondary accent, `#3A2E42` hairline borders).
+  - Enforced strict semantic status mapping: "Needs Practice" → `#BD5A82`, "Developing" → `#6E93A8`, "Grounded/Strong" → `#7FA88C`.
+  - Implemented 2px corner radius policy across cards, tiles, and modals with flat surfaces and hairline borders (eliminated all soft drop shadows and gradient panels).
+  - Formatted all eyebrow, category, and section labels in tracked small caps (0.08em).
+- **ReactBits Motion & Animations**:
+  - `BlurText`: Added staggered text reveal animation on the Dashboard greeting (`Welcome back, [name]`).
+  - `AnimatedContent`: Added staggered fade-up entrance on Scenario grids (~40ms) and Rehearsal Insights rating cards (~50ms).
+  - `Sidebar` Sliding Indicator: Implemented 2px rose (`#BD5A82`) left-edge active indicator bar with 150ms smooth transition between navigation items.
+  - `GlareButton`: Integrated moving highlight sweep feedback on primary actions app-wide (`Start this scenario`, `Resume`, `See insights`, `Sign out`, `Start First Practice`, `Back to summary`).
+- **Score Gauge & Ring Progress Idioms**:
+  - Centerpiece `SloshScoreGauge`: Reskinned with liquid fill in `#BD5A82` rising inside a bordered ring with Fraunces score reading.
+  - Echoed mini thin-stroke progress ring in `SessionRow` (Recent Sessions table) showing score and completion state.
+  - Restyled DashboardHeader XP/Level badge as an editorial thin-stroke progress ring with Fraunces numeral.
+- **Component De-Genericization**:
+  - Replaced all filled circular icon badges with flat 1.25px stroke glyphs on bordered square hairline tiles (`#1A1220`, `#3A2E42`).
+  - Converted difficulty pills and insight rating badges to tracked-caps with hairline underlines.
+  - Formatted Session Summary and Rehearsal Insights screens to calm, editorial reflection views with flat surfaces and balanced typography.
+
 ## 2026-09-20 - Deployment
 - Tagged and verified `known-good` build for Amplify upload.
 - Deployed infrastructure stack to `ap-south-1`.

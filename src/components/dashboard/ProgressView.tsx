@@ -2,6 +2,7 @@ import React from 'react';
 import type { UserStats, SessionSummary } from './types';
 import { StatCard } from './StatCard';
 import { SessionRow } from './SessionRow';
+import { GlareButton } from '../landing/GlareButton';
 
 interface ProgressViewProps {
   stats: UserStats;
@@ -66,13 +67,12 @@ export const ProgressView: React.FC<ProgressViewProps> = ({
               <p className="empty-state-desc">
                 Start your first calm conversation practice to build your confidence logbook.
               </p>
-              <button
-                type="button"
-                className="dashboard-cta-btn"
+              <GlareButton
+                variant="primary"
                 onClick={() => onNavigate?.('/app/practice')}
               >
-                <span>Start First Practice</span>
-              </button>
+                Start First Practice
+              </GlareButton>
             </div>
           ) : (
             <div className="sessions-list-container">

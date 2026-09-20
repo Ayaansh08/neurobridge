@@ -15,11 +15,11 @@ export const StatCard: React.FC<StatCardProps> = ({
   const renderIcon = () => {
     switch (iconType) {
       case 'streak':
-        return <FlameIcon size={22} className="stat-card-icon" />;
+        return <FlameIcon size={18} strokeWidth={1.25} className="stat-card-icon" />;
       case 'sessions':
-        return <CheckCircleIcon size={22} className="stat-card-icon" />;
+        return <CheckCircleIcon size={18} strokeWidth={1.25} className="stat-card-icon" />;
       case 'xp':
-        return <StarIcon size={22} className="stat-card-icon" />;
+        return <StarIcon size={18} strokeWidth={1.25} className="stat-card-icon" />;
     }
   };
 

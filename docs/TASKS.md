@@ -28,7 +28,7 @@ _Single source of truth for work. Now / Next / Later / Done._
 - Persist auth tokens (refresh token flow): Hard reload drops state but isn't required for the golden path.
 - Personalized practice recommendations: Out of scope for a 3-minute demo timeline.
 
-## ✅ Done
+- [x] Warm-Noir Therapeutic Editorial Application Interior Pass (Dashboard, Scenarios, Session Summary, Rehearsal Insights, Progress, Settings unified with #14111C, #F2EBDD, #BD5A82, Fraunces serif headlines, flat 1.25px hairline glyphs, SloshScoreGauge liquid indicator, AnimatedContent stagger, BlurText greeting, sliding active indicator)
 - [x] Fix "Back to Dashboard" button in Insights and Summary screens (tab/path normalization in `handleTabNavigate` and `App.tsx` routing)
 - [x] Fix Practice confirmation dialog popup modal styling (`.comfort-modal-overlay` & `.comfort-modal-card` backdrop blur and centering)
 - [x] Minimal-Footprint App Upscale Pass (session summary slosh gauge, flat stat cards, underlined status labels)
