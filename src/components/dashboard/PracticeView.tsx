@@ -747,14 +747,14 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
             <div className="comfort-modal-footer">
               <button
                 type="button"
-                className="dashboard-view-all-btn"
+                className="dashboard-btn dashboard-btn--secondary"
                 onClick={() => setIsConfirmFinishOpen(false)}
               >
                 <span>Continue Practicing</span>
               </button>
               <button
                 type="button"
-                className="dashboard-cta-btn"
+                className="dashboard-btn dashboard-btn--primary"
                 disabled={isLoading}
                 onClick={handleFinishPractice}
               >

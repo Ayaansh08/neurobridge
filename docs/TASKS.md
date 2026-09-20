@@ -26,6 +26,7 @@ _Single source of truth for work. Now / Next / Later / Done._
 - Personalized practice recommendations: Out of scope for a 3-minute demo timeline.
 
 ## ✅ Done
+- [x] Fix Practice confirmation dialog popup modal styling (`.comfort-modal-overlay` & `.comfort-modal-card` backdrop blur and centering)
 - [x] Fix Settings Tab Save and Reset to Defaults buttons to match global UI design tokens
 - [x] Round 4 UI Fixes (Comfort in Settings, 4 fixed nav items, Scenarios banner & 2-col layout, unfinished session recovery logbook, Progress rhythm & shared SessionRow, unified StatCard family & local XP calculation, bug fixes)
 - [x] Quiet Night UI redesign for First Commit "Best UI" prize track (charcoal foundation `#16151A`, muted plum `#A85C8C`, `Fraunces` serif headings)
