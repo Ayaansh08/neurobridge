@@ -1,28 +1,11 @@
 # Changelog
 
-## 2026-09-20 - Minimal-Footprint App Upscale Pass
-- Replaced the session summary stroke score ring with a local editorial slosh gauge that preserves the 12-point score while using rose liquid fill, hard hairline vessel styling, and no shadow.
-- Restyled dashboard stat cards to flat `#1A1220` panels with `#3A2E42` hairline borders, borderless muted glyphs, and value-only accent color.
-- Converted difficulty, session score, and insight rating pills from filled rounded badges into tracked uppercase labels with single hairline underlines.
-
-## 2026-09-20 - Warm-Noir Editorial Auth Screens
-- Rebuilt sign-in and create-account screens around the landing page's therapeutic editorial direction: asymmetric left-column layout, hard-corner printed panel, hairline borders, grain/depth background, and left-aligned caption footer.
-- Added shared `AuthPracticePass` strip with rotating type-in reassurance copy under the auth tagline.
-- Reused the landing `GlareButton` for auth CTAs and replaced rounded-card/shadow styling with flat rose CTA treatment.
-- Restyled inputs with flat fills, no default focus glow, and a restrained rose underline focus state.
-- Converted signup password requirements into a vertical dash-led checklist with muted blue-grey satisfied state and enforced the uppercase rule in validation.
-
-## 2026-09-20 - Warm-Noir Literary Editorial Landing Page Redesign
-- **Therapeutic Editorial Aesthetic**: Completely reimagined the landing page as a literary publication / print psychology journal experience (referencing *Granta*, *The Believer*, and dark-academia mastheads).
-- **Asymmetric 12-Column Hero Grid**: Replaced centered hero layout with a 12-column asymmetric grid pairing 76px tight-leading `Fraunces` serif headlines with a bespoke overlapping **Rehearsal Ticket** component (columns 8–12).
-- **Bespoke Rehearsal Ticket**: Crafted a cream cardstock (`#F2EBDD` / `#14111C`) perforated index card with jagged torn edges, scenario tabs (Executive Interview, Workplace Tension, Boundary Negotiation), and live organic typing preview with blinking cursor.
-- **Marquee Clipping Strip**: Built an infinite dialogue texture band of real rehearsal dialogue fragments styled as vintage torn newspaper clippings.
-- **Case Index (Methodology)**: Replaced generic 3-column feature cards with a single-column numbered Case Index (01, 02, 03) featuring serif sub-headlines, detailed rationale, and hairline dividers.
-- **Full-Bleed Pull-Quote**: Added large italic `Fraunces` philosophical quotation section with accent hairlines and department citation.
-- **Readiness Gauge**: Integrated an interactive printed instrument dial with fluid/liquid horizontal slosh meter, calibrated tick marks (0 to 100%), and 3-stage rehearsal milestone progression (Initial Take, Second Pass, Rehearsed State).
-- **Restrained Motion & GlareHover**: Added subtle glare sheen hover interaction on primary buttons, background paper/film grain texture overlay, and line-staggered scroll reveals.
-- **Design Tokens & Colors**: Preserved the exact Quiet Night warm charcoal `#16151A` base, plum `#A85C8C`, cream ink `#EDEAE4`, and hairline `#2E2D34` border tokens.
-
+## 2026-09-20 - Deployment
+- Tagged and verified `known-good` build for Amplify upload.
+- Deployed infrastructure stack to `ap-south-1`.
+- Built frontend with public `VITE_` variables mapped to the live AWS stack outputs.
+- Documented live URL and redeploy runbook in `docs/DEPLOYMENT.md`.
+- Documented known issues and architecture safety caveats.
 ## 2026-09-20 - Round 4 UI Polish & Responsiveness Fixes
 - **Item 1 (Comfort Controls in Settings & Navigation Cleanup)**:
   - Moved Comfort controls fully into SettingsView (`Text Size`, `High Contrast`, `Reduced Motion`, `Conversation Pacing`).

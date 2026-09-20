@@ -2,6 +2,10 @@
 
 > Practice difficult moments before they happen.
 
+## Live demo
+- **URL:** [https://production.d1h4aonssx39gc.amplifyapp.com](https://production.d1h4aonssx39gc.amplifyapp.com)
+- Sign up with an email you can access; a confirmation code is sent by email (check spam).
+
 NeuroBridge is a practice platform for rehearsing difficult social and professional conversations in a safer, lower-pressure environment. It uses AWS Bedrock (Nova 2 Lite) for realistic conversational roleplay and objective communication feedback.
 
 ## Key Features
