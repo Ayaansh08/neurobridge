@@ -68,7 +68,8 @@ Generate multi-dimensional qualitative coaching reflection for a practice sessio
   "summary": "Overall summary of the interaction.",
   "whatWentWell": "You communicated with clear intent and kept the conversation constructive.",
   "tryImproving": "Practice pausing before replying to pushback to formulate composed responses.",
-  "encouragement": "Every practice session strengthens your real-world communication reflexes."
+  "encouragement": "Every practice session strengthens your real-world communication reflexes.",
+  "fallback": false
 }
 ```
 
