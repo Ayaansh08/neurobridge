@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import type { UserStats, SessionSummary } from './types';
 import { StatCard } from './StatCard';
 import { SessionRow } from './SessionRow';
@@ -36,7 +36,7 @@ export const ProgressView: React.FC<ProgressViewProps> = ({
         <StatCard
           title="Sessions Completed"
           value={stats.sessionsCompleted}
-          subtitle={stats.weeklySessionsChange}
+          subtitle=""
           iconType="sessions"
         />
         <StatCard
@@ -47,13 +47,18 @@ export const ProgressView: React.FC<ProgressViewProps> = ({
         />
       </div>
 
-      <div className="dashboard-section">
+      <section className="dashboard-section" aria-labelledby="all-sessions-heading">
         <div className="dashboard-section-header">
           <span className="dashboard-section-eyebrow">ALL REHEARSAL ENTRIES</span>
-          <h3 className="dashboard-section-title">Complete Session History</h3>
+          <h3 id="all-sessions-heading" className="dashboard-section-title">
+            Complete Session History
+          </h3>
+          <p className="dashboard-section-subtitle">
+            Your most recent practice sessions.
+          </p>
         </div>
 
-        <div className="dashboard-table-card">
+        <div className="sessions-table-card">
           {sessions.length === 0 ? (
             <div className="dashboard-empty-state">
               <div className="empty-state-dot" />
@@ -70,31 +75,26 @@ export const ProgressView: React.FC<ProgressViewProps> = ({
               </button>
             </div>
           ) : (
-            <div className="dashboard-table-scroll">
-              <table className="sessions-table">
-                <thead>
-                  <tr>
-                    <th scope="col" className="th-scenario">Scenario</th>
-                    <th scope="col" className="th-date">Date</th>
-                    <th scope="col" className="th-feedback">Score & Feedback</th>
-                    <th scope="col" className="th-action">Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {sessions.map((session) => (
-                    <SessionRow
-                      key={session.sessionId}
-                      session={session}
-                      onRetry={onRetrySession}
-                    />
-                  ))}
-                </tbody>
-              </table>
+            <div className="sessions-list-container">
+              <div className="sessions-table-header" aria-hidden="true">
+                <div className="session-col-scenario">Scenario</div>
+                <div className="session-col-date">Date</div>
+                <div className="session-col-feedback">Score & Feedback</div>
+                <div className="session-col-action">Action</div>
+              </div>
+              <div className="sessions-list-body" role="list">
+                {sessions.map((session) => (
+                  <SessionRow
+                    key={session.sessionId}
+                    session={session}
+                    onRetry={onRetrySession}
+                  />
+                ))}
+              </div>
             </div>
           )}
         </div>
-      </div>
+      </section>
     </div>
   );
 };
-

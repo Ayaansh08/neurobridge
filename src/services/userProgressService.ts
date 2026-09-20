@@ -158,7 +158,7 @@ export const userProgressService = {
     return {
       ...currentStats,
       sessionsCompleted: sorted.length,
-      weeklySessionsChange: `+${sorted.length} total`,
+      weeklySessionsChange: '',
       currentStreak: streak,
       streakStatus: streak > 1 ? 'Momentum active — keep it going' : (streak === 1 ? 'Streak started — come back tomorrow' : 'Ready to build momentum'),
       totalXp: totalXp,
@@ -283,7 +283,7 @@ export const userProgressService = {
     const updatedStats: UserStats = {
       ...currentStats,
       sessionsCompleted: (currentStats.sessionsCompleted || 0) + 1,
-      weeklySessionsChange: `+${(currentStats.sessionsCompleted || 0) + 1} total`,
+      weeklySessionsChange: '',
       currentStreak: streak,
       streakStatus: streak > 1 ? 'Momentum active — keep it going' : 'Ready to build momentum',
       totalXp: newTotalXp,

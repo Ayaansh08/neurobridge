@@ -716,12 +716,17 @@
 .dashboard-section {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  margin-top: 48px;
+}
+
+.dashboard-section:first-child {
+  margin-top: 0;
 }
 
 .dashboard-section-header {
   display: flex;
   flex-direction: column;
+  margin-bottom: 24px;
 }
 
 .dashboard-section-header--split {
@@ -1037,6 +1042,9 @@
 
 /* Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ Recent Sessions List (Soft-bordered Table) Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
 
+/* ─── Recent Sessions List (Responsive Grid / Stacked Cards) ───────────────── */
+
+.sessions-table-card,
 .dashboard-table-card {
   background: var(--nb-surface-card);
   border: 1px solid var(--nb-border-subtle);
@@ -1044,19 +1052,15 @@
   overflow: hidden;
 }
 
-.dashboard-table-scroll {
+.sessions-list-container {
   width: 100%;
-  overflow-x: auto;
 }
 
-.sessions-table {
-  width: 100%;
-  table-layout: fixed;
-  border-collapse: collapse;
-  text-align: left;
-}
-
-.sessions-table th {
+.sessions-table-header {
+  display: grid;
+  grid-template-columns: minmax(180px, 220px) minmax(110px, 130px) 1fr 140px;
+  align-items: center;
+  gap: 16px;
   padding: 12px 20px;
   font-size: 11px;
   font-weight: 600;
@@ -1065,69 +1069,81 @@
   color: var(--nb-ink-eyebrow);
   border-bottom: 1px solid var(--nb-border-subtle);
   background: #1B1A20;
-  white-space: nowrap;
 }
 
-.th-scenario { width: 24%; }
-.th-date { width: 18%; }
-.th-feedback { width: 44%; }
-.th-action { width: 14%; text-align: right; }
+.sessions-table-header .session-col-action {
+  text-align: right;
+  padding-right: 4px;
+}
 
-.sessions-table td {
+.sessions-list-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.session-row {
+  display: grid;
+  grid-template-columns: minmax(180px, 220px) minmax(110px, 130px) 1fr 140px;
+  align-items: center;
+  gap: 16px;
   padding: 16px 20px;
-  font-size: 13px;
-  color: var(--nb-ink-primary);
   border-bottom: 1px solid var(--nb-border-subtle);
-  vertical-align: middle;
-}
-
-.session-table-row {
   transition: background-color 0.15s ease;
+  min-width: 0;
 }
 
-.session-table-row:hover {
-  background-color: var(--nb-surface-card-hover);
-}
-
-.session-table-row:last-child td {
+.session-row:last-child {
   border-bottom: none;
 }
 
-.session-scenario-cell {
+.session-row:hover {
+  background-color: var(--nb-surface-card-hover);
+}
+
+.session-row-scenario {
   display: flex;
   align-items: center;
   gap: 12px;
+  min-width: 0;
 }
 
-.session-icon-wrapper {
-  width: 30px;
-  height: 30px;
-  border-radius: 6px;
+.session-row-icon-box {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
   background: var(--nb-surface-subtle);
   border: 1px solid var(--nb-border-subtle);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--nb-ink-secondary);
+  color: var(--nb-accent);
   flex-shrink: 0;
 }
 
-.session-scenario-name {
+.session-row-title {
+  font-size: 14px;
   font-weight: 600;
   color: var(--nb-ink-primary);
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.session-date-text {
+.session-row-date {
+  min-width: 0;
+}
+
+.session-row-date-text {
   color: var(--nb-ink-muted);
-  font-size: 12px;
+  font-size: 12.5px;
   white-space: nowrap;
 }
 
-.session-feedback-cell {
+.session-row-feedback {
   display: flex;
   align-items: center;
   gap: 12px;
+  min-width: 0;
 }
 
 .session-score-pill {
@@ -1161,26 +1177,36 @@
 .session-feedback-text {
   color: var(--nb-ink-secondary);
   font-size: 13px;
-  line-height: 1.4;
+  line-height: 1.45;
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   white-space: normal;
+  margin: 0;
+  min-width: 0;
+  flex: 1;
+}
+
+.session-row-action {
+  display: flex;
+  justify-content: flex-end;
+  flex-shrink: 0;
 }
 
 .session-retry-btn {
   background: transparent;
   border: 1px solid var(--nb-border-subtle);
-  border-radius: 6px;
-  padding: 6px 12px;
+  border-radius: var(--nb-radius-card);
+  padding: 7px 14px;
   color: var(--nb-ink-secondary);
-  font-size: 12px;
+  font-size: 12.5px;
   font-weight: 500;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
   transition: all 0.15s ease;
   white-space: nowrap;
@@ -2426,6 +2452,54 @@
     
     .dashboard-layout { flex-direction: column; }
     .dashboard-main { margin-left: 0; padding: 24px 18px; }
+
+    .sessions-table-header {
+      display: none;
+    }
+
+    .sessions-list-body {
+      padding: 12px;
+      gap: 12px;
+    }
+
+    .session-row {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+      padding: 16px;
+      border: 1px solid var(--nb-border-subtle);
+      border-radius: var(--nb-radius-card);
+      background: var(--nb-surface-card);
+    }
+
+    .session-row:last-child {
+      border-bottom: 1px solid var(--nb-border-subtle);
+    }
+
+    .session-row-scenario {
+      justify-content: space-between;
+    }
+
+    .session-row-date {
+      display: flex;
+      justify-content: flex-start;
+    }
+
+    .session-row-feedback {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .session-row-action {
+      width: 100%;
+    }
+
+    .session-retry-btn {
+      width: 100%;
+      padding: 9px 16px;
+    }
   }
 
   @media (max-width: 390px) {

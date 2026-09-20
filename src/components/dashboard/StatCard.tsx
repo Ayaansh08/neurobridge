@@ -22,6 +22,9 @@ export const StatCard: React.FC<StatCardProps> = ({
   };
 
   if (isStreak) {
+    const numVal = typeof value === 'number' ? value : parseInt(String(value), 10) || 0;
+    const unitText = numVal === 1 ? 'day' : 'days';
+
     // Large bespoke streak card with hand-drawn flame & progress ring
     return (
       <div className="stat-card stat-card--streak">
@@ -37,17 +40,21 @@ export const StatCard: React.FC<StatCardProps> = ({
           <div className="stat-card-eyebrow">PRACTICE MOMENTUM</div>
           <div className="stat-streak-number-row">
             <span className="stat-streak-value">{value}</span>
-            <span className="stat-streak-unit">days</span>
+            <span className="stat-streak-unit">{unitText}</span>
           </div>
           <div className="stat-card-title">{title}</div>
-          <p className="stat-streak-note">
-            <span className="stat-sage-dot" />
-            {subtitle}
-          </p>
+          {subtitle && subtitle.trim() !== '' && (
+            <p className="stat-streak-note">
+              <span className="stat-sage-dot" />
+              {subtitle}
+            </p>
+          )}
         </div>
       </div>
     );
   }
+
+  const hasSubtitle = Boolean(subtitle && subtitle.trim() !== '' && !subtitle.includes('total'));
 
   // Smaller companion stat chips beside the primary streak card
   return (
@@ -66,12 +73,13 @@ export const StatCard: React.FC<StatCardProps> = ({
         <div className="stat-card-title">{title}</div>
       </div>
 
-      <div className="stat-chip-footer">
-        <span className="stat-chip-pill">
-          {subtitle}
-        </span>
-      </div>
+      {hasSubtitle && (
+        <div className="stat-chip-footer">
+          <span className="stat-chip-pill">
+            {subtitle}
+          </span>
+        </div>
+      )}
     </div>
   );
 };
-

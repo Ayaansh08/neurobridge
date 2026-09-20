@@ -589,7 +589,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                   </button>
                 </div>
 
-                <div className="dashboard-table-card">
+                <div className="sessions-table-card">
                   {recentSessions.length === 0 ? (
                     <div className="dashboard-empty-state">
                       <div className="empty-state-dot" />
@@ -606,27 +606,23 @@ export const Dashboard: React.FC<DashboardProps> = ({
                       </button>
                     </div>
                   ) : (
-                    <div className="dashboard-table-scroll">
-                      <table className="sessions-table">
-                        <thead>
-                          <tr>
-                            <th scope="col" className="th-scenario">Scenario</th>
-                            <th scope="col" className="th-date">Date</th>
-                            <th scope="col" className="th-feedback">Score & Feedback</th>
-                            <th scope="col" className="th-action">Action</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {recentSessions.slice(0, 1).map((session) => (
-                            <SessionRow
-                              key={session.sessionId}
-                              session={session}
-                              onRetry={handleRetrySession}
-                              onRowClick={() => handleTabNavigate('progress')}
-                            />
-                          ))}
-                        </tbody>
-                      </table>
+                    <div className="sessions-list-container">
+                      <div className="sessions-table-header" aria-hidden="true">
+                        <div className="session-col-scenario">Scenario</div>
+                        <div className="session-col-date">Date</div>
+                        <div className="session-col-feedback">Score & Feedback</div>
+                        <div className="session-col-action">Action</div>
+                      </div>
+                      <div className="sessions-list-body" role="list">
+                        {recentSessions.slice(0, 1).map((session) => (
+                          <SessionRow
+                            key={session.sessionId}
+                            session={session}
+                            onRetry={handleRetrySession}
+                            onRowClick={() => handleTabNavigate('progress')}
+                          />
+                        ))}
+                      </div>
                     </div>
                   )}
                 </div>
