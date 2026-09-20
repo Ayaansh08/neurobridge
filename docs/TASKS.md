@@ -2,15 +2,18 @@
 
 _Single source of truth for work. Now / Next / Later / Done._
 
-## Backend batch
-- Run `cdk deploy neurobridge-stack --require-approval never` to apply the generate-feedback prompt fixes.
-
-## 🔴 Now (before Sept 20 deadline)
+## Now (before Sept 20 deadline)
+- [ ] API rate limit and budget cap (account owner)
 - [ ] Record 3-minute demo video
-- [x] Test full flow end-to-end: sign up → pick scenario → practice → complete
+- [ ] Write AWS Builder Center blog
+- [ ] Write DEMO.md
+- [ ] Project Submission
 
-## 🟡 Next
+## Next
+- [ ] Teardown AWS resources after results are announced
 - [x] Round 4 UI Polish & Responsiveness Plan (Items 1-7 completed and verified)
+- [x] Test full flow end-to-end: sign up, pick scenario, practice, complete
+- [x] Run `cdk deploy neurobridge-stack --require-approval never` to apply the generate-feedback prompt fixes
 
 ## 🔵 Later
 - [ ] Production error handling and loading states

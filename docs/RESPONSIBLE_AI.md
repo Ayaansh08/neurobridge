@@ -13,7 +13,7 @@
 | Progress (planned) | DynamoDB `Progress` table | Not yet written to |
 
 ## Data retention
-- DynamoDB `Sessions` table has TTL enabled on `expiresAt` for automatic cleanup of stale sessions.
+- DynamoDB `Sessions` table has TTL enabled on `expiresAt` for automatic cleanup of stale sessions. Sessions expire and are automatically deleted after 24 hours.
 - `RemovalPolicy.DESTROY` means `cdk destroy` deletes ALL data permanently.
 - localStorage persists until the user clears browser data.
 

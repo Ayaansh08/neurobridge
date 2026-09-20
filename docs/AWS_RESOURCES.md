@@ -8,6 +8,23 @@ _What's in the stack, what it costs, and how to clean up._
 - **Stack name:** `NeuroBridgeStack`
 - **Profile:** `<CLI_PROFILE>`
 
+## Live Environment
+- **Live URL:** https://production.d1h4aonssx39gc.amplifyapp.com
+- **Hosting:** AWS Amplify Hosting, manual .zip upload (no Git), app "neurobridge", branch "production", region ap-south-1.
+- **Backend:** stack NeuroBridgeStack in ap-south-1, deployed with cdk.
+- **Frontend Built From Commit:** c61c030
+- **Backend Deployed From Commit:** c61c030 (Stack LastUpdatedTime: 2026-09-20T10:34:02.923000+00:00)
+
+## Deployer Rules
+- One deployer at a time.
+- Do not run cdk destroy until results are announced, then the account owner deletes the deployer credentials.
+
+## Environment Variables
+To read stack outputs for the frontend, go to CloudFormation > NeuroBridgeStack > Outputs. They feed the following frontend variables:
+- `VITE_API_GATEWAY_URL`
+- `VITE_COGNITO_USER_POOL_ID`
+- `VITE_COGNITO_APP_CLIENT_ID`
+
 ## Resources Created by CDK
 
 | Resource | Name / ID | Purpose |

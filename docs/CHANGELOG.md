@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-09-20 - Deployment
+- Tagged and verified `known-good` build for Amplify upload.
+- Deployed infrastructure stack to `ap-south-1`.
+- Built frontend with public `VITE_` variables mapped to the live AWS stack outputs.
+- Documented live URL and redeploy runbook in `docs/DEPLOYMENT.md`.
+- Documented known issues and architecture safety caveats.
 ## 2026-09-20 - Round 4 UI Polish & Responsiveness Fixes
 - **Item 1 (Comfort Controls in Settings & Navigation Cleanup)**:
   - Moved Comfort controls fully into SettingsView (`Text Size`, `High Contrast`, `Reduced Motion`, `Conversation Pacing`).
