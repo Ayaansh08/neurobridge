@@ -475,43 +475,40 @@ export const Dashboard: React.FC<DashboardProps> = ({
           {/* Main Dashboard Overview */}
           {(currentTab === 'dashboard' || currentTab === '') && (
             <>
-              {/* Top Header */}
+              {/* Top Header without duplicate Start Practicing button */}
               <DashboardHeader
                 userDisplayName={displayName}
                 level={userStats.currentLevel}
                 currentXp={userStats.currentLevelXp}
                 nextLevelXp={userStats.nextLevelXp}
-                onStartPracticing={handleStartPracticing}
               />
 
-              {/* Asymmetric Stats Section: 1 Bespoke Streak Card + 2 Compact Stat Chips */}
+              {/* Stats Strip: 3 Cards in a Row from 640px, or First-Run Welcome */}
               {userStats.sessionsCompleted > 0 ? (
-                <section className="dashboard-stats-asymmetric" aria-label="Personal Momentum and Stats">
+                <section className="dashboard-stats-grid" aria-label="Personal Momentum and Stats">
                   <StatCard
-                    title="Current Streak"
+                    title="Current streak"
                     value={userStats.currentStreak}
                     subtitle={userStats.streakStatus}
                     iconType="streak"
                   />
-                  <div className="dashboard-stats-chips-column">
-                    <StatCard
-                      title="Sessions Completed"
-                      value={userStats.sessionsCompleted}
-                      subtitle=""
-                      iconType="sessions"
-                    />
-                    <StatCard
-                      title="Practice XP Points"
-                      value={userStats.totalXp.toLocaleString()}
-                      subtitle={userStats.weeklyXpChange}
-                      iconType="xp"
-                    />
-                  </div>
+                  <StatCard
+                    title="Sessions completed"
+                    value={userStats.sessionsCompleted}
+                    subtitle=""
+                    iconType="sessions"
+                  />
+                  <StatCard
+                    title="Practice XP points"
+                    value={userStats.totalXp.toLocaleString()}
+                    subtitle={userStats.weeklyXpChange}
+                    iconType="xp"
+                  />
                 </section>
               ) : (
-                <section className="dashboard-welcome-firstrun" style={{ padding: '24px', background: 'var(--nb-charcoal-subtle)', borderRadius: '16px', marginBottom: '40px', border: '1px solid var(--nb-charcoal-border)' }}>
-                  <h3 style={{ margin: '0 0 8px 0', fontSize: '1.25rem', color: 'var(--nb-sage)', fontWeight: 500, fontFamily: 'Fraunces, serif' }}>Ready when you are</h3>
-                  <p style={{ margin: 0, color: 'var(--nb-gray-400)', fontSize: '0.95rem', lineHeight: 1.5 }}>
+                <section className="dashboard-welcome-firstrun">
+                  <h3 className="welcome-firstrun-title">Ready when you are</h3>
+                  <p className="welcome-firstrun-desc">
                     Your practice stats and momentum streak will appear here once you complete your first rehearsal. Pick a scenario below to start.
                   </p>
                 </section>
@@ -558,11 +555,29 @@ export const Dashboard: React.FC<DashboardProps> = ({
                     </button>
                   </div>
                 ) : (
-                  <div style={{ width: '100%', maxWidth: '100%' }}>
-                    <ScenarioCard
-                      scenario={featuredScenario}
-                      onSelect={handleSelectScenario}
-                    />
+                  <div className="scenario-banner-card">
+                    <div className="scenario-banner-left">
+                      <div className="scenario-banner-medallion">
+                        <BriefcaseIcon size={22} />
+                      </div>
+                      <div className="scenario-banner-content">
+                        <span className="scenario-banner-eyebrow">Good place to start</span>
+                        <div className="scenario-banner-title-row">
+                          <h3 className="scenario-banner-title">{featuredScenario.title}</h3>
+                          {featuredScenario.duration && (
+                            <span className="scenario-banner-duration">{featuredScenario.duration}</span>
+                          )}
+                        </div>
+                        <p className="scenario-banner-desc">{featuredScenario.description}</p>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      className="dashboard-cta-btn"
+                      onClick={() => handleSelectScenario(featuredScenario)}
+                    >
+                      <span>Start this scenario</span>
+                    </button>
                   </div>
                 )}
               </section>

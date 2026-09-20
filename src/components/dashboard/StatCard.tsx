@@ -9,77 +9,60 @@ export const StatCard: React.FC<StatCardProps> = ({
   iconType,
 }) => {
   const isStreak = iconType === 'streak';
+  const numVal = typeof value === 'number' ? value : parseInt(String(value), 10) || 0;
+  const unitText = numVal === 1 ? 'day' : 'days';
 
   const renderIcon = () => {
     switch (iconType) {
-      case 'sessions':
-        return <CheckCircleIcon size={18} className="stat-chip-icon" />;
       case 'streak':
-        return <FlameIcon size={30} className="streak-bespoke-flame" />;
+        return <FlameIcon size={22} className="stat-card-icon" />;
+      case 'sessions':
+        return <CheckCircleIcon size={22} className="stat-card-icon" />;
       case 'xp':
-        return <StarIcon size={18} className="stat-chip-icon" />;
+        return <StarIcon size={22} className="stat-card-icon" />;
     }
   };
 
-  if (isStreak) {
-    const numVal = typeof value === 'number' ? value : parseInt(String(value), 10) || 0;
-    const unitText = numVal === 1 ? 'day' : 'days';
-
-    // Large bespoke streak card with hand-drawn flame & progress ring
-    return (
-      <div className="stat-card stat-card--streak">
-        <div className="stat-streak-visual">
-          <div className="stat-streak-flame-container">
-            {renderIcon()}
-          </div>
-          {/* Subtle concentric analog milestone marker */}
-          <div className="stat-streak-ring-accent" aria-hidden="true" />
-        </div>
-
-        <div className="stat-streak-content">
-          <div className="stat-card-eyebrow">PRACTICE MOMENTUM</div>
-          <div className="stat-streak-number-row">
-            <span className="stat-streak-value">{value}</span>
-            <span className="stat-streak-unit">{unitText}</span>
-          </div>
-          <div className="stat-card-title">{title}</div>
-          {subtitle && subtitle.trim() !== '' && (
-            <p className="stat-streak-note">
-              <span className="stat-sage-dot" />
-              {subtitle}
-            </p>
-          )}
-        </div>
-      </div>
-    );
-  }
+  const getEyebrow = () => {
+    switch (iconType) {
+      case 'streak':
+        return 'PRACTICE MOMENTUM';
+      case 'sessions':
+        return 'REHEARSALS COMPLETED';
+      case 'xp':
+        return 'PRACTICE REWARDS';
+    }
+  };
 
   const hasSubtitle = Boolean(subtitle && subtitle.trim() !== '' && !subtitle.includes('total'));
 
-  // Smaller companion stat chips beside the primary streak card
   return (
-    <div className={`stat-card stat-card--chip stat-card--${iconType}`}>
-      <div className="stat-chip-top">
-        <span className="stat-card-eyebrow">
-          {iconType === 'sessions' ? 'ALL TIME' : 'ACCUMULATED'}
-        </span>
-        <div className="stat-chip-icon-box">
+    <div className={`stat-card stat-card--${iconType}`}>
+      <div className="stat-card-header">
+        <span className="stat-card-eyebrow">{getEyebrow()}</span>
+        <div className="stat-card-medallion" aria-hidden="true">
           {renderIcon()}
         </div>
       </div>
 
-      <div className="stat-chip-body">
-        <div className="stat-chip-value">{value}</div>
+      <div className="stat-card-body">
+        <div className="stat-card-value-row">
+          <span className="stat-card-value">{value}</span>
+          {isStreak && <span className="stat-card-unit">{unitText}</span>}
+        </div>
         <div className="stat-card-title">{title}</div>
       </div>
 
-      {hasSubtitle && (
-        <div className="stat-chip-footer">
-          <span className="stat-chip-pill">
+      <div className="stat-card-footer">
+        {hasSubtitle ? (
+          <p className="stat-card-helper">
+            {isStreak && <span className="stat-sage-dot" />}
             {subtitle}
-          </span>
-        </div>
-      )}
+          </p>
+        ) : (
+          <div className="stat-card-spacer" aria-hidden="true" />
+        )}
+      </div>
     </div>
   );
 };

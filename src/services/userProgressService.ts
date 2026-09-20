@@ -97,46 +97,63 @@ export const userProgressService = {
 
   recomputeStatsFromSessions(sessions: SessionSummary[], currentStats: UserStats): UserStats {
     if (!sessions || sessions.length === 0) {
-      return { ...currentStats, sessionsCompleted: 0, currentStreak: 0, streakStatus: 'Ready to begin your practice', totalXp: 0, weeklyXpChange: '+0 XP today', currentLevel: 1, currentLevelXp: 0, nextLevelXp: 250 };
+      return {
+        ...currentStats,
+        sessionsCompleted: 0,
+        weeklySessionsChange: '',
+        currentStreak: 0,
+        streakStatus: 'Ready to begin your practice',
+        totalXp: 0,
+        weeklyXpChange: '+0 XP today',
+        currentLevel: 1,
+        currentLevelXp: 0,
+        nextLevelXp: 250,
+      };
     }
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const now = new Date();
+    const todayYear = now.getFullYear();
+    const todayMonth = now.getMonth();
+    const todayDate = now.getDate();
 
     let xpToday = 0;
-    const uniqueDays: number[] = [];
+    const uniqueLocalDaysMap = new Map<string, number>();
 
-    // Sessions are mostly recent first, but sort to be safe
-    const sorted = [...sessions].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-
-    sorted.forEach((session) => {
+    sessions.forEach((session) => {
       const d = new Date(session.createdAt);
-      d.setHours(0, 0, 0, 0);
-      const time = d.getTime();
+      if (!isNaN(d.getTime())) {
+        if (
+          d.getFullYear() === todayYear &&
+          d.getMonth() === todayMonth &&
+          d.getDate() === todayDate
+        ) {
+          xpToday += 100;
+        }
 
-      if (time === today.getTime()) {
-        xpToday += 100; // Fixed 100 XP per session
-      }
-
-      if (uniqueDays.length === 0 || uniqueDays[uniqueDays.length - 1] !== time) {
-        uniqueDays.push(time);
+        const localDayKey = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+        const dayStartLocal = new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+        uniqueLocalDaysMap.set(localDayKey, dayStartLocal);
       }
     });
 
+    const sortedDayTimestamps = Array.from(uniqueLocalDaysMap.values()).sort((a, b) => b - a);
+    const todayStartLocal = new Date(todayYear, todayMonth, todayDate).getTime();
+    const MS_PER_DAY = 24 * 60 * 60 * 1000;
+
     let streak = 0;
-    if (uniqueDays.length > 0) {
-      const firstDayTime = uniqueDays[0];
-      const diffDaysFromToday = Math.round((today.getTime() - firstDayTime) / (1000 * 60 * 60 * 24));
-      
+    if (sortedDayTimestamps.length > 0) {
+      const mostRecentDay = sortedDayTimestamps[0];
+      const diffDaysFromToday = Math.round((todayStartLocal - mostRecentDay) / MS_PER_DAY);
+
       if (diffDaysFromToday <= 1) {
         streak = 1;
-        let currentCheck = firstDayTime;
-        for (let i = 1; i < uniqueDays.length; i++) {
-          const nextDayTime = uniqueDays[i];
-          const diff = Math.round((currentCheck - nextDayTime) / (1000 * 60 * 60 * 24));
+        let checkDay = mostRecentDay;
+        for (let i = 1; i < sortedDayTimestamps.length; i++) {
+          const prevDay = sortedDayTimestamps[i];
+          const diff = Math.round((checkDay - prevDay) / MS_PER_DAY);
           if (diff === 1) {
             streak++;
-            currentCheck = nextDayTime;
+            checkDay = prevDay;
           } else {
             break;
           }
@@ -144,7 +161,7 @@ export const userProgressService = {
       }
     }
 
-    const totalXp = sorted.length * 100;
+    const totalXp = sessions.length * 100;
     let level = 1;
     let currentXp = totalXp;
     let nextLevelXp = 250;
@@ -157,10 +174,15 @@ export const userProgressService = {
 
     return {
       ...currentStats,
-      sessionsCompleted: sorted.length,
+      sessionsCompleted: sessions.length,
       weeklySessionsChange: '',
       currentStreak: streak,
-      streakStatus: streak > 1 ? 'Momentum active — keep it going' : (streak === 1 ? 'Streak started — come back tomorrow' : 'Ready to build momentum'),
+      streakStatus:
+        streak > 1
+          ? 'Momentum active — keep it going'
+          : streak === 1
+          ? 'Streak started — come back tomorrow'
+          : 'Ready to build momentum',
       totalXp: totalXp,
       weeklyXpChange: `+${xpToday} XP today`,
       currentLevel: level,
@@ -170,27 +192,28 @@ export const userProgressService = {
   },
 
   getUserStats(userEmail?: string): UserStats {
+    const sessions = this.getUserSessions(userEmail);
     const key = userEmail ? `${STORAGE_KEYS.STATS}_${userEmail}` : STORAGE_KEYS.STATS;
     const raw = localStorage.getItem(key);
-    if (raw) {
-      try {
-        return JSON.parse(raw);
-      } catch {
-        // fallback
-      }
-    }
-    // Default initial progress for any newly authenticated user
-    return {
+    let currentStats: UserStats = {
       sessionsCompleted: 0,
-      weeklySessionsChange: '0 this week',
+      weeklySessionsChange: '',
       currentStreak: 0,
       streakStatus: 'Ready to begin your practice',
       totalXp: 0,
-      weeklyXpChange: '0 this week',
+      weeklyXpChange: '+0 XP today',
       currentLevel: 1,
       currentLevelXp: 0,
       nextLevelXp: 250,
     };
+    if (raw) {
+      try {
+        currentStats = { ...currentStats, ...JSON.parse(raw) };
+      } catch {
+        // fallback
+      }
+    }
+    return this.recomputeStatsFromSessions(sessions, currentStats);
   },
 
   saveUserStats(stats: UserStats, userEmail?: string): void {

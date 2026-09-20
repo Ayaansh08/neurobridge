@@ -1,5 +1,4 @@
 import React from 'react';
-import { PlayIcon } from './Icons';
 import type { DashboardHeaderProps } from './types';
 
 export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
@@ -7,7 +6,6 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   level,
   currentXp,
   nextLevelXp,
-  onStartPracticing,
 }) => {
   const fraction = Math.min(1, Math.max(0, currentXp / nextLevelXp));
   // Circumference for r=15 is 2 * PI * 15 ≈ 94.25
@@ -31,8 +29,6 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
       </div>
 
       <div className="dashboard-header-right">
-        
-
         {/* Bespoke Dotted/Arc XP Component */}
         <div
           className="dashboard-level-widget"
@@ -80,18 +76,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
             </div>
           </div>
         </div>
-
-        {/* Terracotta CTA Button */}
-        <button
-          type="button"
-          className="dashboard-cta-btn"
-          onClick={onStartPracticing}
-        >
-          <PlayIcon size={12} className="dashboard-cta-icon" />
-          <span>Start Practicing</span>
-        </button>
       </div>
     </header>
   );
 };
-
