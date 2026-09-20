@@ -35,6 +35,8 @@
   - Removed duplicate "Rehearsal Insights" header from Insights screen.
   - Verified Settings display name Save button with 30-char limit, plain text rendering, and true storage disclosure.
   - Positioned completion notice below chat container to prevent message overlapping on 390px mobile screens.
+- **Settings Buttons Styling Fix**:
+  - Implemented shared global `.dashboard-btn`, `.dashboard-btn--primary`, and `.dashboard-btn--secondary` button styling matching design tokens (radius, borders, primary plum, secondary transparent/subtle, focus-visible rings) for the "Save" and "Reset to defaults" buttons in the Settings Tab.
 
 ## 2026-09-19 - "Quiet Night" UI Redesign
 - **Landing Page**: Completely revamped the public landing page to use the Quiet Night theme (charcoal, plum, sage). Removed all legacy blue/navy colors. Updated copy to reflect the app's true mechanics (no pressure practice, structured feedback). Added a 3D tilted preview card on desktop to demonstrate the AI conversation interface.
