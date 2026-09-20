@@ -87,8 +87,6 @@ export interface SidebarProps {
   userEmail?: string;
   userName?: string;
   onSignOut: () => void;
-  onOpenComfort?: () => void;
-  hasActiveSession?: boolean;
 }
 
 export interface DashboardHeaderProps {
@@ -97,8 +95,6 @@ export interface DashboardHeaderProps {
   currentXp: number;
   nextLevelXp: number;
   onStartPracticing?: () => void;
-  onOpenComfort?: () => void;
-  hasActiveSession?: boolean;
 }
 
 

@@ -1,22 +1,30 @@
 export interface UserSettings {
-  pacingSpeed: 'relaxed' | 'moderate' | 'fast';
-  textSize: 'regular' | 'large';
+  pacingSpeed: 'relaxed' | 'moderate' | 'instant';
+  textSize: 'standard' | 'large';
   contrast: 'standard' | 'high';
   motion: 'standard' | 'reduced';
 }
 
 const SETTINGS_STORAGE_KEY = 'neurobridge_settings';
 
-export const DEFAULT_SETTINGS: UserSettings = {
-  pacingSpeed: 'relaxed',
-  textSize: 'regular',
-  contrast: 'standard',
-  motion: 'standard',
+const getInitialDefaultMotion = (): 'standard' | 'reduced' => {
+  if (typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    return 'reduced';
+  }
+  return 'standard';
 };
 
-export const PACING_DELAYS: Record<UserSettings['pacingSpeed'], number> = {
+export const DEFAULT_SETTINGS: UserSettings = {
+  pacingSpeed: 'relaxed',
+  textSize: 'standard',
+  contrast: 'standard',
+  motion: getInitialDefaultMotion(),
+};
+
+export const PACING_DELAYS: Record<string, number> = {
   relaxed: 1200,
   moderate: 600,
+  instant: 0,
   fast: 0,
 };
 
@@ -26,7 +34,14 @@ export const settingsService = {
       const raw = localStorage.getItem(SETTINGS_STORAGE_KEY);
       if (raw) {
         const parsed = JSON.parse(raw);
-        return { ...DEFAULT_SETTINGS, ...parsed };
+        // Normalize legacy values
+        if (parsed.textSize === 'regular') parsed.textSize = 'standard';
+        if (parsed.pacingSpeed === 'fast') parsed.pacingSpeed = 'instant';
+        return {
+          ...DEFAULT_SETTINGS,
+          ...parsed,
+          motion: parsed.motion || DEFAULT_SETTINGS.motion,
+        };
       }
     } catch {
       // fallback
@@ -49,6 +64,7 @@ export const settingsService = {
 
   applyComfortStyles(settings?: UserSettings) {
     const s = settings || this.getSettings();
+    if (typeof document === 'undefined') return;
     const root = document.documentElement;
 
     // Text size

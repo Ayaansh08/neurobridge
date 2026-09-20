@@ -97,7 +97,7 @@ export const handler: APIGatewayProxyHandler = async (event): Promise<APIGateway
       .join('\n');
 
     // 3. Formulate Prompt
-    const systemPrompt = You are an expert communication coach evaluating a user's roleplay conversation in a realistic social simulation.
+    const systemPrompt = `You are an expert communication coach evaluating a user's roleplay conversation in a realistic social simulation.
 Review the provided transcript. Evaluate the User's communication across 4 key dimensions.
 
 Core Coaching Principles:
@@ -134,7 +134,7 @@ Output exactly and only a valid JSON object matching this schema, with no markdo
   "whatWentWell": "<2-3 sentences, specific to the user's words. If gibberish/empty, honestly say so kindly.>",
   "tryImproving": "<2-3 sentences, specific and actionable, framed as practice guidance not criticism>",
   "encouragement": "<1 short closing sentence, warm, forward-looking>"
-};
+}`;
 
     // 4. Invoke Bedrock via Converse API
     const converseCmd = new ConverseCommand({

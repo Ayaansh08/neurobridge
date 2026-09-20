@@ -1,5 +1,5 @@
 import React from 'react';
-import { PlayIcon, ComfortSlidersIcon } from './Icons';
+import { PlayIcon } from './Icons';
 import type { DashboardHeaderProps } from './types';
 
 export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
@@ -8,7 +8,6 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   currentXp,
   nextLevelXp,
   onStartPracticing,
-  onOpenComfort,
 }) => {
   const fraction = Math.min(1, Math.max(0, currentXp / nextLevelXp));
   // Circumference for r=15 is 2 * PI * 15 ≈ 94.25
@@ -32,18 +31,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
       </div>
 
       <div className="dashboard-header-right">
-        {/* Sensory Comfort Quick Button */}
-        {onOpenComfort && (
-          <button
-            type="button"
-            className="dashboard-header-comfort-btn"
-            onClick={onOpenComfort}
-            title="Adjust sensory comfort and low-stimulation settings"
-          >
-            <ComfortSlidersIcon size={14} />
-            <span>Comfort</span>
-          </button>
-        )}
+        
 
         {/* Bespoke Dotted/Arc XP Component */}
         <div

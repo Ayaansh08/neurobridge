@@ -2,12 +2,10 @@ import React from 'react';
 import {
   Logo,
   DashboardIcon,
-  PracticeIcon,
   ScenariosIcon,
   ProgressIcon,
   SettingsIcon,
   LogOutIcon,
-  ComfortSlidersIcon,
 } from './Icons';
 import type { SidebarProps } from './types';
 
@@ -20,7 +18,6 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { id: 'dashboard', path: '/app', label: 'Dashboard', icon: DashboardIcon },
-  { id: 'practice', path: '/app/practice', label: 'Practice', icon: PracticeIcon },
   { id: 'scenarios', path: '/app/scenarios', label: 'Scenarios', icon: ScenariosIcon },
   { id: 'progress', path: '/app/progress', label: 'Progress', icon: ProgressIcon },
   { id: 'settings', path: '/app/settings', label: 'Settings', icon: SettingsIcon },
@@ -32,8 +29,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
   userEmail,
   userName,
   onSignOut,
-  onOpenComfort,
-  hasActiveSession,
 }) => {
   // Extract initials dynamically from user's email/name, or fallback to 'NB'
   const getInitials = () => {
@@ -55,6 +50,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const displayEmail = userEmail || 'guest@neurobridge.app';
   const displayName = userName || (userEmail ? userEmail.split('@')[0] : 'Guest User');
 
+  const isTabActive = (itemId: string) => {
+    if (itemId === 'dashboard') {
+      return currentTab === 'dashboard' || currentTab === '';
+    }
+    if (itemId === 'scenarios') {
+      return currentTab === 'scenarios' || currentTab === 'practice';
+    }
+    return currentTab === itemId;
+  };
+
   return (
     <aside className="dashboard-sidebar" aria-label="Main Navigation Sidebar">
       {/* Brand Header */}
@@ -65,6 +70,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           e.preventDefault();
           onTabChange('dashboard');
         }}
+        aria-label="NeuroBridge Home"
       >
         <Logo size={28} className="sidebar-brand-icon" />
         <div className="sidebar-brand-text">
@@ -78,12 +84,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <span className="sidebar-nav-heading">MENU</span>
         <nav className="sidebar-nav" aria-label="Main Navigation">
           {navItems.map((item) => {
-            if (item.id === 'practice' && !hasActiveSession) return null;
             const Icon = item.icon;
-            const isActive =
-              currentTab === item.id ||
-              (item.id === 'dashboard' && currentTab === '') ||
-              window.location.pathname === item.path;
+            const isActive = isTabActive(item.id);
 
             return (
               <a
@@ -95,10 +97,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   onTabChange(item.id);
                 }}
                 title={item.label}
+                aria-label={item.label}
                 aria-current={isActive ? 'page' : undefined}
               >
-                {/* Active jewel-tone tick marker */}
-                <span className="sidebar-active-tick" aria-hidden="true" />
                 <span className="sidebar-nav-icon-wrap">
                   <Icon size={18} strokeWidth={isActive ? 2 : 1.6} />
                 </span>
@@ -108,21 +109,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
           })}
         </nav>
       </div>
-
-      {/* Sensory Comfort Quick Control */}
-      {onOpenComfort && (
-        <div className="sidebar-comfort-trigger-wrap">
-          <button
-            type="button"
-            className="sidebar-comfort-trigger-btn"
-            onClick={onOpenComfort}
-            title="Open Sensory Comfort Controls"
-          >
-            <ComfortSlidersIcon size={16} />
-            <span>Comfort Modes</span>
-          </button>
-        </div>
-      )}
 
       {/* Quiet Physical Notebook style helper note */}
       <div className="sidebar-companion-note">
@@ -146,7 +132,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
           type="button"
           className="sidebar-signout-btn"
           onClick={onSignOut}
-          title="Sign out of NeuroBridge"
+          title="Sign out"
+          aria-label="Sign out"
         >
           <LogOutIcon size={15} />
           <span className="sidebar-signout-text">Sign out</span>
@@ -155,5 +142,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
     </aside>
   );
 };
+
 
 

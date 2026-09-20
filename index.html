@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -19,6 +19,27 @@
       href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600;700&family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap"
       rel="stylesheet"
     />
+    <!-- Apply Comfort settings before first paint to prevent flashing -->
+    <script>
+      (function() {
+        try {
+          var raw = localStorage.getItem('neurobridge_settings');
+          var s = raw ? JSON.parse(raw) : {};
+          var root = document.documentElement;
+          if (s.textSize === 'large') {
+            root.setAttribute('data-text-size', 'large');
+          }
+          if (s.contrast === 'high') {
+            root.setAttribute('data-contrast', 'high');
+          }
+          var prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          var motion = s.motion || (prefersReduced ? 'reduced' : 'standard');
+          if (motion === 'reduced') {
+            root.setAttribute('data-motion', 'reduced');
+          }
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
