@@ -125,3 +125,5 @@ One feature or fix at a time. No unrequested refactors. If a requirement is ambi
 
 ## 14. DEMO FIRST
 A working demo beats perfect code. Flag if a change risks the demo path.
+
+FILE ENCODING RULE: All files are UTF-8 without BOM. Never create or edit files with PowerShell redirection (> or >>), Out-File, Set-Content, Add-Content, or here-strings. Use the editor/file tool, or a Node script with fs.writeFileSync(path, text, 'utf8'). After writing any file that contains non-ASCII characters (— – · ’ é) or newlines, read it back and check for broken sequences such as "â€", "Â", "Ã", or a literal `n. Keep an .editorconfig with charset = utf-8.

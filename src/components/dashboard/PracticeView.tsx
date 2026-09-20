@@ -840,8 +840,8 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
           </div>
 
           {isCompleted && (
-            <div style={{ padding: '16px', background: 'var(--nb-charcoal-border)', borderTop: '1px solid var(--nb-charcoal-subtle)', textAlign: 'center', color: 'var(--nb-gray-400)' }}>
-              This practice session has been completed.
+            <div className="practice-completed-notice">
+              <span>This practice session has been completed.</span>
             </div>
           )}
           {!isCompleted && (
@@ -888,7 +888,7 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
             <div className="practice-voice-right">
               {isListening && (
                 <span className="practice-voice-notice practice-voice-notice--listening">
-                  Ã¢â€”Â Listening... review before sending
+                  <span className="practice-voice-dot" aria-hidden="true" /> Listening... review before sending
                 </span>
               )}
               {voiceNotice && !isListening && (
@@ -1032,17 +1032,6 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
                     </p>
                   </div>
                 </div>
-          <div className="practice-completed-header">
-            <div className="practice-completed-icon">
-              <CheckCircleIcon size={26} />
-            </div>
-            <div className="practice-completed-header-text">
-              <h3 className="practice-completed-title">Rehearsal Insights</h3>
-              <p className="practice-completed-subtitle">
-                Constructive reflection on your practice with {persona.name} ({activeScenario.title})
-              </p>
-            </div>
-          </div>
 
           {feedbackEvaluation && (
             <>

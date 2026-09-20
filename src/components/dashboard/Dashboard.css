@@ -1689,6 +1689,31 @@
   font-weight: 500;
 }
 
+.practice-voice-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--nb-accent);
+  display: inline-block;
+  animation: pulse 1.5s infinite;
+}
+
+.practice-completed-notice {
+  padding: 16px 20px;
+  background: var(--nb-surface-subtle);
+  border-top: 1px solid var(--nb-border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 13.5px;
+  color: var(--nb-ink-secondary);
+  text-align: center;
+  width: 100%;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
 .practice-voice-notice--error {
   color: #F87171;
 }
