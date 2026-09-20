@@ -24,37 +24,37 @@
 }
 
 .glare-button--primary {
-  background: #A85C8C;
-  color: #F2EBDD;
+  background: var(--nb-accent, #BD5A82);
+  color: var(--nb-ink-primary, #F2EBDD);
   border: 1px solid rgba(242, 235, 221, 0.15);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  box-shadow: none;
 }
 
 .glare-button--primary:hover {
-  background: #984E7D;
-  box-shadow: 0 6px 20px rgba(168, 92, 140, 0.25);
+  background: var(--nb-accent-hover, #A84E73);
+  box-shadow: none;
 }
 
 .glare-button--secondary {
   background: transparent;
-  color: #EDEAE4;
-  border: 1px solid #3E3D46;
+  color: var(--nb-ink-primary, #F2EBDD);
+  border: 1px solid var(--nb-border-subtle, #3A2E42);
 }
 
 .glare-button--secondary:hover {
-  background: #232228;
-  border-color: #555360;
+  background: var(--nb-surface-card-hover, #22172B);
+  border-color: var(--nb-border-hover, #4D3D58);
 }
 
 .glare-button--editorial {
-  background: #23202C;
-  color: #EDEAE4;
-  border: 1px solid #3A3942;
+  background: var(--nb-surface-card, #1A1220);
+  color: var(--nb-ink-primary, #F2EBDD);
+  border: 1px solid var(--nb-border-subtle, #3A2E42);
 }
 
 .glare-button--editorial:hover {
-  background: #2E2029;
-  border-color: #A85C8C;
+  background: var(--nb-accent-surface, #281624);
+  border-color: var(--nb-accent, #BD5A82);
 }
 
 /* Moving Specular Sheen Effect */

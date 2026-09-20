@@ -1,5 +1,6 @@
 import React from 'react';
 import type { DashboardHeaderProps } from './types';
+import { BlurText } from '../animations/BlurText';
 
 export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   userDisplayName,
@@ -7,11 +8,8 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   currentXp,
   nextLevelXp,
 }) => {
-  const fraction = Math.min(1, Math.max(0, currentXp / nextLevelXp));
-  // Circumference for r=15 is 2 * PI * 15 ≈ 94.25
-  const radius = 15;
-  const circumference = 2 * Math.PI * radius;
-  const strokeDashoffset = circumference - fraction * circumference;
+  const safeNextXp = nextLevelXp > 0 ? nextLevelXp : 250;
+  const fillPercent = Math.min(100, Math.max(0, (currentXp / safeNextXp) * 100));
 
   const greetingText =
     userDisplayName && userDisplayName !== 'Guest'
@@ -19,60 +17,42 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
       : 'Welcome back';
 
   return (
-    <header className="dashboard-header">
+    <header className="dashboard-header-editorial">
       <div className="dashboard-header-left">
-        <span className="dashboard-eyebrow">YOUR WORKSPACE</span>
-        <h1 className="dashboard-greeting">{greetingText}</h1>
+        <span className="dashboard-eyebrow">PRACTICE DESK</span>
+        <h1 className="dashboard-greeting">
+          <BlurText text={greetingText} delay={40} animateBy="words" />
+        </h1>
         <p className="dashboard-tagline">
           Calm, low-pressure rehearsal for real-life conversations.
         </p>
       </div>
 
       <div className="dashboard-header-right">
-        {/* Bespoke Dotted/Arc XP Component */}
+        {/* SloshGauge Inset Ring Level Badge (No Box-in-a-Box) */}
         <div
-          className="dashboard-level-widget"
-          title={`Level ${level} · ${currentXp} of ${nextLevelXp} XP to Level ${level + 1}`}
+          className="dashboard-level-slosh"
+          title={`Level ${level} · ${currentXp}/${safeNextXp} XP (${safeNextXp - currentXp} XP to Level ${level + 1})`}
           role="status"
-          aria-label={`Level ${level}, ${currentXp} of ${nextLevelXp} XP`}
+          aria-label={`Level ${level}, ${currentXp} of ${safeNextXp} XP`}
         >
-          <div className="dashboard-level-arc-wrap">
-            <svg
-              width="44"
-              height="44"
-              viewBox="0 0 44 44"
-              className="dashboard-level-arc-svg"
-            >
-              {/* Background muted track */}
-              <circle
-                cx="22"
-                cy="22"
-                r={radius}
-                className="level-arc-track"
-                strokeWidth="2.5"
-                strokeDasharray="2 3"
-              />
-              {/* Progress Terracotta Arc with organic rounded cap */}
-              <circle
-                cx="22"
-                cy="22"
-                r={radius}
-                className="level-arc-fill"
-                strokeWidth="2.8"
-                strokeDasharray={circumference}
-                strokeDashoffset={strokeDashoffset}
-                transform="rotate(-90 22 22)"
-              />
-            </svg>
-            <span className="dashboard-level-number">{level}</span>
+          <div
+            className="dashboard-level-slosh__ring"
+            style={{ '--slosh-fill': `${fillPercent}%` } as React.CSSProperties}
+          >
+            <div className="dashboard-level-slosh__liquid" aria-hidden="true">
+              <span className="dashboard-level-slosh__wave dashboard-level-slosh__wave--front" />
+              <span className="dashboard-level-slosh__wave dashboard-level-slosh__wave--back" />
+            </div>
+            <span className="dashboard-level-slosh__number">{level}</span>
           </div>
 
-          <div className="dashboard-level-info">
-            <div className="dashboard-level-label">LEVEL {level}</div>
-            <div className="dashboard-level-xp-text">
+          <div className="dashboard-level-slosh__meta">
+            <div className="dashboard-level-slosh__label">LEVEL {level}</div>
+            <div className="dashboard-level-slosh__xp">
               <span className="xp-current">{currentXp}</span>
               <span className="xp-sep">/</span>
-              <span className="xp-total">{nextLevelXp} XP</span>
+              <span className="xp-total">{safeNextXp} XP</span>
             </div>
           </div>
         </div>
@@ -80,3 +60,4 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
     </header>
   );
 };
+
