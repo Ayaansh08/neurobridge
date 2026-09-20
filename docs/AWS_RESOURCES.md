@@ -12,7 +12,7 @@ _What's in the stack, what it costs, and how to clean up._
 - **Live URL:** https://production.d1h4aonssx39gc.amplifyapp.com
 - **Hosting:** AWS Amplify Hosting, manual .zip upload (no Git), app "neurobridge", branch "production", region ap-south-1.
 - **Backend:** stack NeuroBridgeStack in ap-south-1, deployed with cdk.
-- **Frontend Built From Commit:** c61c030
+- **Frontend Built From Commit:** 1213d4d
 - **Backend Deployed From Commit:** c61c030 (Stack LastUpdatedTime: 2026-09-20T10:34:02.923000+00:00)
 
 ## Deployer Rules
