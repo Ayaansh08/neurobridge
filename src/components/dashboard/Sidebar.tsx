@@ -110,14 +110,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </nav>
       </div>
 
-      {/* Quiet Physical Notebook style helper note */}
-      <div className="sidebar-companion-note">
-        <div className="sidebar-companion-title">Quiet Space</div>
-        <p className="sidebar-companion-text">
-          Paced rehearsals with no pressure or timed constraints.
-        </p>
-      </div>
-
       {/* Bottom Pinned User Info & Sign Out */}
       <div className="sidebar-footer">
         <div className="sidebar-user" title={displayEmail}>

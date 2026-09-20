@@ -197,30 +197,6 @@
   text-overflow: ellipsis;
 }
 
-/* Companion quiet note box */
-.sidebar-companion-note {
-  margin: 0 16px 16px;
-  padding: 14px 14px;
-  border-radius: var(--nb-radius-card);
-  background: var(--nb-surface-card);
-  border: 1px solid var(--nb-border-subtle);
-}
-
-.sidebar-companion-title {
-  font-family: var(--font-serif-display);
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--nb-ink-primary);
-  margin-bottom: 4px;
-}
-
-.sidebar-companion-text {
-  margin: 0;
-  font-size: 12px;
-  color: var(--nb-ink-secondary);
-  line-height: 1.45;
-}
-
 /* Sidebar Footer & User Profile */
 .sidebar-footer {
   padding: 16px 14px 20px;
@@ -2414,7 +2390,6 @@
     }
     .sidebar-brand { padding: 0; border-bottom: none; }
     .sidebar-brand-text { display: none; }
-    .sidebar-companion-note { display: none; }
     .sidebar-user { display: none; }
     .sidebar-footer { padding: 0; border-top: none; align-items: center; justify-content: center; flex-direction: row; background: transparent; }
     .sidebar-nav-section { padding: 0; flex: 1; display: flex; align-items: center; justify-content: center; overflow: visible; }
