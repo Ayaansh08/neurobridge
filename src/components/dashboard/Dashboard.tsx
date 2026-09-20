@@ -114,9 +114,43 @@ export const Dashboard: React.FC<DashboardProps> = ({
     return () => window.removeEventListener('nb_session_restore_failed', handleFailed);
   }, []);
 
-  const handleTabNavigate = (tab: string) => {
+  const handleTabNavigate = (tabOrPath: string) => {
+    let tab = tabOrPath;
+    let targetPath = tabOrPath;
+
+    if (tabOrPath.startsWith('/app')) {
+      if (tabOrPath === '/app' || tabOrPath === '/app/') {
+        tab = 'dashboard';
+        targetPath = '/app';
+      } else if (tabOrPath.startsWith('/app/practice/')) {
+        tab = 'practice';
+        targetPath = tabOrPath;
+        const scenarioId = tabOrPath.replace('/app/practice/', '');
+        if (scenarioId) {
+          setActiveScenarioId(scenarioId);
+        }
+      } else if (tabOrPath === '/app/practice') {
+        tab = 'scenarios';
+        targetPath = '/app/scenarios';
+      } else if (tabOrPath === '/app/scenarios') {
+        tab = 'scenarios';
+        targetPath = '/app/scenarios';
+      } else if (tabOrPath === '/app/progress') {
+        tab = 'progress';
+        targetPath = '/app/progress';
+      } else if (tabOrPath === '/app/settings') {
+        tab = 'settings';
+        targetPath = '/app/settings';
+      } else {
+        tab = 'dashboard';
+        targetPath = '/app';
+      }
+    } else {
+      tab = tabOrPath;
+      targetPath = tabOrPath === 'dashboard' ? '/app' : `/app/${tabOrPath}`;
+    }
+
     setCurrentTab(tab);
-    const targetPath = tab === 'dashboard' ? '/app' : `/app/${tab}`;
     if (onNavigate) {
       onNavigate(targetPath);
     } else {

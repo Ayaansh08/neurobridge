@@ -60,6 +60,13 @@
   - Positioned completion notice below chat container to prevent message overlapping on 390px mobile screens.
 - **Settings Buttons Styling Fix**:
   - Implemented shared global `.dashboard-btn`, `.dashboard-btn--primary`, and `.dashboard-btn--secondary` button styling matching design tokens (radius, borders, primary plum, secondary transparent/subtle, focus-visible rings) for the "Save" and "Reset to defaults" buttons in the Settings Tab.
+- **Practice Confirmation Popup Modal Fix**:
+  - Restored `.comfort-modal-overlay`, `.comfort-modal-card`, `.comfort-modal-header`, `.comfort-modal-title`, `.comfort-modal-close-btn`, `.comfort-modal-desc`, and `.comfort-modal-footer` CSS classes in `Dashboard.css`.
+  - Fixed "Finish & get feedback" confirmation dialog so it renders as a centered popup modal with dark blur backdrop (`position: fixed`, `inset: 0`, `z-index: 1000`, `backdrop-filter: blur(6px)`) rather than inlining at the top of the chat view.
+  - Aligned close button and title in the modal header and updated action buttons to shared `.dashboard-btn--secondary` and `.dashboard-btn--primary`.
+- **Insights & Summary "Back to Dashboard" Navigation Fix**:
+  - Fixed route resolution in `App.tsx` and tab normalization in `Dashboard.tsx` (`handleTabNavigate`) so path strings (`/app`, `/app/scenarios`, `/app/progress`, `/app/settings`, `/app/practice/:id`) correctly map to internal tab states without corrupted target paths or stale session restore overrides.
+  - Added fallback popstate dispatch to "Back to Dashboard" buttons in `PracticeView.tsx` and added quick return button to the session Summary view.
 
 ## 2026-09-19 - "Quiet Night" UI Redesign
 - **Landing Page**: Completely revamped the public landing page to use the Quiet Night theme (charcoal, plum, sage). Removed all legacy blue/navy colors. Updated copy to reflect the app's true mechanics (no pressure practice, structured feedback). Added a 3D tilted preview card on desktop to demonstrate the AI conversation interface.

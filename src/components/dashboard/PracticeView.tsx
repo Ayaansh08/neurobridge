@@ -507,37 +507,39 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
 
       const data = await res.json();
       const evaluation: FeedbackEvaluation = {
-        summary: data.summary || 'You handled the conversation with composure and clarity.',
+        summary: data.summary || '',
         dimensions: {
-          clarity: data.dimensions?.clarity || { rating: 'strong', note: 'Clear points and well-structured responses.' },
-          tone: data.dimensions?.tone || { rating: 'developing', note: 'Constructive, respectful, and grounded.' },
-          responsiveness: data.dimensions?.responsiveness || { rating: 'strong', note: 'Directly addressed pushback and questions.' },
-          composure: data.dimensions?.composure || { rating: 'developing', note: 'Maintained conversational flow under pressure.' },
+          clarity: data.dimensions?.clarity || { rating: 'developing', note: '' },
+          tone: data.dimensions?.tone || { rating: 'developing', note: '' },
+          responsiveness: data.dimensions?.responsiveness || { rating: 'developing', note: '' },
+          composure: data.dimensions?.composure || { rating: 'developing', note: '' },
         },
-        whatWentWell: data.whatWentWell || 'You stepped into the scenario with clear intent and kept the conversation moving forward constructively.',
-        tryImproving: data.tryImproving || 'Experiment with pausing before answering difficult pushback to give yourself space to formulate composed answers.',
-        encouragement: data.encouragement || 'Every practice session strengthens your real-world communication reflexes — great job showing up.',
+        whatWentWell: data.whatWentWell || '',
+        tryImproving: data.tryImproving || '',
+        encouragement: data.encouragement || '',
+        fallback: data.fallback || false,
       };
 
-      userProgressService.recordCompletedSession(
-        activeScenario.scenarioType,
-        activeScenario.title,
-        evaluation.whatWentWell,
-        evaluation,
-        user?.email
-      );
-
-      if (sessionId) {
-        userProgressService.removeUnfinishedSession(sessionId, user?.email);
+      if (!evaluation.fallback) {
+        userProgressService.recordCompletedSession(
+          activeScenario.scenarioType,
+          activeScenario.title,
+          evaluation.whatWentWell,
+          evaluation,
+          user?.email
+        );
+        if (sessionId) {
+          userProgressService.removeUnfinishedSession(sessionId, user?.email);
+        }
+        localStorage.removeItem(`nb_active_session_${user?.email || 'guest'}`);
       }
-      localStorage.removeItem(`nb_active_session_${user?.email || 'guest'}`);
 
       setFeedbackEvaluation(evaluation);
       setIsCompleted(true);
       onSessionComplete?.();
     } catch (err: any) {
       console.error('Feedback error:', err);
-      setApiError(err.name === 'TimeoutError' ? 'Feedback generation timed out.' : (err.message || 'Failed to generate AI feedback. Please try again.'));
+      fallbackFinish();
     } finally {
       setIsLoading(false);
     }
@@ -545,31 +547,20 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
 
   const fallbackFinish = () => {
     const evaluation: FeedbackEvaluation = {
-      summary: 'You completed this practice scenario with clear communication and a grounded demeanor.',
+      summary: 'We could not generate personalized feedback this time. You can try finishing the session again.',
       dimensions: {
-        clarity: { rating: 'strong', note: 'Your points were stated clearly throughout the dialogue.' },
-        tone: { rating: 'developing', note: 'Maintained a calm, respectful, and constructive conversational cadence.' },
-        responsiveness: { rating: 'strong', note: 'Directly addressed the points raised by your partner.' },
-        composure: { rating: 'developing', note: 'Handled the back-and-forth scenario without breaking flow.' },
+        clarity: { rating: 'Not rated' as any, note: 'Not enough information to rate this yet.' },
+        tone: { rating: 'Not rated' as any, note: 'Not enough information to rate this yet.' },
+        responsiveness: { rating: 'Not rated' as any, note: 'Not enough information to rate this yet.' },
+        composure: { rating: 'Not rated' as any, note: 'Not enough information to rate this yet.' },
       },
-      whatWentWell: 'You stepped into the scenario with clear intent and kept the conversation moving forward constructively.',
-      tryImproving: 'Experiment with pausing before answering difficult pushback to give yourself space to formulate composed answers.',
-      encouragement: 'Every practice session builds communication reflexes — great job showing up today.',
+      whatWentWell: '',
+      tryImproving: '',
+      encouragement: '',
+      fallback: true,
     };
 
-    userProgressService.recordCompletedSession(
-      activeScenario.scenarioType,
-      activeScenario.title,
-      evaluation.whatWentWell,
-      evaluation,
-      user?.email
-    );
-
-    if (sessionId) {
-      userProgressService.removeUnfinishedSession(sessionId, user?.email);
-    }
-    localStorage.removeItem(`nb_active_session_${user?.email || 'guest'}`);
-
+    // Do NOT call recordCompletedSession and do NOT award XP for fallbacks.
     setFeedbackEvaluation(evaluation);
     setIsCompleted(true);
     onSessionComplete?.();
@@ -757,17 +748,18 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
             <div className="comfort-modal-footer">
               <button
                 type="button"
-                className="dashboard-view-all-btn"
+                className="dashboard-btn dashboard-btn--secondary"
                 onClick={() => setIsConfirmFinishOpen(false)}
               >
                 <span>Continue Practicing</span>
               </button>
               <button
                 type="button"
-                className="dashboard-cta-btn"
+                className="dashboard-btn dashboard-btn--primary"
+                disabled={isLoading}
                 onClick={handleFinishPractice}
               >
-                <span>Finish & View Feedback</span>
+                <span>{isLoading ? 'Getting your feedback...' : 'Finish & View Feedback'}</span>
               </button>
             </div>
           </div>
@@ -958,7 +950,7 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
                 title="Finish session and get constructive feedback"
                 style={userTurnCount >= 3 ? { boxShadow: '0 0 12px rgba(183,165,152,0.4)', borderColor: 'var(--nb-terracotta)' } : {}}
               >
-                Finish & get feedback
+                {isLoading ? 'Getting your feedback...' : 'Finish & get feedback'}
               </button>
               {userTurnCount < 3 && (
                 <span className="practice-finish-hint" style={{ fontSize: '10px', color: 'var(--nb-ink-muted)' }}>
@@ -993,17 +985,28 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
 
                 <div className="practice-narrative-sections">
                   <div className="practice-narrative-block" style={{ textAlign: 'center' }}>
-                    <p className="practice-narrative-text" style={{ fontSize: '1.1rem', fontWeight: 500, margin: '0 auto', maxWidth: '600px' }}>
-                      {feedbackEvaluation.summary || `${feedbackEvaluation.whatWentWell} ${feedbackEvaluation.tryImproving}`}
-                    </p>
-                    <p style={{ marginTop: '16px', color: 'var(--nb-terracotta)', fontWeight: 'bold' }}>+100 XP earned</p>
+                    {feedbackEvaluation.summary && (
+                      <p className="practice-narrative-text" style={{ fontSize: '1.1rem', fontWeight: 500, margin: '0 auto', maxWidth: '600px' }}>
+                        {feedbackEvaluation.summary}
+                      </p>
+                    )}
+                    {!feedbackEvaluation.fallback && (
+                      <p style={{ marginTop: '16px', color: 'var(--nb-terracotta)', fontWeight: 'bold' }}>+100 XP earned</p>
+                    )}
                   </div>
                 </div>
                 
                 <div className="practice-completed-actions" style={{ marginTop: '30px', justifyContent: 'center' }}>
-                  <button type="button" className="dashboard-cta-btn" onClick={() => setCompletionStep('insights')}>
-                    <span>See insights</span>
-                  </button>
+                  {feedbackEvaluation.fallback && (
+                    <button type="button" className="dashboard-cta-btn" onClick={handleFinishPractice} disabled={isLoading}>
+                      <span>{isLoading ? 'Retrying...' : 'Try again'}</span>
+                    </button>
+                  )}
+                  {!feedbackEvaluation.fallback && (
+                    <button type="button" className="dashboard-cta-btn" onClick={() => setCompletionStep('insights')}>
+                      <span>See insights</span>
+                    </button>
+                  )}
                   <button
                     type="button"
                     className="dashboard-view-all-btn"
@@ -1015,6 +1018,20 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
                     }}
                   >
                     <span>Practice again</span>
+                  </button>
+                  <button
+                    type="button"
+                    className="dashboard-view-all-btn"
+                    onClick={() => {
+                      if (onNavigate) {
+                        onNavigate('/app');
+                      } else {
+                        window.history.pushState({}, '', '/app');
+                        window.dispatchEvent(new PopStateEvent('popstate'));
+                      }
+                    }}
+                  >
+                    <span>Back to Dashboard</span>
                   </button>
                 </div>
               </div>
@@ -1034,14 +1051,16 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
 
           {feedbackEvaluation && (
             <>
-              <div className="practice-narrative-sections">
-                <div className="practice-narrative-block">
-                  <span className="practice-narrative-eyebrow">Executive Summary</span>
-                  <p className="practice-narrative-text" style={{ fontSize: '1.05rem', fontWeight: 500 }}>
-                    {feedbackEvaluation.summary || `${feedbackEvaluation.whatWentWell} ${feedbackEvaluation.tryImproving}`}
-                  </p>
+              {feedbackEvaluation.summary && (
+                <div className="practice-narrative-sections">
+                  <div className="practice-narrative-block">
+                    <span className="practice-narrative-eyebrow">Executive Summary</span>
+                    <p className="practice-narrative-text" style={{ fontSize: '1.05rem', fontWeight: 500 }}>
+                      {feedbackEvaluation.summary}
+                    </p>
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* 4 Dimension Cards */}
               <div className="practice-dimensions-grid">
@@ -1065,20 +1084,26 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
 
               {/* Narrative Breakdown */}
               <div className="practice-narrative-sections">
-                <div className="practice-narrative-block">
-                  <span className="practice-narrative-eyebrow">What Went Well</span>
-                  <p className="practice-narrative-text">{feedbackEvaluation.whatWentWell}</p>
-                </div>
+                {!feedbackEvaluation.fallback && (
+                  <>
+                    <div className="practice-narrative-block">
+                      <span className="practice-narrative-eyebrow">What Went Well</span>
+                      <p className="practice-narrative-text">{feedbackEvaluation.whatWentWell}</p>
+                    </div>
 
-                <div className="practice-narrative-block">
-                  <span className="practice-narrative-eyebrow">Practice Focus</span>
-                  <p className="practice-narrative-text">{feedbackEvaluation.tryImproving}</p>
-                </div>
+                    <div className="practice-narrative-block">
+                      <span className="practice-narrative-eyebrow">Practice Focus</span>
+                      <p className="practice-narrative-text">{feedbackEvaluation.tryImproving}</p>
+                    </div>
+                  </>
+                )}
 
+              {feedbackEvaluation.encouragement && (
                 <div className="practice-encouragement-box">
                   <SparklesIcon size={18} className="practice-encouragement-icon" />
                   <p className="practice-encouragement-text">{feedbackEvaluation.encouragement}</p>
                 </div>
+              )}
               </div>
             </>
           )}
@@ -1107,7 +1132,14 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
             <button
               type="button"
               className="dashboard-view-all-btn"
-              onClick={() => onNavigate?.('/app')}
+              onClick={() => {
+                if (onNavigate) {
+                  onNavigate('/app');
+                } else {
+                  window.history.pushState({}, '', '/app');
+                  window.dispatchEvent(new PopStateEvent('popstate'));
+                }
+              }}
             >
               <span>Back to Dashboard</span>
             </button>

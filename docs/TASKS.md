@@ -26,6 +26,8 @@ _Single source of truth for work. Now / Next / Later / Done._
 - Personalized practice recommendations: Out of scope for a 3-minute demo timeline.
 
 ## ✅ Done
+- [x] Fix "Back to Dashboard" button in Insights and Summary screens (tab/path normalization in `handleTabNavigate` and `App.tsx` routing)
+- [x] Fix Practice confirmation dialog popup modal styling (`.comfort-modal-overlay` & `.comfort-modal-card` backdrop blur and centering)
 - [x] Minimal-Footprint App Upscale Pass (session summary slosh gauge, flat stat cards, underlined status labels)
 - [x] Warm-Noir Editorial Auth Screens (asymmetric sign-in/create-account canvas, printed panel, Practice Pass type-in strip, GlareButton CTAs, muted checklist states)
 - [x] Warm-Noir Literary Editorial Landing Page Redesign (Asymmetric 12-col hero, bespoke cream Rehearsal Ticket, marquee Clipping Strip, single-column Case Index, full-bleed pull-quote, printed Readiness Gauge, GlareButton, paper film grain texture)

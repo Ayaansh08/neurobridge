@@ -1,0 +1,1 @@
+{"extends":"../infra/tsconfig.json","compilerOptions":{"baseUrl":".","paths":{"*":["node_modules/*","../infra/node_modules/*"]},"typeRoots":["../infra/node_modules/@types"],"ignoreDeprecations":"6.0","skipLibCheck":true,"lib":["es2022","DOM"],"types":["node"]},"include":["lambdas/**/*.ts","scripts/**/*.ts"]}

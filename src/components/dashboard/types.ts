@@ -54,6 +54,7 @@ export interface FeedbackEvaluation {
   whatWentWell: string;
   tryImproving: string;
   encouragement: string;
+  fallback?: boolean;
 }
 
 /**
