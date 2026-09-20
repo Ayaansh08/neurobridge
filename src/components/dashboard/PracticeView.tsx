@@ -506,16 +506,17 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
 
       const data = await res.json();
       const evaluation: FeedbackEvaluation = {
-        summary: data.summary || 'You handled the conversation with composure and clarity.',
+        summary: data.summary || '',
         dimensions: {
-          clarity: data.dimensions?.clarity || { rating: 'strong', note: 'Clear points and well-structured responses.' },
-          tone: data.dimensions?.tone || { rating: 'developing', note: 'Constructive, respectful, and grounded.' },
-          responsiveness: data.dimensions?.responsiveness || { rating: 'strong', note: 'Directly addressed pushback and questions.' },
-          composure: data.dimensions?.composure || { rating: 'developing', note: 'Maintained conversational flow under pressure.' },
+          clarity: data.dimensions?.clarity || { rating: 'developing', note: '' },
+          tone: data.dimensions?.tone || { rating: 'developing', note: '' },
+          responsiveness: data.dimensions?.responsiveness || { rating: 'developing', note: '' },
+          composure: data.dimensions?.composure || { rating: 'developing', note: '' },
         },
-        whatWentWell: data.whatWentWell || 'You stepped into the scenario with clear intent and kept the conversation moving forward constructively.',
-        tryImproving: data.tryImproving || 'Experiment with pausing before answering difficult pushback to give yourself space to formulate composed answers.',
-        encouragement: data.encouragement || 'Every practice session strengthens your real-world communication reflexes — great job showing up.',
+        whatWentWell: data.whatWentWell || '',
+        tryImproving: data.tryImproving || '',
+        encouragement: data.encouragement || '',
+        fallback: data.fallback || false,
       };
 
       userProgressService.recordCompletedSession(
@@ -544,16 +545,17 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
 
   const fallbackFinish = () => {
     const evaluation: FeedbackEvaluation = {
-      summary: 'You completed this practice scenario with clear communication and a grounded demeanor.',
+      summary: 'We could not generate personalized feedback this time. You can try finishing the session again.',
       dimensions: {
-        clarity: { rating: 'strong', note: 'Your points were stated clearly throughout the dialogue.' },
-        tone: { rating: 'developing', note: 'Maintained a calm, respectful, and constructive conversational cadence.' },
-        responsiveness: { rating: 'strong', note: 'Directly addressed the points raised by your partner.' },
-        composure: { rating: 'developing', note: 'Handled the back-and-forth scenario without breaking flow.' },
+        clarity: { rating: 'developing', note: 'Not enough information to rate this yet.' },
+        tone: { rating: 'developing', note: 'Not enough information to rate this yet.' },
+        responsiveness: { rating: 'developing', note: 'Not enough information to rate this yet.' },
+        composure: { rating: 'developing', note: 'Not enough information to rate this yet.' },
       },
-      whatWentWell: 'You stepped into the scenario with clear intent and kept the conversation moving forward constructively.',
-      tryImproving: 'Experiment with pausing before answering difficult pushback to give yourself space to formulate composed answers.',
-      encouragement: 'Every practice session builds communication reflexes — great job showing up today.',
+      whatWentWell: 'N/A',
+      tryImproving: 'N/A',
+      encouragement: '',
+      fallback: true,
     };
 
     userProgressService.recordCompletedSession(
@@ -994,9 +996,11 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
 
                 <div className="practice-narrative-sections">
                   <div className="practice-narrative-block" style={{ textAlign: 'center' }}>
-                    <p className="practice-narrative-text" style={{ fontSize: '1.1rem', fontWeight: 500, margin: '0 auto', maxWidth: '600px' }}>
-                      {feedbackEvaluation.summary || `${feedbackEvaluation.whatWentWell} ${feedbackEvaluation.tryImproving}`}
-                    </p>
+                    {feedbackEvaluation.summary && (
+                      <p className="practice-narrative-text" style={{ fontSize: '1.1rem', fontWeight: 500, margin: '0 auto', maxWidth: '600px' }}>
+                        {feedbackEvaluation.summary}
+                      </p>
+                    )}
                     <p style={{ marginTop: '16px', color: 'var(--nb-terracotta)', fontWeight: 'bold' }}>+100 XP earned</p>
                   </div>
                 </div>
@@ -1035,14 +1039,16 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
 
           {feedbackEvaluation && (
             <>
-              <div className="practice-narrative-sections">
-                <div className="practice-narrative-block">
-                  <span className="practice-narrative-eyebrow">Executive Summary</span>
-                  <p className="practice-narrative-text" style={{ fontSize: '1.05rem', fontWeight: 500 }}>
-                    {feedbackEvaluation.summary || `${feedbackEvaluation.whatWentWell} ${feedbackEvaluation.tryImproving}`}
-                  </p>
+              {feedbackEvaluation.summary && (
+                <div className="practice-narrative-sections">
+                  <div className="practice-narrative-block">
+                    <span className="practice-narrative-eyebrow">Executive Summary</span>
+                    <p className="practice-narrative-text" style={{ fontSize: '1.05rem', fontWeight: 500 }}>
+                      {feedbackEvaluation.summary}
+                    </p>
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* 4 Dimension Cards */}
               <div className="practice-dimensions-grid">
@@ -1076,10 +1082,12 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
                   <p className="practice-narrative-text">{feedbackEvaluation.tryImproving}</p>
                 </div>
 
+              {feedbackEvaluation.encouragement && (
                 <div className="practice-encouragement-box">
                   <SparklesIcon size={18} className="practice-encouragement-icon" />
                   <p className="practice-encouragement-text">{feedbackEvaluation.encouragement}</p>
                 </div>
+              )}
               </div>
             </>
           )}
