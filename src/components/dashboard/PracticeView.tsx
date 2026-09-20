@@ -49,7 +49,7 @@ const PERSONA_DETAILS: Record<string, PersonaInfo> = {
     tips: [
       'Take a breath before answering complex questions.',
       'Use the STAR method (Situation, Task, Action, Result) if helpful.',
-      'It is completely okay to pause for 2â€“3 seconds to collect your thoughts.',
+      'It is completely okay to pause for 2–3 seconds to collect your thoughts.',
     ],
   },
   'talk-to-manager': {

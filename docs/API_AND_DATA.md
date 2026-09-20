@@ -1,11 +1,11 @@
-﻿# API & Data Contract
+# API & Data Contract
 
 _The agreement between frontend and backend. If you change a shape, update this doc and both sides._
 
 ## Endpoints
 
 Base URL: `VITE_API_GATEWAY_URL` (from CDK output `ApiGatewayInvokeUrl`).
-Auth: **None currently** (no Cognito authorizer â€” see KNOWN_ISSUES.md).
+Auth: **None currently** (no Cognito authorizer — see KNOWN_ISSUES.md).
 
 ### POST /ping
 Health check. No body required.
@@ -39,8 +39,8 @@ Create a new practice session.
 ### GET /sessions/{sessionId}
 Fetch an existing session.
 ```json
-// Response 200 â€” same shape as SessionRecord above
-// Response 404 â€” { "error": "Session not found for id ..." }
+// Response 200 — same shape as SessionRecord above
+// Response 404 — { "error": "Session not found for id ..." }
 ```
 
 ### POST /sessions/{sessionId}/messages
@@ -48,9 +48,9 @@ Send a user message, get AI reply. **This calls Bedrock.**
 ```json
 // Request body
 { "message": "your text here" }
-// Response 200 â€” full SessionRecord with appended user + ai messages
-// Response 400 â€” session limit reached (30 messages)
-// Response 503 â€” AI service temporarily unavailable
+// Response 200 — full SessionRecord with appended user + ai messages
+// Response 400 — session limit reached (30 messages)
+// Response 503 — AI service temporarily unavailable
 ```
 
 ### POST /sessions/{sessionId}/feedback
@@ -65,7 +65,8 @@ Generate multi-dimensional qualitative coaching reflection for a practice sessio
     "responsiveness": { "rating": "strong", "note": "Directly engaged with questions." },
     "composure": { "rating": "developing", "note": "Maintained focus under pushback." }
   },
-  "summary": "Overall summary of the interaction.",`n  "whatWentWell": "You communicated with clear intent and kept the conversation constructive.",
+  "summary": "Overall summary of the interaction.",
+  "whatWentWell": "You communicated with clear intent and kept the conversation constructive.",
   "tryImproving": "Practice pausing before replying to pushback to formulate composed responses.",
   "encouragement": "Every practice session strengthens your real-world communication reflexes."
 }
@@ -80,7 +81,7 @@ Generate multi-dimensional qualitative coaching reflection for a practice sessio
 |-------|--------------|----------|
 | Sessions | `sessionId` (String) | Stores each practice session: messages, scenario, difficulty, status |
 | RulesTable | `scenarioType` (String) | AI system prompts, difficulty levels, and opening lines per scenario |
-| Progress | `userId` (String) | User progress/XP (exists but not yet used â€” currently in localStorage) |
+| Progress | `userId` (String) | User progress/XP (exists but not yet used — currently in localStorage) |
 
 ## Key Types (from `backend/lambdas/shared/types.ts`)
 
