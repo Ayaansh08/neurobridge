@@ -1,0 +1,77 @@
+/* ─── Glare Button (Subtle Hover Sheen with 2px Corner Policy) ─── */
+
+.glare-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 28px;
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+  border-radius: 2px;
+  cursor: pointer;
+  overflow: hidden;
+  border: none;
+  transition: transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  white-space: nowrap;
+}
+
+.glare-button:active {
+  transform: translateY(1px);
+}
+
+.glare-button--primary {
+  background: #A85C8C;
+  color: #F2EBDD;
+  border: 1px solid rgba(242, 235, 221, 0.15);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+}
+
+.glare-button--primary:hover {
+  background: #984E7D;
+  box-shadow: 0 6px 20px rgba(168, 92, 140, 0.25);
+}
+
+.glare-button--secondary {
+  background: transparent;
+  color: #EDEAE4;
+  border: 1px solid #3E3D46;
+}
+
+.glare-button--secondary:hover {
+  background: #232228;
+  border-color: #555360;
+}
+
+.glare-button--editorial {
+  background: #23202C;
+  color: #EDEAE4;
+  border: 1px solid #3A3942;
+}
+
+.glare-button--editorial:hover {
+  background: #2E2029;
+  border-color: #A85C8C;
+}
+
+/* Moving Specular Sheen Effect */
+.glare-button__sheen {
+  position: absolute;
+  width: 140px;
+  height: 140px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0) 70%);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.glare-button__label {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}

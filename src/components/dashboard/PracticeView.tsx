@@ -3,6 +3,7 @@ import { defaultScenarios, userProgressService } from '../../services/userProgre
 import { settingsService } from '../../services/settingsService';
 import { useAuth } from '../../context/AuthContext';
 import { authConfig } from '../../config/auth';
+import SloshScoreGauge from './SloshScoreGauge';
 import {
   PlayIcon,
   ArrowRightIcon,
@@ -977,15 +978,9 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
                   </div>
                 </div>
                 
-                <div className="practice-score-ring-container" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '30px 0' }}>
-                  {!feedbackEvaluation.fallback && (
-                    <>
-                      <div className="score-ring" style={{ width: '80px', height: '80px', borderRadius: '50%', border: '4px solid var(--nb-emerald)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', fontWeight: 'bold', color: 'var(--nb-emerald)', marginBottom: '12px' }}>
-                        {computeScore(feedbackEvaluation.dimensions)}<span style={{ fontSize: '14px', color: 'var(--nb-ink-muted)' }}>/12</span>
-                      </div>
-                      <div style={{ fontSize: '12px', color: 'var(--nb-ink-muted)' }}>Based on the four ratings below</div>
-                    </>
-                  )}
+                <div className="practice-score-ring-container">
+                  <SloshScoreGauge score={computeScore(feedbackEvaluation.dimensions)} />
+                  <div className="practice-score-caption">Based on the four ratings below</div>
                 </div>
 
                 <div className="practice-narrative-sections">
