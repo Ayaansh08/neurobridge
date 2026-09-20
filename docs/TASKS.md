@@ -1,22 +1,22 @@
-﻿# Tasks
+# Tasks
 
 _Single source of truth for work. Now / Next / Later / Done._
 
 ## Backend batch
 - Run `cdk deploy neurobridge-stack --require-approval never` to apply the generate-feedback prompt fixes.
 
-## Ã°Å¸â€Â´ Now (before Sept 20 deadline)
+## 🔴 Now (before Sept 20 deadline)
 - [ ] Record 3-minute demo video
-- [x] Test full flow end-to-end: sign up Ã¢â€ â€™ pick scenario Ã¢â€ â€™ practice Ã¢â€ â€™ complete
+- [x] Test full flow end-to-end: sign up → pick scenario → practice → complete
 
-## Ã°Å¸Å¸Â¡ Next
-_No critical tasks pending._
+## 🟡 Next
+- [x] Round 4 UI Polish & Responsiveness Plan (Items 1-7 completed and verified)
 
-## Ã°Å¸â€Âµ Later
+## 🔵 Later
 - [ ] Production error handling and loading states
 - [ ] Tune AI Partner prompts based on real test sessions (Phase 4)
 
-## Ã¢Å“â€šÃ¯Â¸Â Cut / post-hackathon
+## ✂️ Cut / post-hackathon
 - `group-conversation` scenario: Focus purely on 1-on-1 conversations for the demo.
 - Cognito authorizer + token sending: Not critical for the demo flow since the backend only runs practice data.
 - Connect DynamoDB `Progress` table to replace localStorage: LocalStorage is sufficient for the short demo.
@@ -25,7 +25,8 @@ _No critical tasks pending._
 - Persist auth tokens (refresh token flow): Hard reload drops state but isn't required for the golden path.
 - Personalized practice recommendations: Out of scope for a 3-minute demo timeline.
 
-## âœ… Done
+## ✅ Done
+- [x] Round 4 UI Fixes (Comfort in Settings, 4 fixed nav items, Scenarios banner & 2-col layout, unfinished session recovery logbook, Progress rhythm & shared SessionRow, unified StatCard family & local XP calculation, bug fixes)
 - [x] Quiet Night UI redesign for First Commit "Best UI" prize track (charcoal foundation `#16151A`, muted plum `#A85C8C`, `Fraunces` serif headings)
 - [x] Auth screens visual unification (subtle cards, password toggle, live password rule feedback, confirmation code step, disclaimer footer)
 - [x] Practice view redesign (persona avatar badge, role metadata, goal banner, collapsible tips accordion, scenario switcher modal)
@@ -55,12 +56,3 @@ _No critical tasks pending._
 - [x] XP/progress tracking (localStorage)
 - [x] Cost guardrails (30 msg cap, 300 token output, 10 msg history window)
 - [x] Documentation setup
-
-## dY" Done
-- [x] Added summary field to end-of-session qualitative feedback
-
-
-
-
-
-
